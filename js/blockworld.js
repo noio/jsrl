@@ -12,7 +12,7 @@ TILE_END = 'e'
 
 /*** CLASSES ***/
 
-var BlockWorld = klass({
+var BlockWorld = $.klass({
 
 	PIT_REWARD: -10,
 	END_REWARD: 1000,

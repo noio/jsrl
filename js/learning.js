@@ -1,8 +1,5 @@
-/*** IMPORTS ***/
-var klass = require('klass')
 
 /*** FUNCTIONS ***/
-
 
 function argmax(obj){
 	var mk = null
@@ -26,10 +23,9 @@ function valmax(obj){
 	return mx
 }
 
-
 /*** CLASSES ***/
 
-var StateActionValueTable = klass({
+var StateActionValueTable = $.klass({
 
 	initialize: function(){
 		// Values is een dict van dicts
