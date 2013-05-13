@@ -45,14 +45,17 @@ var projector = (function () {
         var added = 0;
 
         for (var i = 0; i < blocks.length; i ++){
-          this.script = this.script.concat( lines.slice(added, blocks[i][1]) )
-          data = eval(blocks[i][3]);
+          this.script = this.script.concat( lines.slice(added, blocks[i][1]) );
+          console.log(blocks[i][3])
+          data = JSON.parse(blocks[i][3]);
           code = lines.slice(blocks[i][1]+1, blocks[i][2]).join('\n')
 
           if (blocks[i][0] == 'show'){
             this.script.push(code);
+            $('#main').append('<h4>'+data.title+'</h4>')
             $('#main').append('<code>'+code+'</code>')
           } else if (blocks[i][0] == 'edit'){
+            $('#main').append('<h4>'+data.title+'</h4>')
             $('#main').append('<textarea>'+code+'</textarea>')
           }
 
