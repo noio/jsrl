@@ -46,7 +46,7 @@ var projector = (function () {
     var dscrend = s.indexOf('*/');
 
     this.descriptionarea.append(s.substring(dscrstart + 2, dscrend));
-    MathJax.Hub.Queue(["Typeset",MathJax.Hub,this.descriptionarea]);
+    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 
     var blocks = [], current = null, match = null
     var lines = s.split('\n');
