@@ -1,3 +1,10 @@
+/*
+
+<h2>Q learning</h2>
+
+<p>This is the description. There is even some \(\LaTeX\) in here! $$\sum_a Q(a)$$</p>
+
+*/
 
 /**
 * This will run immediately upon load.

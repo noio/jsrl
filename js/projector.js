@@ -9,7 +9,8 @@ var projector = (function () {
 
   my.Projector = klass({
 
-  initialize: function(editarea, productarea){
+  initialize: function(descriptionarea, editarea, productarea){
+    this.descriptionarea = descriptionarea;
     this.editarea = editarea;
     this.productarea = productarea;
     this.scriptblocks = [];
@@ -39,6 +40,12 @@ var projector = (function () {
   */
   loads: function(s){
     this.clear();
+
+    // First, find the description section.
+    var dscrstart = s.indexOf('/*');
+    var dscrend = s.indexOf('*/');
+
+    this.descriptionarea.append(s.substring(dscrstart + 2, dscrend));
 
     var blocks = [], current = null, match = null
     var lines = s.split('\n');
@@ -95,6 +102,7 @@ var projector = (function () {
     this.scriptblocks = [];
     this.editors = [];
     this.editarea.empty();
+    this.descriptionarea.empty()
     this.productarea.find('#panels').empty()
     this.productarea.find('#console').empty()
   },
@@ -187,5 +195,5 @@ var projector = (function () {
 
 /* Load up a template file */
 $(document).ready(function(){
-  a = new projector.Projector($('#main'), $('#product')).load('js/lessons/lesson01.js');
+  a = new projector.Projector($('#description'), $('#main'), $('#product')).load('js/lessons/lesson01.js');
 });
