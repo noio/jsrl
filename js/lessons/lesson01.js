@@ -12,7 +12,6 @@ task = new BlockWorld(TESTWORLD)
 
 //:edit {"title":"Initialization"}
 Q.fill(task.states(), task.actions(), 5.0)
-
 //:end edit
 
 console.log(Q)
@@ -25,9 +24,12 @@ for(var episode = 0; episode < 100; episode ++){
 		var s = task.getState();
 		var actions = Q.get(s)
 		
-		//:edit {"title":"Action Selection"}
-		var a = argmax(actions);
-		//:end edit
+		var a
+
+//:edit {"title":"Action Selection"}
+	a = argmax(actions);
+//	a = randompick(actions);
+//:end edit
 		
 		var r = task.act(a);
 		var s_ = task.getState();

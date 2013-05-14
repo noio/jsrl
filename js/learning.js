@@ -23,6 +23,15 @@ function valmax(obj){
 	return mx
 }
 
+/**
+* Returns random value from array, or random key from object
+*/
+function randompick(obj){
+	if (!$.isArray(obj)){
+		var obj = Object.keys(obj);
+	}
+	return obj[Math.floor(Math.random()*obj.length)];
+}
 /*** CLASSES ***/
 
 var StateActionValueTable = klass({
