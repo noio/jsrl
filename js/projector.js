@@ -173,7 +173,7 @@ var projector = (function () {
     }
     return $.map(spec, $.proxy(function(el, idx){
       var h = panels.height() * el / total;
-      var div = $('<div></div>').css('height', h).appendTo(panels);
+      var div = $('<div></div>').css({height: h, position: 'relative'}).appendTo(panels);
       return div;
     },this));
   }

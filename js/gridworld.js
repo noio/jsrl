@@ -12,7 +12,7 @@ TILE_END = 'e'
 
 /*** CLASSES ***/
 
-var BlockWorld = klass({
+var GridWorld = klass({
 
 	PIT_REWARD: -10,
 	END_REWARD: 1000,
@@ -53,14 +53,14 @@ var BlockWorld = klass({
 		var s = []
 		for (var y = 0; y < this.height; y ++){
 			for (var x = 0; x < this.width; x++){
-				s.push(x + ',' + y);
+				s.push(x + '_' + y);
 			}
 		}
 		return s
 	},
 
 	getState: function(){
-		return this.pos[1] + ',' + this.pos[0]
+		return this.pos[1] + '_' + this.pos[0]
 	},
 
 	actions: function(state){
@@ -103,9 +103,32 @@ var BlockWorld = klass({
 		return this.finished;
 	},
 
+	setpanel: function(panel){
+		this.panel = panel;
 
-	render: function(canvas, qtable){
+		for (var y = 0; y < this.height; y ++){
+			for (var x = 0; x < this.width; x++){
+				var div = $('<div></div>').css({
+					position: 'absolute',
+					width: '14px',
+					height: '14px',
+					left: 16*x + 'px',
+					top: 16*y + 'px',
+					border: '1px solid black'}).attr('class', 'tile' + x + '_' + y);
+				panel.append(div);
+			}
+		}
+	},
+
+	render: function(qtable){
 		// Render in een 
+		if (typeof qtable != 'undefined'){
+			var mx = qtable.maxvalue()
+			for (state in qtable.values){
+				var tile = this.panel.find('.tile' + state);
+				tile.css('background', 'rgba(0,255,0,' + valmax(qtable.get(state)) / mx + ')');
+			}
+		}
 	}
 
 })
