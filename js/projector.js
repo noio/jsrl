@@ -9,11 +9,16 @@ var projector = (function () {
 
   my.Projector = klass({
 
-  initialize: function(editor, screen){
-    this.script = [];
+  initialize: function(pad, product){
+    this.pad = pad;
+    this.product = product;
+    this.scriptblocks = [];
     this.editables = {};
   },
 
+  /**
+  * Load a notebook from a source path
+  */
   load: function(src){
     console.log(src);
     // Request the source file
@@ -23,54 +28,108 @@ var projector = (function () {
       dataType: 'text',
       context: this,
       success: function(data){
-        var blocks = [], current = null, start, match, data
-        var lines = data.split('\n');
-        
-        // Loop through lines of the source file, look for "//:" comments
-        for (var i = 0; i < lines.length; i ++){
-          if ((match = TAG_RE.exec(lines[i])) != null){
-            if (current === null){
-              current = match[1];
-              data = match[2];
-              start = i;
-            }
-            // Check if there is a (corresponding) end tag present
-            else {
-              if (match[1] != 'end') throw "Mismatching start/end indicators";
-              blocks.push([current, start, i, data]);
-              current = null;
-            }
-          }
-        }
-
-        // Loop through the found blocks and process them
-        this.script = [];
-        var added = 0;
-
-        for (var i = 0; i < blocks.length; i ++){
-          this.script = this.script.concat( lines.slice(added, blocks[i][1]) );
-          console.log(blocks[i][3])
-          data = JSON.parse(blocks[i][3]);
-          code = lines.slice(blocks[i][1]+1, blocks[i][2]).join('\n')
-
-          if (blocks[i][0] == 'show'){
-            this.script.push(code);
-            $('#main').append('<h4>'+data.title+'</h4>')
-            $('#main').append('<code>'+code+'</code>')
-          } else if (blocks[i][0] == 'edit'){
-            
-            $('#main').append('<h4>'+data.title+'</h4>')
-            $('#main').append('<textarea>'+code+'</textarea>')
-          }
-
-          added = blocks[i][2] + 1;
-        }
-        this.script = this.script.concat( lines.slice(added) )
-
-        this.script = this.script.join("\n")
+        this.loads(data);
       }
     });
     return this;
+  },
+
+  /**
+  * Load a notebook as a string
+  */
+  loads: function(s){
+    this.clear();
+
+    var blocks = [], current = null, match = null
+    var lines = s.split('\n');
+    
+    // Loop through lines of the source file, look for "//:" comments
+    for (var i = 0; i < lines.length; i ++){
+      if ((match = TAG_RE.exec(lines[i])) != null){
+        if (current === null){
+          current = match[1];
+          var data = match[2];
+          var start = i;
+        }
+        // Check if there is a (corresponding) end tag present
+        else {
+          if (match[1] != 'end') throw "Mismatching start/end indicators";
+          blocks.push([current, start, i, data]);
+          current = null;
+        }
+      }
+    }
+
+    // Loop through the found blocks and process them
+    var added = 0;
+
+    for (var i = 0; i < blocks.length; i ++){
+      var before = lines.slice(added, blocks[i][1]).join("\n");
+      var code = lines.slice(blocks[i][1]+1, blocks[i][2]).join('\n');
+      
+      data = JSON.parse(blocks[i][3]);
+
+      this.scriptblocks.push(before);
+      if (blocks[i][0] == 'show'){
+        this.addBlock(code, data, false);
+      } else if (blocks[i][0] == 'edit'){
+        this.addBlock(code, data, true);
+      }
+
+      added = blocks[i][2] + 1;
+    }
+    this.scriptblocks = this.scriptblocks.concat( lines.slice(added) )
+
+    $('<button>Run</button>').appendTo(this.pad).on('click', $.proxy(function(event){
+      this.runscript();
+    }, this));
+
+  },
+
+  /**
+  * Clears the current pad content
+  */
+  clear: function(){
+    this.scriptblocks = [];
+    this.editors = [];
+    this.pad.empty();
+  },
+
+  /**
+  * Add an (editable) block to the notepad
+  */
+  addBlock: function(code, data, editable){
+    this.pad.append('<h4>'+data.title+'</h4>');
+    this.scriptblocks.push(null);
+    var cm = CodeMirror(this.pad.get(0), {
+      value: $.trim(code),
+      mode: 'javascript',
+      height: 'dynamic',
+      readOnly: editable ? false : 'nocursor',
+      lineNumbers: editable,
+      lineWrapping: true,
+    })
+    this.editors.push({cm:cm, title: data.title });
+  },
+
+  script: function(){
+    var s = '';
+    var q = this.editors.slice(0);
+    for (var i = 0; i < this.scriptblocks.length; i++){
+      if (this.scriptblocks[i] === null){
+        var next = q.shift();
+        s = s + '\n//' + next.title + '\n'
+        s = s + next.cm.getValue();
+        s = s + '\n//end ' + next.title + '\n'
+      } else {
+        s = s + this.scriptblocks[i] + '\n';
+      }
+    }
+    return s;
+  },
+
+  runscript:function (){
+    eval(this.script());
   }
 
   });
@@ -80,6 +139,6 @@ var projector = (function () {
 
 
 /* Load up a template file */
-
-a = new projector.Projector().load('js/lessons/lesson01.js')
-console.log(a.script)
+$(document).ready(function(){
+  a = new projector.Projector($('#main'), $('#product')).load('js/lessons/lesson01.js');
+});
