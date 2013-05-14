@@ -9,9 +9,9 @@ var projector = (function () {
 
   my.Projector = klass({
 
-  initialize: function(pad, product){
-    this.pad = pad;
-    this.product = product;
+  initialize: function(editarea, productarea){
+    this.editarea = editarea;
+    this.productarea = productarea;
     this.scriptblocks = [];
     this.editables = {};
   },
@@ -80,9 +80,11 @@ var projector = (function () {
     }
     this.scriptblocks = this.scriptblocks.concat( lines.slice(added) )
 
-    $('<button>Run</button>').appendTo(this.pad).on('click', $.proxy(function(event){
+    $('<button>Run</button>').appendTo(this.editarea).on('click', $.proxy(function(event){
       this.runscript();
     }, this));
+
+    this.runinit();
 
   },
 
@@ -92,16 +94,18 @@ var projector = (function () {
   clear: function(){
     this.scriptblocks = [];
     this.editors = [];
-    this.pad.empty();
+    this.editarea.empty();
+    this.productarea.find('#panels').empty()
+    this.productarea.find('#console').empty()
   },
 
   /**
   * Add an (editable) block to the notepad
   */
   addBlock: function(code, data, editable){
-    this.pad.append('<h4>'+data.title+'</h4>');
+    this.editarea.append('<h4>'+data.title+'</h4>');
     this.scriptblocks.push(null);
-    var cm = CodeMirror(this.pad.get(0), {
+    var cm = CodeMirror(this.editarea.get(0), {
       value: $.trim(code),
       mode: 'javascript',
       height: 'dynamic',
@@ -128,9 +132,52 @@ var projector = (function () {
     return s;
   },
 
-  runscript:function (){
+  /**
+  * Runs the function "run()" from the script.
+  */ 
+  runscript: function (){
+    var console = {log: $.proxy(this.trace, this)}
+    var projector = this;
     eval(this.script());
+    run(this.scriptdata);
+  },
+
+  /**
+  * Runs the 'initialize()' function from the script
+  */
+  runinit: function(){
+    var console = {log: $.proxy(this.trace, this)}
+    var projector = this;
+    eval(this.script());
+    this.scriptdata = initialize();
+  },
+
+  /**
+  * Prints to on-screen console and to browser console
+  */
+  trace: function(s){
+    console.log(s);
+    var c = this.productarea.find('#console')
+    c.append('\n' + s);
+    c.scrollTop(c[0].scrollHeight); //jquery for scrolling...
+  },
+
+  /**
+  * Creates panels for output products
+  */
+  createpanels: function(spec){
+    var total = 0;
+    var panels = this.productarea.find('#panels');
+    for (var i = 0; i < spec.length; i ++){
+      total += spec[i];
+    }
+    return $.map(spec, $.proxy(function(el, idx){
+      var h = panels.height() * el / total;
+      var div = $('<div></div>').css('height', h).appendTo(panels);
+      return div;
+    },this));
   }
+
 
   });
 

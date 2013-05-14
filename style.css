@@ -10,10 +10,30 @@ html,body,div,form,fieldset,legend,label{margin:0;padding:0;}table{border-collap
 
 #main {
 	position: absolute;
-	left: 240px;
-	top: 0px;
-	height: 100%;
+	width: 560px; height: 100%;
+	left: 240px; top: 0px;
 	background: #ddd;
+}
+
+#product {
+	position: absolute;
+	left: 800px; top: 0px;
+	width: 560px; height: 100%;
+}
+
+#product #panels{
+	height: 600px;
+}
+
+#product #console{
+	height: auto;
+	min-height: 100px;
+	position: absolute;
+	top: 600px; bottom: 0; left: 0; right: 0;
+	overflow: scroll;
+	color: white;
+	background: black;
+	white-space: pre-wrap;
 }
 
 code {

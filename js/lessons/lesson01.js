@@ -1,5 +1,15 @@
-console.log("IWASEXECUTED")
 
+/**
+* This will run immediately upon load.
+* Put any variables you want to save into 'my'.
+*/
+var initialize = function(){
+	my = {};
+	my.panels = projector.createpanels([1,2]);
+	return my;
+}
+
+var run = function(my){
 //:show {"title":"Setup"}
 
 ALPHA = 0.05
@@ -14,9 +24,12 @@ task = new BlockWorld(TESTWORLD)
 Q.fill(task.states(), task.actions(), 5.0)
 //:end edit
 
-console.log(Q)
+var steps = []
+episode = 0
 
-for(var episode = 0; episode < 100; episode ++){
+// The reason we don't use a normal for loop is to allow the rendering
+// to happen between each iteration.
+function work(){
 	var step = 0
 	var path = []
 	task.reset()
@@ -26,10 +39,10 @@ for(var episode = 0; episode < 100; episode ++){
 		
 		var a
 
-//:edit {"title":"Action Selection"}
+	//:edit {"title":"Action Selection"}
 	a = argmax(actions);
-//	a = randompick(actions);
-//:end edit
+	//	a = randompick(actions);
+	//:end edit
 		
 		var r = task.act(a);
 		var s_ = task.getState();
@@ -41,6 +54,17 @@ for(var episode = 0; episode < 100; episode ++){
 		path.push(a)
 		step ++
 	}
-
-	console.log(path)
+	steps.push([episode, step])
+	
+	$.plot(my.panels[0], [steps]);
+	
+	episode ++;
+	if (episode < 100) {
+		console.log(episode);
+		setTimeout(work, 1);
+	}
+}
+work()
+	
+	
 }

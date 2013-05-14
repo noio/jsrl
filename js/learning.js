@@ -24,6 +24,13 @@ function valmax(obj){
 }
 
 /**
+* Returns true with probability% chance.
+*/
+function chance(probability){
+	return Math.random() < probability;
+}
+
+/**
 * Returns random value from array, or random key from object
 */
 function randompick(obj){
