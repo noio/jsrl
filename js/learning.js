@@ -25,7 +25,7 @@ function valmax(obj){
 
 /*** CLASSES ***/
 
-var StateActionValueTable = $.klass({
+var StateActionValueTable = klass({
 
 	initialize: function(){
 		// Values is een dict van dicts

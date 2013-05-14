@@ -1,3 +1,5 @@
+
+
 // This looks really weird, but this is to not pollute the namespace, and
 // create a 'module': http://www.adequatelygood.com/JavaScript-Module-Pattern-In-Depth.html
 var projector = (function () {
@@ -5,7 +7,7 @@ var projector = (function () {
 
   var TAG_RE = new RegExp('\/\/\:(\\w+) ?(.*)');
 
-  my.Projector = $.klass({
+  my.Projector = klass({
 
   initialize: function(editor, screen){
     this.script = [];
@@ -18,10 +20,11 @@ var projector = (function () {
     $.ajax({
       url: src, 
       method: 'get',
-      type: 'text',
-      success: $.bind(this, function(r){
+      dataType: 'text',
+      context: this,
+      success: function(data){
         var blocks = [], current = null, start, match, data
-        var lines = r.responseText.split('\n');
+        var lines = data.split('\n');
         
         // Loop through lines of the source file, look for "//:" comments
         for (var i = 0; i < lines.length; i ++){
@@ -55,6 +58,7 @@ var projector = (function () {
             $('#main').append('<h4>'+data.title+'</h4>')
             $('#main').append('<code>'+code+'</code>')
           } else if (blocks[i][0] == 'edit'){
+            
             $('#main').append('<h4>'+data.title+'</h4>')
             $('#main').append('<textarea>'+code+'</textarea>')
           }
@@ -64,7 +68,7 @@ var projector = (function () {
         this.script = this.script.concat( lines.slice(added) )
 
         this.script = this.script.join("\n")
-      })
+      }
     });
     return this;
   }
