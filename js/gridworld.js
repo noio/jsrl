@@ -141,7 +141,10 @@ my.GridWorld = klass({
       var mx = qtable.maxvalue()
       for (state in qtable.values){
         var tile = this.panel.find('.ovl.' + state);
-        tile.css('background', 'rgba(0,255,0,' + valmax(qtable.get(state)) / mx + ')');
+        var a = argmax(qtable.get(state));
+        tile.css('background-color', 'rgba(0,255,0,' + valmax(qtable.get(state)) / mx + ')');
+        tile.removeClass("N S E W")
+        tile.addClass(a);
       }
     }
   }
