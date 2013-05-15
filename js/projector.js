@@ -1,7 +1,4 @@
-
-
-// This looks really weird, but this is to not pollute the namespace, and
-// create a 'module': http://www.adequatelygood.com/JavaScript-Module-Pattern-In-Depth.html
+// projector module
 var projector = (function () {
   var my = {}
 
@@ -88,7 +85,7 @@ var projector = (function () {
     }
     this.scriptblocks = this.scriptblocks.concat( lines.slice(added) )
 
-    $('<button>Run</button>').appendTo(this.editarea).on('click', $.proxy(function(event){
+    $('<button class="run">Run</button>').appendTo(this.editarea).on('click', $.proxy(function(event){
       this.runscript();
     }, this));
 
@@ -122,6 +119,9 @@ var projector = (function () {
       lineNumbers: editable,
       lineWrapping: true,
     })
+    for (var i = 0; i < cm.lineCount(); i ++){
+      cm.indentLine(i);
+    }
     this.editors.push({cm:cm, title: data.title });
   },
 

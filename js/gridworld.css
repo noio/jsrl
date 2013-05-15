@@ -1,0 +1,22 @@
+.gridworld .tile {
+	position: absolute;
+}
+
+.gridworld .tile.base{
+	background: url('gridworld.png') no-repeat;
+}
+.gridworld .tile.w{
+	background-position: -32px 0;
+}
+.gridworld .tile.o{
+	background-position: -64px 0;
+}
+.gridworld .tile.s{
+	background-position: -96px 0;
+}
+.gridworld .tile.e{
+	background-position: -128px 0;
+}
+.gridworld .tile.b{
+	background-position: -160px 0;
+}

@@ -13,7 +13,7 @@
 var initialize = function(){
 	my = {};
 	my.panels = projector.createpanels([1,2]);
-	my.task = new GridWorld(TESTWORLD)
+	my.task = new gridworld.GridWorld(gridworld.TESTWORLD)
 	my.task.setpanel(my.panels[1])
 	return my;
 }
@@ -24,7 +24,7 @@ var task = my.task;
 //:show {"title":"Setup"}
 
 ALPHA = 0.05
-GAMMA = 0.9
+GAMMA = 0.95
 
 //:end show
 
@@ -40,22 +40,23 @@ episode = 0
 
 // The reason we don't use a normal for loop is to allow the rendering
 // to happen between each iteration.
-function work(){
+loop(300, function(episode){
 	var step = 0
 	var path = []
 	task.reset()
-	while (!task.ended() ){
+	// loop(null) does a do-while loop, closure returns whether to continue.
+	while(!task.ended()){
 		var s = task.getState();
 		var actions = Q.get(s)
 		
 		var a
 
-	//:edit {"title":"Action Selection"}
-if (chance(0.0))
-	a = randompick(actions);
-else
-	a = argmax(actions);
-	//:end edit
+		//:edit {"title":"Action Selection"}
+		if (chance(0.0))
+			a = randompick(actions);
+		else
+			a = argmax(actions);
+		//:end edit
 		
 		var r = task.act(a);
 		var s_ = task.getState();
@@ -64,22 +65,12 @@ else
 		Q.set(s, a, (1 - ALPHA) * Q.get(s, a) + ALPHA * (r + GAMMA * valmax(Q.get(s_))))
 		//:end
 
+		step ++;
 		path.push(a)
-		step ++
 	}
 	steps.push([episode, step])
-
 	task.render(Q)
-	
 	$.plot(my.panels[0], [steps]);
-	
-	episode ++;
-	if (episode < 100) {
-		console.log(episode);
-		setTimeout(work, 1);
-	}
-}
-work()
-	
+})
 	
 }
