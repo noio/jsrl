@@ -27,15 +27,20 @@ button.run{
 	width: 560px; height: 100%;
 }
 
-#product #panels{
+#product .panels{
 	height: 600px;
 }
 
-#product #console{
+#product .buttons{
+	height: 30px;
+	background: black;
+}
+
+#product .console{
 	height: auto;
 	min-height: 100px;
 	position: absolute;
-	top: 600px; bottom: 0; left: 0; right: 0;
+	top: 630px; bottom: 0; left: 0; right: 0;
 	color: white;
 	background: black;
 	white-space: pre-wrap;

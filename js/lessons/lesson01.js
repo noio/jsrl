@@ -12,6 +12,7 @@
 */
 var setup = function(my){
 	my.panels = projector.createpanels([1,2]);
+	my.buttons = projector.createbuttons(["Next", "Play"])
 	my.task = new gridworld.GridWorld(gridworld.TESTWORLD)
 	my.task.setpanel(my.panels[1])
 	return my;
@@ -21,8 +22,9 @@ var first = function(my){
 	//:show {"title":"Variables"}
 	var ALPHA = 0.05
 	var GAMMA = 0.95
-	var EPISODES = 300;
 	//:end show
+
+	var EPISODES = 300;
 	my.ALPHA = ALPHA
 	my.GAMMA = GAMMA
 	my.EPISODES = EPISODES
@@ -39,16 +41,10 @@ var first = function(my){
 	my.steps = []
 	my.episode = 0
 	my.step = 0;
-}
 
-var run = function(my, run_num){
-	console.log(run_num);
-	var Q = my.Q;
-	var task = my.task;
-	var ALPHA = my.ALPHA;
-	var GAMMA = my.GAMMA;
+	// Define functions
 
-	var action_select = function(s){
+	my.action_select = function(s){
 		var a
 		var As = Q.get(s)
 
@@ -62,46 +58,55 @@ var run = function(my, run_num){
 
 	}
 
-	var update = function(s, a, r, s_){
+	my.update = function(s, a, r, s_){
 		//:edit {"title":"Update"}
 		Q.set(s, a, (1 - ALPHA) * Q.get(s, a) + ALPHA * (r + GAMMA * valmax(Q.get(s_))))
 		//:end
 	}
 
-	var start_episode = function(){
+	my.start_episode = function(){
 		task.reset();
 		my.step = 0;
 	}
 
-	var run_episode = function(){
-		start_episode();
+	my.run_episode = function(){
+		my.start_episode();
 		while(!task.ended()){
-			do_step();
+			my.do_step();
 		}
 	}
 
-	var do_step = function(){
+	my.do_step = function(){
 		var s = task.getState();
 			
-		var a = action_select(s)
+		var a = my.action_select(s)
 		
 		var r = task.act(a);
 		var s_ = task.getState();
 
-		update(s, a, r, s_);
+		my.update(s, a, r, s_);
 
 		my.step ++;
-		
+
 		if (task.ended()){
 			console.log("Episode finished in " + my.step + " steps.");
+			
+			if (my.buttons['Next'].attr('data-justclicked') == 'true') {
+				my.step = 1000;
+			}
+
 			my.steps.push([my.episode, my.step]);
 			my.episode ++;
 			task.render(Q);
 			$.plot(my.panels[0], [my.steps]);
 		}
 	}
+}
 
-	run_episode();
+var run = function(my, run_num){
+	console.log(run_num);
+
+	my.run_episode();
 
 	if (my.episode > my.EPISODES){
 		return true;

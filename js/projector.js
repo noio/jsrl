@@ -142,7 +142,8 @@ var projector = (function () {
   },
 
   /**
-  * Runs the function "run()" from the script.
+  * Runs the function "run()" from the script, in a loop until that 
+  * returns true.
   */ 
   runscript: function (){
     var console = {log: $.proxy(this.trace, this)}
@@ -152,14 +153,15 @@ var projector = (function () {
 
     var runs = 0;
     me = this;
-    me.editarea.block({message:null});
+    
     var loop = function(){
       var stop = run(me.scriptdata, runs);
       runs ++;
+      me.productarea.find('.buttons button').attr('data-justclicked', false);
       if ((stop != true)) {
         me.loopTimeout = setTimeout(loop, 0);
       } else {
-        me.editarea.unblock();
+        
       }
     }
     loop()
@@ -193,7 +195,7 @@ var projector = (function () {
   */
   trace: function(s){
     console.log(s);
-    var c = this.productarea.find('#console')
+    var c = this.productarea.find('.console')
     c.append('\n' + s);
     c.scrollTop(c[0].scrollHeight); //jquery for scrolling...
   },
@@ -203,7 +205,7 @@ var projector = (function () {
   */
   createpanels: function(spec){
     var total = 0;
-    var panels = this.productarea.find('#panels');
+    var panels = this.productarea.find('.panels');
     for (var i = 0; i < spec.length; i ++){
       total += spec[i];
     }
@@ -212,8 +214,21 @@ var projector = (function () {
       var div = $('<div></div>').css({height: h, position: 'relative'}).appendTo(panels);
       return div;
     },this));
-  }
+  },
 
+  createbuttons: function(spec){
+    var buttons = this.productarea.find('.buttons');
+    var o = {}
+    for (var i = 0; i < spec.length; i++){
+      var button = $('<button>' + spec[i] + '</button>');
+      button.on('click', function(){
+        $(this).attr('data-justclicked', true);
+      })
+      buttons.append(button);
+      o[spec[i]] = button;
+    }
+    return o;
+  }
 
   });
 
