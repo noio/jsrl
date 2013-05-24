@@ -187,7 +187,8 @@ var projector = (function () {
     var console = {log: $.proxy(this.trace, this)}
     var projector = this;
     eval(this.script());
-    this.scriptdata = setup({});
+    this.scriptdata = {}
+    setup(this.scriptdata);
   },
 
   /**

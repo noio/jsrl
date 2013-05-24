@@ -15,7 +15,6 @@ var setup = function(my){
 	my.buttons = projector.createbuttons(["Next", "Play"])
 	my.task = new gridworld.GridWorld(gridworld.TESTWORLD)
 	my.task.setpanel(my.panels[1])
-	return my;
 }
 
 var first = function(my){
