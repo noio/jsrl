@@ -36,7 +36,6 @@ button.run{
 	min-height: 100px;
 	position: absolute;
 	top: 600px; bottom: 0; left: 0; right: 0;
-	overflow: scroll;
 	color: white;
 	background: black;
 	white-space: pre-wrap;

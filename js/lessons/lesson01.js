@@ -10,67 +10,100 @@
 * This will run immediately upon load.
 * Put any variables you want to save into 'my'.
 */
-var initialize = function(){
-	my = {};
+var setup = function(my){
 	my.panels = projector.createpanels([1,2]);
 	my.task = new gridworld.GridWorld(gridworld.TESTWORLD)
 	my.task.setpanel(my.panels[1])
 	return my;
 }
 
-var run = function(my){
+var first = function(my){
+	//:show {"title":"Variables"}
+	var ALPHA = 0.05
+	var GAMMA = 0.95
+	var EPISODES = 300;
+	//:end show
+	my.ALPHA = ALPHA
+	my.GAMMA = GAMMA
+	my.EPISODES = EPISODES
 
-var task = my.task;
-//:show {"title":"Setup"}
+	my.Q = new StateActionValueTable()
+	var Q = my.Q
+	var task = my.task
 
-ALPHA = 0.05
-GAMMA = 0.95
+	//:edit {"title":"Initialization"}
+	Q.fill(task.states(), task.actions(), 5.0)
+	//:end edit
 
-//:end show
+	// Other persistent variables
+	my.steps = []
+	my.episode = 0
+	my.step = 0;
+}
 
-Q = new StateActionValueTable()
+var run = function(my, run_num){
+	console.log(run_num);
+	var Q = my.Q;
+	var task = my.task;
+	var ALPHA = my.ALPHA;
+	var GAMMA = my.GAMMA;
 
-
-//:edit {"title":"Initialization"}
-Q.fill(task.states(), task.actions(), 5.0)
-//:end edit
-
-var steps = []
-episode = 0
-
-// The reason we don't use a normal for loop is to allow the rendering
-// to happen between each iteration.
-loop(300, function(episode){
-	var step = 0
-	var path = []
-	task.reset()
-	// loop(null) does a do-while loop, closure returns whether to continue.
-	while(!task.ended()){
-		var s = task.getState();
-		var actions = Q.get(s)
-		
+	var action_select = function(s){
 		var a
+		var As = Q.get(s)
 
 		//:edit {"title":"Action Selection"}
 		if (chance(0.0))
-			a = randompick(actions);
+			a = randompick(As);
 		else
-			a = argmax(actions);
+			a = argmax(As);
 		//:end edit
+		return a
+
+	}
+
+	var update = function(s, a, r, s_){
+		//:edit {"title":"Update"}
+		Q.set(s, a, (1 - ALPHA) * Q.get(s, a) + ALPHA * (r + GAMMA * valmax(Q.get(s_))))
+		//:end
+	}
+
+	var start_episode = function(){
+		task.reset();
+		my.step = 0;
+	}
+
+	var run_episode = function(){
+		start_episode();
+		while(!task.ended()){
+			do_step();
+		}
+	}
+
+	var do_step = function(){
+		var s = task.getState();
+			
+		var a = action_select(s)
 		
 		var r = task.act(a);
 		var s_ = task.getState();
 
-		//:edit {"title":"Update"}
-		Q.set(s, a, (1 - ALPHA) * Q.get(s, a) + ALPHA * (r + GAMMA * valmax(Q.get(s_))))
-		//:end
+		update(s, a, r, s_);
 
-		step ++;
-		path.push(a)
+		my.step ++;
+		
+		if (task.ended()){
+			console.log("Episode finished in " + my.step + " steps.");
+			my.steps.push([my.episode, my.step]);
+			my.episode ++;
+			task.render(Q);
+			$.plot(my.panels[0], [my.steps]);
+		}
 	}
-	steps.push([episode, step])
-	task.render(Q)
-	$.plot(my.panels[0], [steps]);
-})
-	
+
+	run_episode();
+
+	if (my.episode > my.EPISODES){
+		return true;
+	}
 }

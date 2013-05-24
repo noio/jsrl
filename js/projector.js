@@ -148,8 +148,35 @@ var projector = (function () {
     var console = {log: $.proxy(this.trace, this)}
     var projector = this;
     eval(this.script());
-    run(this.scriptdata);
+    first(this.scriptdata);
+
+    var runs = 0;
+    me = this;
+    me.editarea.block({message:null});
+    var loop = function(){
+      var stop = run(me.scriptdata, runs);
+      runs ++;
+      if ((stop != true)) {
+        me.loopTimeout = setTimeout(loop, 0);
+      } else {
+        me.editarea.unblock();
+      }
+    }
+    loop()
+    
   },
+
+//   function loop(count, callback){
+//   var counter = 0
+//   var iteration = function(){
+//     var cont = callback(counter)
+//     counter ++;
+//     if ((cont != false) && (count == null || counter < count)){
+//       setTimeout(iteration, 0)
+//     }
+//   }
+//   iteration();
+// }
 
   /**
   * Runs the 'initialize()' function from the script
@@ -158,7 +185,7 @@ var projector = (function () {
     var console = {log: $.proxy(this.trace, this)}
     var projector = this;
     eval(this.script());
-    this.scriptdata = initialize();
+    this.scriptdata = setup({});
   },
 
   /**
