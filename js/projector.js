@@ -187,7 +187,7 @@ var projector = (function () {
     var console = {log: $.proxy(this.trace, this)}
     var projector = this;
     eval(this.script());
-    this.scriptdata = {}
+    this.scriptdata = {};
     setup(this.scriptdata);
   },
 
@@ -235,9 +235,3 @@ var projector = (function () {
 
   return my;    
 })();
-
-
-/* Load up a template file */
-$(document).ready(function(){
-  a = new projector.Projector($('#description'), $('#main'), $('#product')).load('js/lessons/lesson01.js');
-});

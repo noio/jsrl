@@ -20,6 +20,14 @@
 		<link href="style.css" media="all" rel="stylesheet" type="text/css">
 
 		<title>JSRL</title>
+
+		<script type="text/javascript">
+			/* Load up a template file */
+			$(document).ready(function(){
+  				a = new projector.Projector($('#description'), $('#main'), $('#product')).load('js/lessons/lesson01.js');
+			});
+		</script>
+		
 	</head>
 	<body>
 		<div id='bar'>

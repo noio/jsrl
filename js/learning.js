@@ -47,7 +47,6 @@ var StateActionValueTable = klass({
 		// Values is een dict van dicts
 		// Bijv: values["1,4"]["E"] = 1.0
 		this.values = {}
-		this.visits = {}
 		this.actions = []
 	},
 

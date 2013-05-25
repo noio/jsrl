@@ -13,6 +13,7 @@ var TILE_WALL = 'w'
 var TILE_START = 's'
 var TILE_PIT = 'o'
 var TILE_END = 'e'
+var TILE_BANDIT = 'b'
 
 var RENDER_TILE_SIZE = 32
 
@@ -22,6 +23,7 @@ my.GridWorld = klass({
 
   PIT_REWARD: -10,
   END_REWARD: 0,
+  BANDIT_REWARD: 1,
 
   initialize: function(world){
     this.pos = null;
@@ -33,6 +35,7 @@ my.GridWorld = klass({
 
   parseWorld: function(world){
     this.world = []
+    this.bandits = {}
     this.startpos = null
     // TODO CHECK VALID MAP
     for (var i = 0; i < world.length; i ++){
@@ -40,6 +43,11 @@ my.GridWorld = klass({
       var found = this.world[i].indexOf(TILE_START)
       if (found > -1){
         this.startpos = [i, found]
+      }
+      for (var j = 0; j < world[i].length; j++){
+        if (world[i][j] == TILE_BANDIT){
+          this.bandits[[i,j]] = Math.random();
+        }
       }
     }
     if (this.startpos === null){
@@ -98,6 +106,11 @@ my.GridWorld = klass({
 
       if (this.world[y][x] == TILE_END){
         reward = this.END_REWARD
+        this.finished = true
+      }
+
+      if (this.world[y][x] == TILE_BANDIT){
+        reward = (Math.random() <= this.bandits[[y,x]]) * this.BANDIT_REWARD
         this.finished = true
       }
     }
