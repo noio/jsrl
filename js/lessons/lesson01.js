@@ -7,181 +7,226 @@
 */
 
 /**
-* This will run immediately upon load.
-* Put any variables you want to save into 'my'.
-*/
+ * This will run immediately upon load.
+ * Put any variables you want to save into 'my'.
+ */
 
-var setup = function(my){
+
+var custom_plot = function(canvas, n_tries, total_reward, standard_errors) {
+		
+
+		var keys = []
+		var y_values1 = []
+		var y_values2 = []
+		
+
+		for (var key in n_tries) {
+			keys.push(key)
+			y_values1.push(n_tries[key])
+			y_values2.push(total_reward[key] / n_tries[key])
+		}
+		
+		
+		// Create xticks
+		var x_ticks = []
+		var x_value = 0.5
+		for (var i = 0; i < keys.length; i++) {
+			x_ticks.push([x_value, keys[i]])
+			x_value += 1
+		}
+
+		
+		var points = {show: true}
+		
+		// Set up bar plot
+		var options = {
+			bars: {
+				barWidth: 0.25,
+				show: true,
+				align: "center",
+				radius: 5
+
+			},
+			xaxis: {
+				min: 0,
+				max: keys.length,
+				ticks: x_ticks
+			},
+			yaxis: {min: 0},
+			yaxis2: {min: 0, 
+					max: 1}
+		};
+
+		var data1 = []
+		var data2 = []
+		
+		for (var i = 0; i < y_values1.length; i++) {
+			data1.push([x_ticks[i][0] + 0.125, y_values1[i]])
+			data2.push([x_ticks[i][0] - 0.125, y_values2[i]])
+		}
+		var data = [{data: data1, color: 'red', label:'N of tries'}, {data: data2, color: 'green', yaxis: 2, label:'mean reward'}]
+
+		$.plot(canvas, data, options);
+	}
 	
-	world = [
-	"_ _ _ _ _ _ _ _ ",
-	"_ _ _ _ b _ _ _ ",
-	"_ _ _ b s b _ _ ",
-	"_ _ _ _ b _ _ _ ",
-	"_ _ _ _ _ _ _ _ ",
-	]
-	
-	my.panels = projector.createpanels([1,1,1]);
-	my.buttons = projector.createbuttons(["Next", "Play"])
-	my.task = new gridworld.GridWorld(world)
-	my.task.setpanel(my.panels[1])
-	my.autoplay = false
-	my.task.render();
-	
-	
-	var options = {
-	    bars: {
-			barWidth: 0.25,
-			show: true,
-			align: "center",
+var custom_plot_lines = function(canvas, n_tries, total_reward, standard_errors) {
+
+
+		var keys = []
+		var y_values1 = []
+		var y_values2 = []
+		var sems = []
+
+		for (var key in n_tries) {
+			keys.push(key)
+			y_values1.push(n_tries[key])
+			y_values2.push(total_reward[key] / n_tries[key])
+			sems.push(standard_errors[key])
+		}
+
+
+		// Create xticks
+		var x_ticks = []
+		var x_value = 0.5
+		for (var i = 0; i < keys.length; i++) {
+			x_ticks.push([x_value, keys[i]])
+			x_value += 1
+		}
+
+		// Set up bar plot
+		var options = {
+			xaxis: {
+				min: 0,
+				max: keys.length,
+				ticks: x_ticks
+			},
+			yaxis: {min: 0, max: 1.2},
+		};
+
+		var data1 = []
+		var data2 = []
+		
+		var point_vars = {
+			show: true, 
+			radius:5,
 			errorbars: "y",
-			yerr: { show: true, 
-                    // asymmetric: False, 
-                    upperCap: "-", 
-                    lowerCap: "-", 
-                    // color: "black", 
-                    radius: 5
-					},
-	    },
-		xaxis:  {
-			min: 0,
-			max: 4,
-			ticks: [[0.5,'Noord'], [1.5,'Zuid'], [2.5,'Oost'], [3.5,'West']]
+			yerr: {show: true, color: "red", upperCap: "-", lowerCap: '-'}
 		}
-	};
-	var data = [
-	{
-	 // data: [[0.5, 5, 0, 0, 5], [1.5,3, 1.2, 0.1, 0.5], [2.5, 2, 3.5, 0.1, 0.5], [3.5, 3.2, 1.2, 0.1, 0.5]],
-	data: [[0.5, 5, 0.1]],
-	 // bars: { show: true},
-	 axis: false,
-	 barWidth: 0.25,
-	}]
-	
-	
-	$.plot(my.panels[0], data, options);
-}
 
-var first = function(my){
-	//:show {"title":"Variables"}
-	var ALPHA = 0.05
-	var GAMMA = 1.0
-	//:end show
+		for (var i = 0; i < y_values1.length; i++) {
+			data1.push([x_ticks[i][0] + 0.125, y_values1[i]])
+			data2.push([x_ticks[i][0] - 0.125, y_values2[i], sems[i]])
+		}
+		var data = [{data: data2, color: 'green', label:'mean reward', points: point_vars}]
 
-	var EPISODES = 300;
-	my.ALPHA = ALPHA
-	my.GAMMA = GAMMA
-	my.EPISODES = EPISODES
+		$.plot(canvas, data, options);
+	}
 
-	my.Q = new StateActionValueTable()
-	var Q = my.Q
-	var task = my.task
 
-	//:edit {"title":"Initialization"}
-	Q.fill(task.states(), task.actions(), 5.0)
-	//:end edit
 
-	// Other persistent variables
-	my.steps = []
-	my.episode = 0
-	my.step = 0;
+var setup = function(my) {
 
-	// Define functions
+		var world = ["_ b _", "b s b", "_ b _"]
 
-	my.action_select = function(s){
-		var a
-		var As = Q.get(s)
+		my.panels = projector.createpanels([1, 1, 1]);
+		my.buttons = projector.createbuttons(["Next", "Play"])
+		my.task = new gridworld.GridWorld(world)
+		my.task.setpanel(my.panels[1])
+		my.autoplay = false
+		my.task.render();
 
-		//:edit {"title":"Action Selection"}
-		if (chance(0.0))
-			a = randompick(As);
-		else
-			a = argmax(As);
+
+
+	}
+
+var first = function(my) {
+		
+		
+		
+		
+		my.n_rewards = new StateActionValueTable()
+		my.n_no_reward = new StateActionValueTable()
+
+
+		var Q = my.Q
+		var task = my.task
+
+		var n_rewards = my.n_rewards
+		var n_no_rewards = my.n_no_reward
+
+
+		n_rewards.fill(task.states(), task.actions(), 0.0)
+		n_no_rewards.fill(task.states(), task.actions(), 0.0)
+		
+		var mean_reward;		
+		//:edit {"title":"Initialize"}
+		n_tries = {'N':0, 'S':0, 'W':0, 'E':0}
+		total_reward = {'N':0, 'S':0, 'W':0, 'E':0}
+		mean_reward = {'N':0, 'S':0, 'W':0, 'E':0}
+		standard_errors = {'N':0, 'S':0, 'W':0, 'E':0}
+		
 		//:end edit
-		return a
+		
 
-	}
+		// Define functions
+		my.action_select = function(s) {
+			var a
+			// var mean_reward = (n_rewards.get(s) / (n_rewards.get(s) + n_no_rewards.get(s)))
 
-	my.update = function(s, a, r, s_){
-		//:edit {"title":"Update"}
-		Q.set(s, a, (1 - ALPHA) * Q.get(s, a) + ALPHA * (r + GAMMA * valmax(Q.get(s_))))
-		//:end
-	}
+			//:edit {"title":"Action Selection"}
+			if (chance(0.2)) a = randompick(mean_reward);
+			else a = argmax(mean_reward);
+			//:end edit
+			console.log(a)
+			return a
 
-	my.start_episode = function(){
-		task.reset();
-		my.step = 0;
-	}
-
-	my.run_episode = function(){
-		my.start_episode();
-		while(!task.ended()){
-			my.do_step();
 		}
+
+		my.update = function(s, a, r, s_) {
+
+			var my_action = a;
+			var my_reward = r;
+			
+			//:edit {"title":"Update"}
+			n_tries[a] += 1
+			total_reward[a] += r
+			mean_reward[a] = total_reward[a] / n_tries[a]
+			standard_errors[a] = Math.sqrt(mean_reward[a] * (1- mean_reward[a])) / Math.sqrt(n_tries[a])
+			//:end
+		}
+
+		my.start_episode = function() {
+			task.reset();
+			my.step = 0;
+		}
+
+
+		my.do_step = function() {
+			var s = task.getState();
+
+			var a = my.action_select(s)
+
+			var r = task.act(a);
+			var s_ = task.getState();
+
+			my.update(s, a, r, s_);
+			custom_plot_lines(my.panels[2], n_tries, total_reward, standard_errors)
+			
+			my.task.reset()
+			
+			}
+			
+			
 		my.start_episode()
 	}
 
-	my.do_step = function(){
-		var s = task.getState();
-			
-		var a = my.action_select(s)
-		
-		var r = task.act(a);
-		var s_ = task.getState();
-
-		my.update(s, a, r, s_);
-
-		my.step ++;
-
-		if (task.ended()){
-			console.log("Episode finished in " + my.step + " steps.");
-			
 
 
-			my.steps.push([my.episode, my.step]);
-			my.episode ++;
-			
-			
-			// plot_options = [{data: [[1, 5], [2,3]],
-			//  bars: { show: true }}]
-			
-			
-			// $.plot(my.panels[1], plot_options);
+var run = function(my, run_num) {
 
-		}
-	}
-}
-
-
-
-var run = function(my, run_num){
-
-	N = 50
-	
-	if(my.episode % N == 5)
-	{
-		
 		if (my.buttons['Next'].attr('data-justclicked') == 'true') {
 			my.do_step();
 			my.task.render(my.Q);
 		}
-		
-		if (my.buttons['Play'].attr('data-justclicked') == 'true') {
-			my.autoplay = true;			
-		}
-		
-		if (my.autoplay && run_num % 5 == 0) {
-			my.do_step();
-			my.task.render(my.Q);
-		}
-		
-	} else {
-		my.autoplay = false;
-		my.run_episode();
-		my.task.render(my.Q);
-	}
 
-	if (my.episode > my.EPISODES){
-		return true;
 	}
-}
