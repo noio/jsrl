@@ -50,7 +50,7 @@ var first = function(my){
 		var As = Q.get(s)
 
 		//:edit {"title":"Action Selection"}
-		if (chance(0.0))
+		if (chance(0.1))
 			a = randompick(As);
 		else
 			a = argmax(As);
@@ -93,8 +93,6 @@ var first = function(my){
 		if (task.ended()){
 			console.log("Episode finished in " + my.step + " steps.");
 			
-
-
 			my.steps.push([my.episode, my.step]);
 			my.episode ++;
 

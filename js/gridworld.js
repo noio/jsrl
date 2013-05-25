@@ -26,6 +26,7 @@ my.GridWorld = klass({
   BANDIT_REWARD: 1,
   STEP_REWARD: 0,
   WALL_REWARD: -1,
+  MAX_STEPS: 2000,
 
   initialize: function(world){
     this.pos = null;
@@ -63,6 +64,7 @@ my.GridWorld = klass({
   reset: function(){
     this.pos = this.startpos
     this.finished = false;
+    this.steps = 0;
   },
 
 
@@ -87,6 +89,7 @@ my.GridWorld = klass({
   act: function(action){
     if (this.finished) throw "Episode finished."
     this.lastAction = action;
+    this.steps++
     var dir
     var reward = this.STEP_REWARD;
     switch(action){
@@ -116,6 +119,10 @@ my.GridWorld = klass({
         reward = (Math.random() <= this.bandits[[y,x]]) * this.BANDIT_REWARD
         this.finished = true
       }
+    }
+
+    if (this.steps > this.MAX_STEPS){
+      this.finished = true;
     }
 
     return reward
