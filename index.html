@@ -23,11 +23,16 @@
 
 		<script type="text/javascript">
 			/* Load up a template file */
+			var lesson = window.location.hash
+			if (lesson == '')
+				lesson = 'lesson01.js'
+			else
+				lesson = lesson.substring(1)
 			$(document).ready(function(){
-  				a = new projector.Projector($('#description'), $('#main'), $('#product')).load('js/lessons/lesson01.js');
+  				a = new projector.Projector($('#description'), $('#main'), $('#product')).load('js/lessons/' + lesson);
 			});
 		</script>
-		
+
 	</head>
 	<body>
 		<div id='bar'>

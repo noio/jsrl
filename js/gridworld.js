@@ -22,30 +22,33 @@ var RENDER_TILE_SIZE = 32
 my.GridWorld = klass({
 
   PIT_REWARD: -10,
-  END_REWARD: 0,
+  END_REWARD: 10,
   BANDIT_REWARD: 1,
+  STEP_REWARD: 0,
+  WALL_REWARD: -1,
 
   initialize: function(world){
     this.pos = null;
     this.finished = false;
+    this.lastAction = null;
 
     this.parseWorld(world)
     this.reset()
   },
 
-  parseWorld: function(world){
+  parseWorld: function(worldstrings){
     this.world = []
     this.bandits = {}
     this.startpos = null
     // TODO CHECK VALID MAP
-    for (var i = 0; i < world.length; i ++){
-      this.world.push(world[i].toLowerCase().split(' '));
+    for (var i = 0; i < worldstrings.length; i ++){
+      this.world.push(worldstrings[i].toLowerCase().split(' '));
       var found = this.world[i].indexOf(TILE_START)
       if (found > -1){
         this.startpos = [i, found]
       }
-      for (var j = 0; j < world[i].length; j++){
-        if (world[i][j] == TILE_BANDIT){
+      for (var j = 0; j < this.world[i].length; j++){
+        if (this.world[i][j] == TILE_BANDIT){
           this.bandits[[i,j]] = Math.random();
         }
       }
@@ -83,9 +86,9 @@ my.GridWorld = klass({
 
   act: function(action){
     if (this.finished) throw "Episode finished."
-
+    this.lastAction = action;
     var dir
-    var reward = -1
+    var reward = this.STEP_REWARD;
     switch(action){
       case "N": dir = [-1 ,0]; break;
       case "E": dir = [0 ,1]; break;
@@ -96,7 +99,7 @@ my.GridWorld = klass({
     var x = this.pos[1] + dir[1]
 
     if (y < 0 || y >= this.height || x < 0 || x >= this.width || this.world[y][x] == TILE_WALL){
-      // doe niks
+      reward = this.WALL_REWARD;
     } else {
       this.pos = [y,x];
       if (this.world[y][x] == TILE_PIT){
@@ -168,6 +171,8 @@ my.GridWorld = klass({
 	// Robot positioneren
 	var robot = this.panel.find('.robot')
 	robot.css({'left':this.pos[1] * RENDER_TILE_SIZE, 'top':this.pos[0] * RENDER_TILE_SIZE})	
+  robot.removeClass("N S E W")
+  robot.addClass(this.lastAction);
   }
 
 })
