@@ -105,9 +105,9 @@ var first = function(my){
 
 var run = function(my, run_num){
 
-	N = 50
+	N = 100
 	
-	if(my.episode % N == 5)
+	if(my.episode % N == 5 && false)
 	{
 		
 		if (my.buttons['Next'].attr('data-justclicked') == 'true') {

@@ -181,7 +181,7 @@ var projector = (function () {
       if ((stop != true) && me.running) {
         me.loopTimeout = setTimeout(loop, 0);
       } else {
-        
+        me.toggleRun();
       }
     }
     loop()
