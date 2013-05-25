@@ -15,12 +15,14 @@ var setup = function(my){
 	my.buttons = projector.createbuttons(["Next", "Play"])
 	my.task = new gridworld.GridWorld(gridworld.TESTWORLD)
 	my.task.setpanel(my.panels[1])
+	my.autoplay = false
+	my.task.render();
 }
 
 var first = function(my){
 	//:show {"title":"Variables"}
 	var ALPHA = 0.05
-	var GAMMA = 0.95
+	var GAMMA = 1.0
 	//:end show
 
 	var EPISODES = 300;
@@ -73,6 +75,7 @@ var first = function(my){
 		while(!task.ended()){
 			my.do_step();
 		}
+		my.start_episode()
 	}
 
 	my.do_step = function(){
@@ -90,22 +93,44 @@ var first = function(my){
 		if (task.ended()){
 			console.log("Episode finished in " + my.step + " steps.");
 			
-			if (my.buttons['Next'].attr('data-justclicked') == 'true') {
-				my.step = 1000;
-			}
+
 
 			my.steps.push([my.episode, my.step]);
 			my.episode ++;
-			task.render(Q);
+
 			$.plot(my.panels[0], [my.steps]);
 		}
 	}
 }
 
-var run = function(my, run_num){
-	console.log(run_num);
 
-	my.run_episode();
+
+var run = function(my, run_num){
+
+	N = 50
+	
+	if(my.episode % N == 5)
+	{
+		
+		if (my.buttons['Next'].attr('data-justclicked') == 'true') {
+			my.do_step();
+			my.task.render(my.Q);
+		}
+		
+		if (my.buttons['Play'].attr('data-justclicked') == 'true') {
+			my.autoplay = true;			
+		}
+		
+		if (my.autoplay && run_num % 5 == 0) {
+			my.do_step();
+			my.task.render(my.Q);
+		}
+		
+	} else {
+		my.autoplay = false;
+		my.run_episode();
+		my.task.render(my.Q);
+	}
 
 	if (my.episode > my.EPISODES){
 		return true;

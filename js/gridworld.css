@@ -33,3 +33,11 @@
 .gridworld .tile.ovl.W{
 	background-position: -288px 0;
 }
+
+.gridworld .robot{
+	width: 32px;
+	height: 32px;
+	position: absolute;
+	background: url('gridworld.png') no-repeat;
+	background-position: -320px 0;
+}

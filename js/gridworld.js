@@ -21,7 +21,7 @@ var RENDER_TILE_SIZE = 32
 my.GridWorld = klass({
 
   PIT_REWARD: -10,
-  END_REWARD: 100,
+  END_REWARD: 0,
 
   initialize: function(world){
     this.pos = null;
@@ -77,7 +77,7 @@ my.GridWorld = klass({
     if (this.finished) throw "Episode finished."
 
     var dir
-    var reward = 0
+    var reward = -1
     switch(action){
       case "N": dir = [-1 ,0]; break;
       case "E": dir = [0 ,1]; break;
@@ -133,6 +133,10 @@ my.GridWorld = klass({
         inner.append(overlay);
       }
     }
+	
+	var robot = $('<div>').addClass('robot')
+	inner.append(robot)	
+
   },
 
   render: function(qtable){
@@ -147,6 +151,10 @@ my.GridWorld = klass({
         tile.addClass(a);
       }
     }
+	
+	// Robot positioneren
+	var robot = this.panel.find('.robot')
+	robot.css({'left':this.pos[1] * RENDER_TILE_SIZE, 'top':this.pos[0] * RENDER_TILE_SIZE})	
   }
 
 })
