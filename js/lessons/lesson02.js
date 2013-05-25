@@ -15,6 +15,7 @@ var setup = function(my){
 	my.buttons = projector.createbuttons(["Next", "Play"])
 	my.task = new gridworld.GridWorld(gridworld.TESTWORLD)
 	my.task.setpanel(my.panels[1])
+	my.task.STEP_REWARD = -1;
 	my.autoplay = false
 	my.task.render();
 }
@@ -50,7 +51,7 @@ var first = function(my){
 		var As = Q.get(s)
 
 		//:edit {"title":"Action Selection"}
-		if (chance(0.0))
+		if (chance(0.1))
 			a = randompick(As);
 		else
 			a = argmax(As);
@@ -93,8 +94,6 @@ var first = function(my){
 		if (task.ended()){
 			console.log("Episode finished in " + my.step + " steps.");
 			
-
-
 			my.steps.push([my.episode, my.step]);
 			my.episode ++;
 
@@ -107,9 +106,9 @@ var first = function(my){
 
 var run = function(my, run_num){
 
-	N = 50
+	N = 100
 	
-	if(my.episode % N == 5)
+	if(my.episode % N == 5 && false)
 	{
 		
 		if (my.buttons['Next'].attr('data-justclicked') == 'true') {

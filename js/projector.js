@@ -6,12 +6,15 @@ var projector = (function () {
 
   my.Projector = klass({
 
-  initialize: function(descriptionarea, editarea, productarea){
-    this.descriptionarea = descriptionarea;
-    this.editarea = editarea;
-    this.productarea = productarea;
+  initialize: function(container){
+    this.descriptionarea = container.find('.description');
+    this.editarea = container.find('.editor');
+    this.productarea = container.find('.product');
+    this.button = container.find('button.run')
+    console.log(container);
     this.scriptblocks = [];
     this.editables = {};
+    this.running = false;
   },
 
   /**
@@ -85,12 +88,28 @@ var projector = (function () {
     }
     this.scriptblocks = this.scriptblocks.concat( lines.slice(added) )
 
-    $('<button class="run">Run</button>').appendTo(this.editarea).on('click', $.proxy(function(event){
-      this.runscript();
+    this.button.on('click', $.proxy(function(event){
+      this.toggleRun();
     }, this));
 
-    this.runinit();
+    $('<div>').addClass('block').appendTo(this.editarea).hide();
 
+    this.runInit();
+
+  },
+
+  toggleRun: function(){
+    console.log(this.running);
+    if (!this.running){
+      this.running = true;
+      this.runScript();
+      this.button.addClass('running').html('Stop');
+      this.editarea.find('.block').fadeIn();
+    } else {
+      this.running = false;
+      this.button.removeClass('running').html('Run');
+      this.editarea.find('.block').fadeOut();
+    }
   },
 
   /**
@@ -101,8 +120,9 @@ var projector = (function () {
     this.editors = [];
     this.editarea.empty();
     this.descriptionarea.empty()
-    this.productarea.find('#panels').empty()
-    this.productarea.find('#console').empty()
+    this.productarea.find('.panels').empty()
+    this.productarea.find('.console').empty()
+    this.productarea.find('.buttons').empty()
   },
 
   /**
@@ -145,7 +165,7 @@ var projector = (function () {
   * Runs the function "run()" from the script, in a loop until that 
   * returns true.
   */ 
-  runscript: function (){
+  runScript: function (){
     var console = {log: $.proxy(this.trace, this)}
     var projector = this;
     eval(this.script());
@@ -158,10 +178,10 @@ var projector = (function () {
       var stop = run(me.scriptdata, runs);
       runs ++;
       me.productarea.find('.buttons button').attr('data-justclicked', false);
-      if ((stop != true)) {
+      if ((stop != true) && me.running) {
         me.loopTimeout = setTimeout(loop, 0);
       } else {
-        
+        me.toggleRun();
       }
     }
     loop()
@@ -181,9 +201,9 @@ var projector = (function () {
 // }
 
   /**
-  * Runs the 'initialize()' function from the script
+  * Runs the 'setup()' function from the script
   */
-  runinit: function(){
+  runInit: function(){
     var console = {log: $.proxy(this.trace, this)}
     var projector = this;
     eval(this.script());

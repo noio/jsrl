@@ -26,6 +26,7 @@ my.GridWorld = klass({
   BANDIT_REWARD: 1,
   STEP_REWARD: 0,
   WALL_REWARD: -1,
+  MAX_STEPS: 2000,
 
   initialize: function(world){
     this.pos = null;
@@ -63,6 +64,7 @@ my.GridWorld = klass({
   reset: function(){
     this.pos = this.startpos
     this.finished = false;
+    this.steps = 0;
   },
 
 
@@ -87,6 +89,7 @@ my.GridWorld = klass({
   act: function(action){
     if (this.finished) throw "Episode finished."
     this.lastAction = action;
+    this.steps++
     var dir
     var reward = this.STEP_REWARD;
     switch(action){
@@ -94,6 +97,7 @@ my.GridWorld = klass({
       case "E": dir = [0 ,1]; break;
       case "S": dir = [1, 0]; break;
       case "W": dir = [0, -1]; break;
+      default: throw "Unknown Action";
     }
     var y = this.pos[0] + dir[0]
     var x = this.pos[1] + dir[1]
@@ -116,6 +120,10 @@ my.GridWorld = klass({
         reward = (Math.random() <= this.bandits[[y,x]]) * this.BANDIT_REWARD
         this.finished = true
       }
+    }
+
+    if (this.steps > this.MAX_STEPS){
+      this.finished = true;
     }
 
     return reward
@@ -158,11 +166,16 @@ my.GridWorld = klass({
   render: function(qtable){
     // Render in een 
     if (typeof qtable != 'undefined'){
-      var mx = qtable.maxvalue()
+      var range = qtable.extrema()
       for (state in qtable.values){
         var tile = this.panel.find('.ovl.' + state);
         var a = argmax(qtable.get(state));
-        tile.css('background-color', 'rgba(0,255,0,' + valmax(qtable.get(state)) / mx + ')');
+        var best = valmax(qtable.get(state))
+        if (best > 0){
+          tile.css('background-color', 'rgba(0,255,0,' + 0.7 * best / range[1] + ')');
+        } else if (best < 0){
+          tile.css('background-color', 'rgba(255,0,0,' + 0.7 * best / range[0] + ')');
+        }
         tile.removeClass("N S E W")
         tile.addClass(a);
       }

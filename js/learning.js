@@ -82,15 +82,19 @@ var StateActionValueTable = klass({
 	},
 
 	/**
-	* Returns the maximum value of any state/action
+	* Returns the minimum/maximum value of any state/action
 	*/
-	maxvalue: function(){
+	extrema: function(){
 		var mx = -Infinity;
+		var mn = Infinity;
 		for (state in this.values){
 			mx = Math.max(valmax(this.values[state]),mx); 
+			mn = Math.min(valmax(this.values[state]),mn); 
 		}
-		return mx
+		return [mn, mx]
 	}
+
+
 
 
 

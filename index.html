@@ -30,20 +30,21 @@
 			else
 				lesson = lesson.substring(1)
 			$(document).ready(function(){
-  				a = new projector.Projector($('#description'), $('#main'), $('#product')).load('js/lessons/' + lesson);
+  				a = new projector.Projector($('body')).load('js/lessons/' + lesson);
 			});
 		</script>
 
 	</head>
 	<body>
-		<div id='bar'>
+		<div class='bar'>
 			<h1>JSRL</h1>
-			<div id='description'></div>
+			<div class='description'></div>
 		</div>
-		<div id='main'>
-			
+		<div class='main'>
+			<div class='editor'></div>
+			<button class='run'>Run</button>
 		</div>
-		<div id='product'>
+		<div class='product'>
 			<div class='panels'></div>
 			<div class='buttons'></div>
 			<textarea class='console'></textarea>
