@@ -97,6 +97,7 @@ my.GridWorld = klass({
       case "E": dir = [0 ,1]; break;
       case "S": dir = [1, 0]; break;
       case "W": dir = [0, -1]; break;
+      default: throw "Unknown Action";
     }
     var y = this.pos[0] + dir[0]
     var x = this.pos[1] + dir[1]
