@@ -10,13 +10,56 @@
 * This will run immediately upon load.
 * Put any variables you want to save into 'my'.
 */
+
 var setup = function(my){
-	my.panels = projector.createpanels([1,2]);
+	
+	world = [
+	"_ _ _ _ _ _ _ _ ",
+	"_ _ _ _ b _ _ _ ",
+	"_ _ _ b s b _ _ ",
+	"_ _ _ _ b _ _ _ ",
+	"_ _ _ _ _ _ _ _ ",
+	]
+	
+	my.panels = projector.createpanels([1,1,1]);
 	my.buttons = projector.createbuttons(["Next", "Play"])
-	my.task = new gridworld.GridWorld(gridworld.TESTWORLD)
+	my.task = new gridworld.GridWorld(world)
 	my.task.setpanel(my.panels[1])
 	my.autoplay = false
 	my.task.render();
+	
+	
+	var options = {
+	    bars: {
+			barWidth: 0.25,
+			show: true,
+			align: "center",
+			errorbars: "y",
+			yerr: { show: true, 
+                    // asymmetric: False, 
+                    upperCap: "-", 
+                    lowerCap: "-", 
+                    // color: "black", 
+                    radius: 5
+					},
+	    },
+		xaxis:  {
+			min: 0,
+			max: 4,
+			ticks: [[0.5,'Noord'], [1.5,'Zuid'], [2.5,'Oost'], [3.5,'West']]
+		}
+	};
+	var data = [
+	{
+	 // data: [[0.5, 5, 0, 0, 5], [1.5,3, 1.2, 0.1, 0.5], [2.5, 2, 3.5, 0.1, 0.5], [3.5, 3.2, 1.2, 0.1, 0.5]],
+	data: [[0.5, 5, 0.1]],
+	 // bars: { show: true},
+	 axis: false,
+	 barWidth: 0.25,
+	}]
+	
+	
+	$.plot(my.panels[0], data, options);
 }
 
 var first = function(my){
@@ -97,8 +140,14 @@ var first = function(my){
 
 			my.steps.push([my.episode, my.step]);
 			my.episode ++;
+			
+			
+			// plot_options = [{data: [[1, 5], [2,3]],
+			//  bars: { show: true }}]
+			
+			
+			// $.plot(my.panels[1], plot_options);
 
-			$.plot(my.panels[0], [my.steps]);
 		}
 	}
 }
