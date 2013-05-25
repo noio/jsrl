@@ -3,41 +3,26 @@
 	background: url('gridworld.png') no-repeat;
 }
 
-.gridworld .tile.w{
-	background-position: -32px 0;
-}
-.gridworld .tile.o{
-	background-position: -64px 0;
-}
-.gridworld .tile.s{
-	background-position: -96px 0;
-}
-.gridworld .tile.e{
-	background-position: -128px 0;
-}
-.gridworld .tile.b{
-	background-position: -160px 0;
-}
-.gridworld .tile.ovl {
-	background-position: 32px;
-}
-.gridworld .tile.ovl.N{
-	background-position: -192px 0;
-}
-.gridworld .tile.ovl.E{
-	background-position: -224px 0;
-}
-.gridworld .tile.ovl.S{
-	background-position: -256px 0;
-}
-.gridworld .tile.ovl.W{
-	background-position: -288px 0;
-}
-
 .gridworld .robot{
 	width: 32px;
 	height: 32px;
 	position: absolute;
 	background: url('gridworld.png') no-repeat;
-	background-position: -320px 0;
 }
+
+.gridworld .tile.w{	background-position: -32px 0; }
+.gridworld .tile.o{	background-position: -64px 0; }
+.gridworld .tile.s{	background-position: -96px 0; }
+.gridworld .tile.e{	background-position: -128px 0; }
+.gridworld .tile.b{	background-position: -160px 0; }
+
+.gridworld .tile.ovl {	background-position: 32px; }
+.gridworld .tile.ovl.N{	background-position: -192px 0; }
+.gridworld .tile.ovl.E{	background-position: -224px 0; }
+.gridworld .tile.ovl.S{	background-position: -256px 0; }
+.gridworld .tile.ovl.W{	background-position: -288px 0; }
+
+.gridworld .robot.N{ background-position: -320px 0; }
+.gridworld .robot.E{ background-position: -352px 0; }
+.gridworld .robot.S{ background-position: -384px 0; }
+.gridworld .robot.W{ background-position: -416px 0; }
