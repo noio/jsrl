@@ -15,6 +15,7 @@ var setup = function(my){
 	my.buttons = projector.createbuttons(["Next", "Play"])
 	my.task = new gridworld.GridWorld(gridworld.TESTWORLD)
 	my.task.setpanel(my.panels[1])
+	my.task.STEP_REWARD = -1;
 	my.autoplay = false
 	my.task.render();
 }
