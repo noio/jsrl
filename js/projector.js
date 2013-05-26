@@ -129,12 +129,13 @@ var projector = (function () {
   * Add an (editable) block to the notepad
   */
   addBlock: function(code, data, editable){
-    this.editarea.append('<h4>'+data.title+'</h4>');
+    this.editarea.append('<h3>'+data.title+'</h3>');
     this.scriptblocks.push(null);
     var cm = CodeMirror(this.editarea.get(0), {
       value: $.trim(code),
       mode: 'javascript',
       height: 'dynamic',
+      theme: 'ambiance',
       readOnly: editable ? false : 'nocursor',
       lineNumbers: editable,
       lineWrapping: true,

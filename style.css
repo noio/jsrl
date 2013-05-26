@@ -2,17 +2,28 @@
 html,body,div,form,fieldset,legend,label{margin:0;padding:0;}table{border-collapse:collapse;border-spacing:0;}th,td{text-align:left;vertical-align:top;}h1,h2,h3,h4,h5,h6,th,td,caption{font-weight:normal;}img{border:0;}
 
 
+body {
+	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-size: 14px;
+	color: #fff;
+	background: #3D3D3D;
+}
+
 .bar {
 	width: 300px;
 	height: 100%;
-	background: #eee;
+}
+
+.description{ 
+	padding: 10px; margin: 10px;
+	color: #fff;
+	background: #eee; color: #333;
 }
 
 .main {
 	position: absolute;
 	width: 560px; height: 100%;
 	left: 300px; top: 0px;
-	background: #ddd;
 }
 
 .editor {
@@ -20,6 +31,10 @@ html,body,div,form,fieldset,legend,label{margin:0;padding:0;}table{border-collap
 	top: 0px; bottom: 80px;
 	width: 100%;
 	overflow: scroll;
+}
+
+.editor h3{
+	padding-left: 32px;
 }
 
 .editor .block {
