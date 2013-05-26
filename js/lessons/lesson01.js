@@ -6,7 +6,7 @@
 \(Q(a)\) is the estimated payoff of each action \(a\) which has been chosen \(k_a\) times, 
 computed by the sample average: $$ Q(a) = \frac{r_1 + r_2 + \cdots + r_{k_a}}{k_a} $$
 
-In stead of keeping track of all the rewards, we can perform iterative updates:
+In stead of keeping track of all the rewards, we can compute the average iteratively:
 
 $$Q(a) = Q(a) + \frac{1}{k_a + 1} \left[ r_{k+1} - Q(a) \right] $$
 
