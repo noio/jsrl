@@ -18,8 +18,8 @@ var setup = function(my){
 	"_ b _"
 	] 
 
-	my.panels = projector.createpanels([1,2]);
-	my.buttons = projector.createbuttons(["Next", "Play"])
+	my.panels = projector.createPanels([1,2]);
+	my.buttons = projector.createButtons(["Next", "Play"])
 	my.task = new gridworld.GridWorld(world);
 	my.task.setpanel(my.panels[1])
 	my.autoplay = false

@@ -3,16 +3,29 @@ var gridworld = (function () {
 my = {}
 
 my.TESTWORLD = [
-"_ _ _ _ _ _ _ _ _ _ _ w _ _ _ _",
-"_ s _ w _ _ _ w _ w _ w _ _ e _",
+"_ _ _ _ _ _ _ _ _ _ _ a _ _ _ _",
+"_ s _ w _ _ _ w _ w _ w _ _ x _",
 "_ _ _ _ _ o _ w _ o _ _ _ o _ _"
 ] 
 
 /*** CONSTANTS ***/
+var TILES = {
+  w: 'wall',
+  s: 'start',
+  o: 'pit',
+  a: 'sand',
+  x: 'big',
+  y: 'medium',
+  z: 'small',
+  b: 'bandit'
+}
 var TILE_WALL = 'w'
 var TILE_START = 's'
 var TILE_PIT = 'o'
-var TILE_END = 'e'
+var TILE_SAND = 'a'
+var TILE_BIG = 'x'
+var TILE_MEDIUM = 'y'
+var TILE_SMALL = 'z'
 var TILE_BANDIT = 'b'
 
 var RENDER_TILE_SIZE = 32
@@ -22,10 +35,16 @@ var RENDER_TILE_SIZE = 32
 my.GridWorld = klass({
 
   PIT_REWARD: -10,
-  END_REWARD: 10,
+  SAND_REWARD: -10,
+  REWARD_SMALL: 10,
+  REWARD_MEDIUM: 20,
+  REWARD_BIG: 30,
   BANDIT_REWARD: 1,
   STEP_REWARD: 0,
   WALL_REWARD: -1,
+
+  SAND_CHANCE: 0.5,
+
   MAX_STEPS: 2000,
 
   initialize: function(world){
@@ -97,28 +116,50 @@ my.GridWorld = klass({
       case "E": dir = [0 ,1]; break;
       case "S": dir = [1, 0]; break;
       case "W": dir = [0, -1]; break;
-      default: throw "Unknown Action";
+      default: throw "Unknown Action " + action;
     }
     var y = this.pos[0] + dir[0]
     var x = this.pos[1] + dir[1]
 
-    if (y < 0 || y >= this.height || x < 0 || x >= this.width || this.world[y][x] == TILE_WALL){
-      reward = this.WALL_REWARD;
-    } else {
-      this.pos = [y,x];
-      if (this.world[y][x] == TILE_PIT){
+    if (y >= 0 && y < this.height && x >= 0 && x < this.width){
+      var type = TILES[this.world[y][x]];
+
+      if (type == 'wall' ){
+        reward = this.WALL_REWARD;
+      } else {
+        this.pos = [y,x];
+      }
+    
+      if (type == 'pit'){
         reward = this.PIT_REWARD
         this.finished = true
       }
 
-      if (this.world[y][x] == TILE_END){
-        reward = this.END_REWARD
+      if (type == 'big'){
+        reward = this.REWARD_BIG
         this.finished = true
       }
 
-      if (this.world[y][x] == TILE_BANDIT){
+      if (type == 'medium'){
+        reward = this.REWARD_MEDIUM
+        this.finished = true
+      }
+
+      if (type == 'small'){
+        reward = this.REWARD_SMALL
+        this.finished = true
+      }
+
+      if (type == 'bandit'){
         reward = (Math.random() <= this.bandits[[y,x]]) * this.BANDIT_REWARD
         this.finished = true
+      }
+
+      if (type == 'sand'){
+        if (Math.random() < this.SAND_CHANCE){
+          reward = this.SAND_REWARD;
+          this.finished = true;
+        }
       }
     }
 
@@ -149,7 +190,7 @@ my.GridWorld = klass({
         }
         var tile = $('<div></div>').addClass('tile base').css(position);
         if (this.world[y][x] != '_'){
-          tile.addClass(this.world[y][x]);
+          tile.addClass(TILES[this.world[y][x]]);
         }
         inner.append(tile);
 

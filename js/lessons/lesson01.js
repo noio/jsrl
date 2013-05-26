@@ -1,8 +1,21 @@
 /*
 
-<h2>Q learning</h2>
+<h2>One Armed Bandits</h2>
 
-<p>This is the description. There is even some \(\LaTeX\) in here! $$\sum_a Q(a)$$</p>
+<p>
+\(Q(a)\) is the estimated payoff of each action \(a\) which has been chosen \(k_a\) times, 
+computed by the sample average: $$ Q(a) = \frac{r_1 + r_2 + \cdots + r_{k_a}}{k_a} $$
+
+In stead of keeping track of all the rewards, we can perform iterative updates:
+
+$$Q(a) = Q(a) + \frac{1}{k_a + 1} \left[ r_{k+1} - Q(a) \right] $$
+
+Because we are now "bootstrapping" off of previous estimates, this allows us to do "optimistic initialization", e.g:
+
+$$ \forall a [Q(a) = 5 ] $$
+
+
+</p>
 
 */
 
@@ -10,159 +23,37 @@
  * This will run immediately upon load.
  * Put any variables you want to save into 'my'.
  */
-
-
-var custom_plot = function(canvas, n_tries, total_reward, standard_errors) {
-		
-
-		var keys = []
-		var y_values1 = []
-		var y_values2 = []
-		
-
-		for (var key in n_tries) {
-			keys.push(key)
-			y_values1.push(n_tries[key])
-			y_values2.push(total_reward[key] / n_tries[key])
-		}
-		
-		
-		// Create xticks
-		var x_ticks = []
-		var x_value = 0.5
-		for (var i = 0; i < keys.length; i++) {
-			x_ticks.push([x_value, keys[i]])
-			x_value += 1
-		}
-
-		
-		var points = {show: true}
-		
-		// Set up bar plot
-		var options = {
-			bars: {
-				barWidth: 0.25,
-				show: true,
-				align: "center",
-				radius: 5
-
-			},
-			xaxis: {
-				min: 0,
-				max: keys.length,
-				ticks: x_ticks
-			},
-			yaxis: {min: 0},
-			yaxis2: {min: 0, 
-					max: 1}
-		};
-
-		var data1 = []
-		var data2 = []
-		
-		for (var i = 0; i < y_values1.length; i++) {
-			data1.push([x_ticks[i][0] + 0.125, y_values1[i]])
-			data2.push([x_ticks[i][0] - 0.125, y_values2[i]])
-		}
-		var data = [{data: data1, color: 'red', label:'N of tries'}, {data: data2, color: 'green', yaxis: 2, label:'mean reward'}]
-
-		$.plot(canvas, data, options);
-	}
-	
-var custom_plot_lines = function(canvas, n_tries, total_reward, standard_errors) {
-
-
-		var keys = []
-		var y_values1 = []
-		var y_values2 = []
-		var sems = []
-
-		for (var key in n_tries) {
-			keys.push(key)
-			y_values1.push(n_tries[key])
-			y_values2.push(total_reward[key] / n_tries[key])
-			sems.push(standard_errors[key])
-		}
-
-
-		// Create xticks
-		var x_ticks = []
-		var x_value = 0.5
-		for (var i = 0; i < keys.length; i++) {
-			x_ticks.push([x_value, keys[i]])
-			x_value += 1
-		}
-
-		// Set up bar plot
-		var options = {
-			xaxis: {
-				min: 0,
-				max: keys.length,
-				ticks: x_ticks
-			},
-			yaxis: {min: 0, max: 1.2},
-		};
-
-		var data1 = []
-		var data2 = []
-		
-		var point_vars = {
-			show: true, 
-			radius:5,
-			errorbars: "y",
-			yerr: {show: true, color: "red", upperCap: "-", lowerCap: '-'}
-		}
-
-		for (var i = 0; i < y_values1.length; i++) {
-			data1.push([x_ticks[i][0] + 0.125, y_values1[i]])
-			data2.push([x_ticks[i][0] - 0.125, y_values2[i], sems[i]])
-		}
-		var data = [{data: data2, color: 'green', label:'mean reward', points: point_vars}]
-
-		$.plot(canvas, data, options);
-	}
-
-
-
 var setup = function(my) {
 
-		var world = ["_ b _", "b s b", "_ b _"]
+		var world = ["_ b _", 
+					 "b s b", 
+					 "_ b _"]
 
-		my.panels = projector.createpanels([1, 1, 1]);
-		my.buttons = projector.createbuttons(["Next", "Play"])
+		my.panels = projector.createPanels([1, 1, 1]);
+		my.buttons = projector.createButtons(["Next", "Play", "Get Data"])
 		my.task = new gridworld.GridWorld(world)
 		my.task.setpanel(my.panels[1])
-		my.autoplay = false
 		my.task.render();
 
-
+		my.buttons['Get Data'].on('click', function(){
+			showDataTable(my.perf);
+		})	
 
 	}
 
-var first = function(my) {
-		
-		
-		
-		
-		my.n_rewards = new StateActionValueTable()
-		my.n_no_reward = new StateActionValueTable()
+var first = function(my) {		
+		my.play = false;
 
-
-		var Q = my.Q
-		var task = my.task
-
-		var n_rewards = my.n_rewards
-		var n_no_rewards = my.n_no_reward
-
-
-		n_rewards.fill(task.states(), task.actions(), 0.0)
-		n_no_rewards.fill(task.states(), task.actions(), 0.0)
+		my.t = 0      // Number of plays
+		my.R = 0      // Total Return (Sum(r_t))
+		my.perf = []  // Array with performance data (average return)
 		
-		var mean_reward;		
+
 		//:edit {"title":"Initialize"}
-		n_tries = {'N':0, 'S':0, 'W':0, 'E':0}
-		total_reward = {'N':0, 'S':0, 'W':0, 'E':0}
-		mean_reward = {'N':0, 'S':0, 'W':0, 'E':0}
+		EPSILON = 0.2	
+		k =               {'N':0, 'S':0, 'W':0, 'E':0}
+		total_reward =    {'N':0, 'S':0, 'W':0, 'E':0}
+		Q =               {'N':0, 'S':0, 'W':0, 'E':0}
 		standard_errors = {'N':0, 'S':0, 'W':0, 'E':0}
 		
 		//:end edit
@@ -171,62 +62,70 @@ var first = function(my) {
 		// Define functions
 		my.action_select = function(s) {
 			var a
-			// var mean_reward = (n_rewards.get(s) / (n_rewards.get(s) + n_no_rewards.get(s)))
 
 			//:edit {"title":"Action Selection"}
-			if (chance(0.2)) a = randompick(mean_reward);
-			else a = argmax(mean_reward);
+			if (chance(EPSILON)) 
+				a = randompick(['N', 'S', 'W', 'E']);
+			else 
+				a = argmax(Q);
 			//:end edit
-			console.log(a)
+			console.log("Picked action " + a)
 			return a
 
 		}
 
 		my.update = function(s, a, r, s_) {
-
-			var my_action = a;
-			var my_reward = r;
-			
 			//:edit {"title":"Update"}
-			n_tries[a] += 1
+			k[a] += 1
 			total_reward[a] += r
-			mean_reward[a] = total_reward[a] / n_tries[a]
-			standard_errors[a] = Math.sqrt(mean_reward[a] * (1- mean_reward[a])) / Math.sqrt(n_tries[a])
+			Q[a] = total_reward[a] / k[a]
+			standard_errors[a] = Math.sqrt(Q[a] * (1 - Q[a])) / Math.sqrt(k[a])
 			//:end
 		}
 
-		my.start_episode = function() {
-			task.reset();
-			my.step = 0;
-		}
-
-
 		my.do_step = function() {
-			var s = task.getState();
+			var s = my.task.getState();
 
 			var a = my.action_select(s)
 
-			var r = task.act(a);
-			var s_ = task.getState();
+			var r = my.task.act(a);
+			var s_ = my.task.getState();
+
+
+			my.R += r;
 
 			my.update(s, a, r, s_);
-			custom_plot_lines(my.panels[2], n_tries, total_reward, standard_errors)
+
+			my.t ++;
+			my.perf.push([my.t, my.R / my.t]);
+			$.plot(my.panels[0], [my.perf])
 			
+			// Do plotting
+			intervalPlot(my.panels[2], k, total_reward, standard_errors)
+			
+
 			my.task.reset()
 			
-			}
+		}
 			
-			
-		my.start_episode()
 	}
 
 
 
-var run = function(my, run_num) {
+var run = function(my, frame) {
 
-		if (my.buttons['Next'].attr('data-justclicked') == 'true') {
-			my.do_step();
-			my.task.render(my.Q);
+		if (my.buttons['Play'].attr('data-justclicked') == 'true') {
+			my.play = true;
 		}
+
+		if (my.buttons['Next'].attr('data-justclicked') == 'true' || my.play) {
+			my.do_step();
+			my.task.render();
+
+			if (my.t >= 300){
+				return true;
+			}
+		}
+
 
 	}

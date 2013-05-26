@@ -181,7 +181,9 @@ var projector = (function () {
       if ((stop != true) && me.running) {
         me.loopTimeout = setTimeout(loop, 0);
       } else {
-        me.toggleRun();
+        if (me.running){
+          me.toggleRun(false);
+        }
       }
     }
     loop()
@@ -224,7 +226,7 @@ var projector = (function () {
   /**
   * Creates panels for output products
   */
-  createpanels: function(spec){
+  createPanels: function(spec){
     var total = 0;
     var panels = this.productarea.find('.panels');
     for (var i = 0; i < spec.length; i ++){
@@ -237,7 +239,7 @@ var projector = (function () {
     },this));
   },
 
-  createbuttons: function(spec){
+  createButtons: function(spec){
     var buttons = this.productarea.find('.buttons');
     var o = {}
     for (var i = 0; i < spec.length; i++){

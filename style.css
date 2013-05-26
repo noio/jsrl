@@ -3,7 +3,7 @@ html,body,div,form,fieldset,legend,label{margin:0;padding:0;}table{border-collap
 
 
 .bar {
-	width: 240px;
+	width: 300px;
 	height: 100%;
 	background: #eee;
 }
@@ -11,7 +11,7 @@ html,body,div,form,fieldset,legend,label{margin:0;padding:0;}table{border-collap
 .main {
 	position: absolute;
 	width: 560px; height: 100%;
-	left: 240px; top: 0px;
+	left: 300px; top: 0px;
 	background: #ddd;
 }
 
@@ -43,7 +43,7 @@ button.run{
 
 .product {
 	position: absolute;
-	left: 800px; top: 0px;
+	left: 860px; top: 0px;
 	width: 560px; height: 100%;
 }
 

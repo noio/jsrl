@@ -11,8 +11,8 @@
 * Put any variables you want to save into 'my'.
 */
 var setup = function(my){
-	my.panels = projector.createpanels([1,2]);
-	my.buttons = projector.createbuttons(["Next", "Play"])
+	my.panels = projector.createPanels([1,2]);
+	my.buttons = projector.createButtons(["Next", "Play"])
 	my.task = new gridworld.GridWorld(gridworld.TESTWORLD)
 	my.task.setpanel(my.panels[1])
 	my.task.STEP_REWARD = -1;
@@ -21,10 +21,10 @@ var setup = function(my){
 }
 
 var first = function(my){
-	//:show {"title":"Variables"}
+	//:edit {"title":"Variables"}
 	var ALPHA = 0.05
-	var GAMMA = 1.0
-	//:end show
+	var GAMMA = 0.9
+	//:end edit
 
 	var EPISODES = 300;
 	my.ALPHA = ALPHA
