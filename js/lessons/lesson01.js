@@ -68,7 +68,8 @@ als je epsilon groter of kleiner maakt? Hoe verhoudt epsilon zich
 tot de <em>exploration</em>-<em>exploitation</em>-balans?</strong></p>
 <p><strong>2b) Pas epsilon aan naar 0.1 en 0.5 en maak een gemiddelde
 grafiek over 5 experimenten, net zoals in opdracht 1c. Wat valt gebeurt
-er met de gemiddele opbrengst?</strong></p>
+er met de gemiddele opbrengst? Wat valt je op aan de grafieken van
+Q(a) en k(a) rechtsonderin?</strong></p>
 
 <p>Een probleem met de <em>\(\epsilon\)-greedy</em> strategie die
 we tot nu toe gebruikt hebben, is 
@@ -171,7 +172,6 @@ var first = function(my) {
 		k =               {'N':0, 'S':0, 'W':0, 'E':0}
 		total_reward =    {'N':0, 'S':0, 'W':0, 'E':0}
 		Q =               {'N':0, 'S':0, 'W':0, 'E':0}
-		standard_errors = {'N':0, 'S':0, 'W':0, 'E':0}
 		
 		//:end edit
 		
@@ -197,7 +197,6 @@ var first = function(my) {
 			k[a] += 1
 			total_reward[a] += r
 			Q[a] = total_reward[a] / k[a]
-			standard_errors[a] = Math.sqrt(Q[a] * (1 - Q[a])) / Math.sqrt(k[a])
 			//:end
 		}
 
@@ -219,7 +218,7 @@ var first = function(my) {
 			$.plot(my.panels[0], [my.perf])
 			
 			// Do plotting
-			intervalPlot(my.panels[2], k, total_reward, standard_errors)
+			intervalPlot(my.panels[2], k, total_reward)
 			
 
 			my.task.reset()
