@@ -120,7 +120,8 @@ function intervalPlot(canvas, n_tries, total_reward, standard_errors) {
             },
             // yaxis: {min: 0, max: 1.2},
 			// yaxis2: {min: 0}
-			yaxes: [ {min:0, max:1},{min:0, max:200} ]
+			yaxes: [ {min:0, max:1},{min:0, max:200} ],
+			legend: {position: "se"},
         };
 
         var data1 = []
@@ -137,7 +138,7 @@ function intervalPlot(canvas, n_tries, total_reward, standard_errors) {
             radius:7.5,
 			alpha: 0.9,
             errorbars: "y",
-            yerr: {show: true, color: "red", upperCap: "-", lowerCap: '-'}
+            yerr: {show: true, color: "red", upperCap: "-", lowerCap: '-'},
         }
 		
 
@@ -146,8 +147,8 @@ function intervalPlot(canvas, n_tries, total_reward, standard_errors) {
             data1.push([x_ticks[i][0] -0.5, y_values1[i]])
             data2.push([x_ticks[i][0], y_values2[i], sems[i]])
         }
-        var data = [{data: data2, color: 'green', label:'Q(a)', points: point_vars},
-					{data: data1, color: 'red', label:'k(a)', color: "rgba(255,0,0,0.5)", bars: bar_vars, yaxis: 2},]
+        var data = [{data: data2, color: 'green', label:'Mean reward', points: point_vars},
+					{data: data1, color: 'red', label:'N. tries', color: "rgba(255,0,0,0.5)", bars: bar_vars, yaxis: 2},]
 
         $.plot(canvas, data, options);
     }

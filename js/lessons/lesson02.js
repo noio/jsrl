@@ -25,7 +25,7 @@ $$ \sigma_y = \sqrt{\operatorname E[(X - \mu)^2]}\\
 = \sqrt{\sigma_y^2}$$
 
 
-De <em><a href"http://en.wikipedia.org/wiki/Standard_error_(statistics)">Standard Error</a></em> is de standaard deviatie van de <em>sampling distributie</em>.
+De <a href="http://en.wikipedia.org/wiki/Standard_error_(statistics)">Standard Error</a></em> is de standaard deviatie van de <em>sampling distributie</em>.
 In andere woorden de verwachtte afwijking van je schatting (het gemeten gemiddelde) t.o.v. het <em>echte</em>
 gemiddelde. Deze is gelijk aan.
 $$SE_\bar{x}\ = \frac{s}{\sqrt{n}}$$
@@ -47,7 +47,7 @@ $$SE_{Bernoulli} = \frac{\sqrt{\hat{p}(1- \hat{p})}}{\sqrt{n}}$$
 waar \(p\) de gemiddelde uitkering is en \(n\) het aantal
 metingen.</p>
 
-<p>Het verschil tussen een Bernoulli-verdeling en de sampling distributie
+<p>De <em>sampling</em> distributie van een Bernoulli-verdeling
 kan benaderd worden door een normaal-verdeling, wat betekent dat we
 ervan uit kunnen gaan dat de <em>echte</em> gemiddelde reward van een bandit met 95% zekerheid binnen het
 <em>confidence interval</em> ligt van</p>
@@ -75,8 +75,8 @@ en regel 4 in <em>Action Selection</em>-functie.</p>
 Doet deze methode het daadwerkelijk beter dan \(\epsilon\)-greedy?</p>
 <p>1c) \(k(a)\) staat nu geinitialiseerd op 1, zodat bij de eerste update \(k(a) = 2\) hebt. 
 Waarom is het problematisch als je een SD/SEM uit zou rekenen
-met slechts één sample (tip: kijk naar de deler in de formule)?</p>
-<p>1d) \(\epsilon\) staat nog steeds geinitialiseerd op 0.2. Is dit een goed idee
+met slechts één sample (hint: kijk naar de deler in de formule)?</p>
+<p>1d) \(\epsilon\) staat nog staatteeds geinitialiseerd op 0.2. Is dit een goed idee
 bij <em>interval learning</em>?
 Wat gebeurt er als je \(\epsilon\) op 0.0 zet?</p>
 </strong>

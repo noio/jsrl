@@ -86,6 +86,12 @@ my.GridWorld = klass({
     this.steps = 0;
   },
 
+  resetBandits: function(){
+	for (var key in this.bandits) {
+		console.log(key);
+	  this.bandits[key] = Math.random();
+	}	
+},
 
   states: function(){
     var s = []
