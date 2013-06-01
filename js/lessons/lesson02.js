@@ -52,7 +52,7 @@ kan benaderd worden door een normaal-verdeling, wat betekent dat we
 ervan uit kunnen gaan dat de <em>echte</em> gemiddelde reward van een bandit met 95% zekerheid binnen het
 <em>confidence interval</em> ligt van</p>
 
-$$p  =  \hat{p} \pm 1.96 \times SE_\hat{p}$$
+$$\hat{p} \pm 1.96 \times SE_\hat{p}$$
 
 En dus met 95% zekerheid dat
 
