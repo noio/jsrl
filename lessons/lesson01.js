@@ -131,7 +131,7 @@ op 1. Run een paar experimenten en vergelijk ze met de standaard
 \(\epsilon\)-greedy strategie uit opdracht 1. Werk deze
 strategie beter?</strong></p>
 
-<p>Dit was les 1 van het practicum ga door naar <a href="#lesson02.js", onClick="window.location.hash='lesson02.js'; window.location.reload( true );">les 2</a>.</p>
+<p>Dit was les 1 van het practicum ga door naar <a href="projector.html?lesson=lesson02">les 2</a>.</p>
 
 */
 
