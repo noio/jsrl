@@ -97,8 +97,7 @@ te initaliseren met bijvoorbeeld \(\forall a [R_{total}(a) = 1 ] \) en
 Wat is een goede waarde om de tabel mee te initialiseren?
 </strong></p>
 
-</p>
-
+<p>
 Een andere oplossing is de <em>Epsilon-first</em> strategie,
 waarin je de eerste \(n\) trials alleen maar random bandits
 selecteert, en daarna altijd de bandit met de hoogste
@@ -172,6 +171,10 @@ var first = function(my) {
 		k =               {'N':0, 'S':0, 'W':0, 'E':0}
 		total_reward =    {'N':0, 'S':0, 'W':0, 'E':0}
 		Q =               {'N':0, 'S':0, 'W':0, 'E':0}
+
+		$.plot(my.panels[0], [my.perf])
+		intervalPlot(my.panels[2], k, total_reward)
+
 		
 		//:end edit
 		
@@ -220,7 +223,6 @@ var first = function(my) {
 			// Do plotting
 			intervalPlot(my.panels[2], k, total_reward)
 			
-
 			my.task.reset()
 			
 		}

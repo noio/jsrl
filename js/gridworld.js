@@ -184,6 +184,8 @@ my.GridWorld = klass({
     panel.empty();
     this.panel = panel;
     var inner = $('<div class="gridworld"></div>')
+    inner.css('width', this.width * RENDER_TILE_SIZE)
+    inner.css('height', this.height * RENDER_TILE_SIZE)
     this.panel.append(inner)
 
     for (var y = 0; y < this.height; y ++){
