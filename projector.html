@@ -1,0 +1,57 @@
+<html>
+	<head>
+		<!-- <script type="text/javascript" src="js/ender.js"></script> -->
+
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/flot/0.8/jquery.flot.min.js"></script>
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/flot/0.8/jquery.flot.errorbars.min.js"></script>
+		<script type="text/javascript" src="jslibs/klass.min.js"></script>
+
+		<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+		<script type="text/javascript" src="jslibs/codemirror.min.js"></script>
+		<link type="text/css" href="jslibs/codemirror.css" media="all" rel="stylesheet">
+
+		<script type="text/javascript" src="js/utils.js"></script>
+		<script type="text/javascript" src="js/learning.js"></script>
+		<script type="text/javascript" src="js/gridworld.js"></script>
+		<link href="js/gridworld.css" media="all" rel="stylesheet" type="text/css">
+		<script type="text/javascript" src="js/projector.js"></script>
+
+		<link href="style.css" media="all" rel="stylesheet" type="text/css">
+
+		<title>JSRL</title>
+
+		<script type="text/javascript">
+			/* Load up a template file */
+			var queries = {lesson:'empty'};
+			if (document.location.search){
+	  			$.each(document.location.search.substr(1).split('&'),function(c,q){
+	    			var i = q.split('=');
+	    			queries[i[0].toString()] = i[1].toString();
+	  			});
+  			}
+			var lesson = queries['lesson'];
+			$(document).ready(function(){
+  				a = new projector.Projector($('body')).load('lessons/' + lesson + '.js');
+			});
+		</script>
+
+	</head>
+	<body>
+		<div class='bar'>
+			<h1>JSRL</h1>
+			<div class='description'></div>
+		</div>
+		<div class='main'>
+			<div class='editor'></div>
+			<button class='run'>Run</button>
+		</div>
+		<div class='product'>
+			<div class='panels'></div>
+			<div class='buttons'></div>
+			<textarea class='console'></textarea>
+		</div>
+
+	</body>
+</html>

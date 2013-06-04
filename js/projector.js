@@ -102,9 +102,9 @@ var projector = (function () {
     console.log(this.running);
     if (!this.running){
       this.running = true;
-      this.runScript();
       this.button.addClass('running').html('Stop');
       this.editarea.find('.block').fadeIn();
+      this.runScript();
     } else {
       this.running = false;
       this.button.removeClass('running').html('Run');
@@ -170,38 +170,30 @@ var projector = (function () {
     var console = {log: $.proxy(this.trace, this)}
     var projector = this;
     eval(this.script());
-    first(this.scriptdata);
+    if (typeof first === "function"){
+      first(this.scriptdata);
+    } 
 
     var runs = 0;
     me = this;
     
-    var loop = function(){
-      var stop = run(me.scriptdata, runs);
-      runs ++;
-      me.productarea.find('.buttons button').attr('data-justclicked', false);
-      if ((stop != true) && me.running) {
-        me.loopTimeout = setTimeout(loop, 0);
-      } else {
-        if (me.running){
-          me.toggleRun(false);
+    if (typeof run === "function"){      
+      var loop = function(){
+        var stop = run(me.scriptdata, runs);
+        runs ++;
+        me.productarea.find('.buttons button').attr('data-justclicked', false);
+        if ((!stop) && me.running) {
+          me.loopTimeout = setTimeout(loop, 0);
+        } else {
+          if (me.running){
+            me.toggleRun();
+          }
         }
       }
+      loop()
     }
-    loop()
     
   },
-
-//   function loop(count, callback){
-//   var counter = 0
-//   var iteration = function(){
-//     var cont = callback(counter)
-//     counter ++;
-//     if ((cont != false) && (count == null || counter < count)){
-//       setTimeout(iteration, 0)
-//     }
-//   }
-//   iteration();
-// }
 
   /**
   * Runs the 'setup()' function from the script
@@ -211,7 +203,9 @@ var projector = (function () {
     var projector = this;
     eval(this.script());
     this.scriptdata = {};
-    setup(this.scriptdata);
+    if (typeof setup === "function"){
+      setup(this.scriptdata);
+    }
   },
 
   /**
