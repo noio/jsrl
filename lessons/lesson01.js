@@ -28,11 +28,6 @@ gedeeld door het \(k_a\) aantal keren dat je de automaat hebt uitgeprobeerd:
 
 $$ {Q}(a) = \frac{r_1 + r_2 + \cdots + r_{k_a}}{k_a} $$
 
-Een simpele manier om dit gemiddelde bij te houden, is deze iedere keer
-dat je aan een hendel trekt iteratief aan te passen:
-
-$${Q}(a) = {Q}(a) + \frac{1}{k_a + 1} \left[ r_{k+1} - {Q}(a) \right] $$
-
 <p><strong>1a) Welke regel code van de 'update'-functie voert
 deze formule uit?</strong></p>
 
@@ -117,7 +112,7 @@ om reward te optimaliseren?</strong></p>
 
 <p>Een andere strategie is die van <em>Epsilon-decreasing</em>:
 dan laat je de kans dat je agent een random actie doet afhangen van het aantal
-steps. Je kan dit bijvoorbeeld doen door bij je update-functie
+steps dat al hij heeft gedaan. Je kan dit bijvoorbeeld doen door bij je update-functie
 epsilon met een discount-proportie \(d\) kleiner dan 1 tevermenigvuldigen:
 $$\epsilon_{t} = d \times\ \epsilon_{t-1}$$
 

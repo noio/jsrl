@@ -60,9 +60,9 @@ $$p < \hat{p} + 1.96 \times SE_{\hat{p}}$$
 
 Bij <em>Interval learning</em> neemt een agent de onzekerheid in z'n
 metingen mee in de actie-selectie: hij neemt telkens de actie waarbij de waarde
-waarvan hij voor 95% zeker weet dat de werkelijke payoff lager is het hoogst is.</p>
+waarvan hij voor 95% zeker weet dat de werkelijke payoff lager is, het hoogst is.</p>
 
-$$\DeclareMathOperator*{\argmax}{\arg\!\max} \argmax_{n}{}(\hat{p}_a + 1.96 \times SE(\hat{p}_{a_{n}}))$$
+$$\DeclareMathOperator*{\argmax}{\arg\!\max} \argmax_{n}{}(\hat{p}_a_{n} + 1.96 \times SE(\hat{p}_{a_{n}}))$$
 
 <p>Het gevolg hiervan is dat de agent vooral acties kiest die (1) nog onzeker
 zijn en (2) misschien wel een hoge payoff hebben.</p>
@@ -76,7 +76,7 @@ Doet deze methode het daadwerkelijk beter dan \(\epsilon\)-greedy?</p>
 <p>1c) \(k(a)\) staat nu geinitialiseerd op 1, zodat bij de eerste update \(k(a) = 2\) hebt. 
 Waarom is het problematisch als je een SD/SEM uit zou rekenen
 met slechts één sample (hint: kijk naar de deler in de formule)?</p>
-<p>1d) \(\epsilon\) staat nog staatteeds geinitialiseerd op 0.2. Is dit een goed idee
+<p>1d) \(\epsilon\) staat nog steeds geinitialiseerd op 0.2. Is dit een goed idee
 bij <em>interval learning</em>?
 Wat gebeurt er als je \(\epsilon\) op 0.0 zet?</p>
 </strong>
@@ -85,9 +85,9 @@ gedaan met muizen, waarbij bepaalde onderdelen van het brein worden uitgeschakel
 door laesies, neurofarmacologische interventies of optogenetica.
 Zo blijkt je het gedrag van muizen in taakjes zoals de n-armed
 bandit aan te kunnen passen. Stel dat je de hersenen een muis probeert te modelleren
-aan de hand van TD-learning, zoals je in de afgelopen 2 lessen hebt gezien.
+aan de hand van Reinforcement Learning-modellen, zoals die waarme je in de afgelopen 2 lessen hebt gezien.
 Probeer voor elk van de volgende interventies te bedenken hoe je het gedrag van de
-muis zou kunnen 'simuleren' door parameters of functies in het TD-model
+muis zou kunnen 'simuleren' door parameters of functies in het RL-model
 (Epsilon, Action-selection-functie, Update-functie...) aan te passen:</p>
 <p>2a) Het korte-termijn geheugen van de muis wordt middels een laesie uigeschakeld.</p>
 <p>2b) Een dopamine-antagonist wordt toegediend, waardoor de muis nauwelijks nog direct genot
@@ -96,7 +96,7 @@ kan voelen.</p>
 <p>2d) De muis wordt door een farmacologisch model van PTSD erg angstig gemaakt.</p>
 </strong></p>
 <p>Dit was les 2 van het practicum ga door naar 
-<a href="#", onClick="window.location.hash='lesson03.js'; window.location.reload( true );">les 3</a>.</p>
+<a href="projector.html?lesson=lesson03">les 3</a>.</p>
 
 */
 

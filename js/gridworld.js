@@ -3,7 +3,7 @@ var gridworld = (function () {
 my = {}
 
 my.TESTWORLD = [
-"_ _ _ _ _ _ _ _ _ _ _ a _ _ _ _",
+"_ _ _ _ _ _ _ _ _ _ _ w _ _ _ _",
 "_ s _ w _ _ _ w _ w _ w _ _ x _",
 "_ _ _ _ _ o _ w _ o _ _ _ o _ _"
 ] 
