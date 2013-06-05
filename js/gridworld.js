@@ -14,18 +14,18 @@ var TILES = {
   s: 'start',
   o: 'pit',
   a: 'sand',
-  x: 'big',
+  x: 'small',
   y: 'medium',
-  z: 'small',
+  z: 'big',
   b: 'bandit'
 }
 var TILE_WALL = 'w'
 var TILE_START = 's'
 var TILE_PIT = 'o'
 var TILE_SAND = 'a'
-var TILE_BIG = 'x'
+var TILE_BIG = 'z'
 var TILE_MEDIUM = 'y'
-var TILE_SMALL = 'z'
+var TILE_SMALL = 'x'
 var TILE_BANDIT = 'b'
 
 var RENDER_TILE_SIZE = 32
@@ -34,7 +34,7 @@ var RENDER_TILE_SIZE = 32
 
 my.GridWorld = klass({
 
-  PIT_REWARD: -10,
+  PIT_REWARD: -15,
   SAND_REWARD: -10,
   REWARD_SMALL: 10,
   REWARD_MEDIUM: 20,

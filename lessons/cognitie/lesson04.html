@@ -25,7 +25,48 @@
     <body>
         <h1><a href='.'>Practicum Cognitie</a></h1>
         <div id='projector-description'>
-			<h2>Q learning en GAMMA</h2>
+			<h2>Q learning en \(\gamma\)</h2>
+			<p>In de vorige les hebben we gezien dat we in de Q-functie
+				een parameter \(gamma\) hebben, die reward ``in de toekomst'' minder zwaar
+				telt dan onmiddelijke reward. In dit practicum gaan we zien waarom deze parameter
+				handig is en in welke situaties.</p>
+				
+			<p>Rechts zie je een aantal nieuwe functionaliteiten, ten eerste kun je nu
+				zien hoe de kaart wordt opgebouwd in `World'. De <em>a</em>-tjes staan voor
+				`moerassen': hier kan de agent doorheen rijden, maar hij heeft een kans van 1 op
+				2 dat hij het niet overleeft en dat de episode ten einde komt en hij een negatieve
+				reward van -15 krijgt.</p>
+				<p>Verder heb je drie soorten reward-tegels:</p>
+				<ul>
+					<li><strong>x</strong>: een kleine reward van 10.
+					<li><strong>y</strong>: een medium reward van 20.
+					<li><strong>z</strong>: een grote reward van 30.
+				</ul>
+			<p>Ook zie je een nieuwe constante PROB_WORLD_END. Deze constante geeft de kans aan
+				dat in een willekeurige stap de wereld vergaat. Als je je reward wilt maximaliseren
+				moet je hier rekening mee houden: als je in 10 stappen een hele grote reward kan krijgen,
+				maar de kans is groot dat voor die tijd de wereld vergaat, dan wil je misschien
+				liever een reward pakken die kleiner is, maar dichterbij ligt,</p>
+			<p class="question"><span>1a)</span> Stel dat er een reward van 100 op
+				10 stappen ligt en een reward van 50 op 3 stappen. Nadat je een reward geclaimd
+				hebt eindigt de episode. De kans dat de wereld ondertussen vergaat
+				is elke stap 0.1. Hoe groot is de kans dat je 10 stappen kan zetten voordat de wereld vergaat?
+				Als je verwachtte reward \(E[r]\) wilt maximaliseren, naar welke reward kun je dan het
+				beste toelopen?</p>
+			<p class="question"><span>1b)</span> De kans dat de wereld vergaat is nu 0.3.
+				Draai de simulatie en kijk wat er gebeurt.
+				Naar welk reward-eindpunt loopt de agent nu?</p>
+			<p class="question"><span>2a)</span> Zet de kans dat de wereld vergaat nu op
+				0.0. Waar gaat de agent nu naar toe?</p>
+				<p class="question"><span>2b)</span> Is dit de optimale keuze?</p>				
+				<p class="question"><span>2c)</span> Welke parameter kun je aanpassen 
+					om de agent wel de optimale keuze te laten maken? Werkt dit?</p>				
+		<p class="question"><span>3a)</span> Laat de parameters hetzeflde, maar zet nu STEP_REWARD op -10. 
+			Wat betekent dit?</p>
+			<p class="question"><span>3b)</span> Hoe verandert het gedrag van de agent nu?</p>
+			<p class="question"><span>3c)</span> Wat is het fundamentele verschil tussen het aanpassen
+				van de STEP_REWARD en de GAMMA-parameter?</p>
+			
 
 			<a href="lesson04.html">Ga naar les 5</a>
         </div>
@@ -40,11 +81,12 @@ var setup = function(my){
 	my.panels = projector.createPanels([1,2]);
 	my.buttons = projector.createButtons(["Next", "Play"])
 	
+	var task_world
 	var task_world = [
-	"x _ _ _ _ _ _",
-	"_ _ _ _ _ _ _",
-	"_ _ _ _ _ _ z",
-	"_ _ _ _ s _ _",	
+	"z _ _ _ _ _",
+	"_ _ _ _ _ _",
+	"_ _ _ _ _ x",
+	"_ _ _ s _ _",	
 	]
 	my.task = new gridworld.GridWorld(task_world)
 	my.task.setpanel(my.panels[1])
@@ -60,14 +102,31 @@ var first = function(my){
 	var STEP_REWARD
 	var PROB_WORLD_END
 	var EPISODES
+	var task_world
+	
+	//:edit {"title": "World"}
+	task_world = [
+	"z _ _ _ _ _",
+	"_ _ _ _ _ _",
+	"_ _ _ _ _ x",
+	"_ _ _ s _ _",	
+	]
+	//:end edit
+	my.task = new gridworld.GridWorld(task_world)
+	my.task.setpanel(my.panels[1])
+	my.task.STEP_REWARD = -1;
+	my.autoplay = false
+	my.task.render();
 
 	//:edit {"title":"Variables"}
 	ALPHA = 0.5
-	GAMMA = 0.9
-	EPSILON = 0.25
-	PROB_WORLD_END = 0.2
+	GAMMA = 0.7
+	EPSILON = 1.0
+	PROB_WORLD_END = 0.3
 	EPISODES = 1000
+	STEP_REWARD = -1
 	//:end edit
+	my.task.STEP_REWARD = STEP_REWARD
 
 
 	my.ALPHA = ALPHA
@@ -80,7 +139,7 @@ var first = function(my){
 	var task = my.task
 
 	//:edit {"title":"Initialization"}
-	Q.fill(task.states(), task.actions(), 5.0)
+	Q.fill(task.states(), task.actions(), 0.0)
 	//:end edit
 
 	// Other persistent variables
@@ -88,6 +147,7 @@ var first = function(my){
 	my.rewards = []
 	my.episode = 0
 	my.step = 0;
+	my.total_reward = 0;
 
 	// Define functions
 
@@ -112,13 +172,14 @@ var first = function(my){
 		difference = r + GAMMA * valmax(Q.get(s_))
 		new_Q = (1- ALPHA) * Q.get(s, a) + ALPHA * difference
 		Q.set(s, a, new_Q)
+		EPSILON = 0.999 * EPSILON
 		//:end
 	}
 
 	my.start_episode = function(){
 		task.reset();
 		my.step = 0;
-		my.total_reward = 0;
+		my.episode_reward = 0;
 	}
 
 	my.run_episode = function(){
@@ -136,7 +197,7 @@ var first = function(my){
 
 		var r = task.act(a);
 		
-		my.total_reward += r
+		my.episode_reward += r
 		
 		var s_ = task.getState();
 		
@@ -148,18 +209,19 @@ var first = function(my){
 		{
 			my.task.finished = true;
 			console.log("APOCALYPSE");
-
-
 		}
 
 		if (task.ended()){
-			console.log("Episode finished in " + my.step + " steps.");
+			console.log("Episode finished in " + my.step + " steps with " + my.episode_reward +" reward .");
 
 			my.steps.push([my.episode, my.step]);
-			my.rewards.push([my.episode, my.total_reward])
+				
+			my.total_reward += my.episode_reward;
+			
 			my.episode ++;
+			my.rewards.push([my.episode, my.total_reward / my.episode])
 
-			$.plot(my.panels[0], [my.rewards]);
+			$.plot(my.panels[0], [{'data':my.rewards,'label':'mean reward', color:'red'}]);
 		}
 	}
 }
