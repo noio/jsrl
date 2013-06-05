@@ -5,33 +5,67 @@ html,body,div,form,fieldset,legend,label{margin:0;padding:0;}table{border-collap
 body {
 	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 	font-size: 14px;
-	color: #fff;
-	background: #3D3D3D;
-	height: 100%;
-}
-
-.bar {
-	width: 340px;
-	height: 100%;
+	color: #333;
 	background: #eee; 
+	height: 100%;
 }
 
-.description{ 
+h1 a {
+	display: block;
+	width: 300px;
+	padding: 20px;
+	color: #444;
+	text-decoration: none;
+}
+
+
+.description, #projector-description, #links{ 
 	position: absolute;
-	top: 50px; bottom: 10; 
+	top: 50px; bottom: 10px; 
 	width: 320px;
 	padding: 10px;
-	color: #333;
-	overflow: auto; /* Optionally you can also use overflow: scroll; */
+	overflow: auto;
 }
 
-.main {
+p.question {
+	font-style: italic;
+	padding: 5px;
+	background: #fff;
+	border: 1px solid #888;
+	border-radius: 3px;
+}
+p.question span:first-child{
+	font-weight: bold;
+	font-style: normal;
+}
+
+#links li a {
+	display: block;
+	width: 300px; height: 20px;
+	padding: 10px;
+	text-decoration: none;
+	color: #444;
+}
+a:hover {
+	background: #aaa;
+}
+
+.main, #content {
 	position: absolute;
 	width: 560px; height: 100%;
 	left: 340px; top: 0px;
 }
 
+#content { 
+	overflow: scroll;
+}
+
+#content div{
+	padding: 20px 0;
+}
+
 .editor {
+	background: #3D3D3D; color: #fff;
 	position: absolute;
 	top: 0px; bottom: 60px;
 	width: 550px;

@@ -7,14 +7,22 @@ var projector = (function () {
   my.Projector = klass({
 
   initialize: function(container){
-    this.descriptionarea = container.find('.description');
-    this.editarea = container.find('.editor');
-    this.productarea = container.find('.product');
-    this.button = container.find('button.run')
-    console.log(container);
+    this.descriptionarea = container.find('#projector-description');
+    var main = $('<div class="main">').appendTo(container);
+    this.editarea = $('<div class="editor">').appendTo(main);
+    this.button = $('<button class="run">Run</button>').appendTo(main);
+    this.productarea = $('<div class="product">').appendTo(container);
+    this.productarea.append('<div class="panels">');
+    this.productarea.append('<div class="buttons">');
+    this.productarea.append('<textarea class="console">');
     this.scriptblocks = [];
     this.editables = {};
     this.running = false;
+
+    var projectorscript = $('#projector-script');
+    if (projectorscript){
+      this.loads(projectorscript.html());
+    }
   },
 
   /**
@@ -42,11 +50,13 @@ var projector = (function () {
     this.clear();
 
     // First, find the description section.
-    var dscrstart = s.indexOf('/*');
-    var dscrend = s.indexOf('*/');
-
-    this.descriptionarea.append(s.substring(dscrstart + 2, dscrend));
-    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+    var dscrstart = s.indexOf('/*:description');
+    if (dscrstart > -1){
+      var dscrend = s.indexOf('*/', dscrstart);
+      this.descriptionarea.empty();
+      this.descriptionarea.append(s.substring(dscrstart + 2, dscrend));
+      MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+    }
 
     var blocks = [], current = null, match = null
     var lines = s.split('\n');
@@ -99,7 +109,6 @@ var projector = (function () {
   },
 
   toggleRun: function(){
-    console.log(this.running);
     if (!this.running){
       this.running = true;
       this.button.addClass('running').html('Stop');
@@ -119,7 +128,7 @@ var projector = (function () {
     this.scriptblocks = [];
     this.editors = [];
     this.editarea.empty();
-    this.descriptionarea.empty()
+    // this.descriptionarea.empty()
     this.productarea.find('.panels').empty()
     this.productarea.find('.console').empty()
     this.productarea.find('.buttons').empty()
