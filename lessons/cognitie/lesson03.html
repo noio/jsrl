@@ -44,7 +44,7 @@
 			acties vragen. Je Reinforcement Learning-algoritme zal niet slechts moeten moeten leren om de juiste
 			actie te kiezen in <em>action-space</em>, hij zal moeten leren de juiste actie te nemen, gegeven
 			een bepaalde state van de wereld. Hij moet leren in een <em>state-action</em>-space.</p>
-&#233;&#233;
+
 			<p> Waar de <em>action-space</em> er in de vorige 2 lessen nog zo uit zag:</p>
 
 			<table style='color: black; font-size: 14'>
@@ -63,19 +63,20 @@
 
 			<p>\(Q\) is nu dus ook geen functie meer van alleen \(a\):
 			$$Q(a)$$
-			 maar van \(s\) én \(a\):</p>
+			 maar van \(s\) &#233;n \(a\):</p>
 
 			$$Q(s, a)$$
 
 			Belangrijk hierbij is dat als je een bepaalde actie in een bepaalde state uitvoert,
-			je terecht komt in <em>een volgende state</em>. Vaak zijn bepaalde states daarbij
+			je terecht komt in <em>een volgende state</em> \(s_{t+1}\). Vaak zijn bepaalde states daarbij
 			waardevoller dan andere states, bijvoorbeeld omdat ze je dichter bij een reward
 			brengen. In het probleem van les 3 is deze verbinding heel duidelijk:
 			je moet de uitgang van een doolhofje vinden. <em>States</em> zij hier posities
 			in het doolhof, <em>actions</em> de kant die je oploopt. Voor veel acties
 			is de volgende state waarin je dan terecht komt deterministisch bepaald:
 			als je de actie naar het noorden neemt, wordt de volgende state de
-			state ten noorden van je huidige state.
+			state ten noorden van je huidige state (tenzij je tegen een muur oploopt, dan blijf
+			je in de huidige state).
 
 			De update-functie wordt dus een stukje ingewikelder dan in de vorige lessen:
 			je wilt voor elke actie \(a\) gegeven een state \(Q\) de gemiddelde
@@ -104,7 +105,7 @@
 			dit geval). Vervolgens kunnen we <em>Temporal Difference learning</em>
 			gebruiken: elke keer dat we een actie doen, kijken we hoeveel reward
 			we daadwerkelijk krijgen en in welke state we terechtkomen en 
-			hoe groot de term \(\max_a \gamma Q(s_{t+1}, a)\) van die state is.
+			hoe groot de term \(\max_{a} \gamma Q(s_{t+1}, a)\) van die state is.
 			Dit is een schatting van de waarde \(Q(s,a)\).
 			Deze schatting vergelijken we met de huidige waarde van \(Q(s,a)\).
 			Hieruit kunnen we het <em>verschil</em> met de verkregen reward + verwachtte
@@ -117,19 +118,32 @@
 			\(\alpha\) is de <em>learning rate</em>. Hoe hoger we \(\alpha\)
 			instellen, hoe sneller de agent z'n gedrag aanpast.
 
-			$$Q(s, a) \leftarrow Q(s, a) +
+			$$Q(s, a) =
+			\\ (1 - \alpha) \; Q(s, a)
+			\\ +
 			\\ \alpha [r_{t+1} + \gamma \max_a Q(s_{t+1}, a) - Q(s, a)] $$
 
 			Vergelijk deze formule even met de `update' functie rechts.
+			Omdat Q(a) Q(s,a) is geworden, is de code iets ingewikkelder,
+			om Q(s,a) op \(x\) te zeggen, doe je nu:<br />
+			Q.set(s, a, x)
+			</br>
 
 
-			<p class="question"><span>1a)</span> Druk een keer op `run'. Wat zie je gebeuren?</p>
+			<p class="question"><span>1a)</span> Druk een keer op `run'. Wat zie je gebeuren? Wat betekenen de witte pijltjes?</p>
 			<p class="question"><span>1b)</span> Voor elke state heb je vier state-action waarden (&#233;&#233;n voor elke mogelijke actie). 
 			Waarom krijgt elke state dan maar &#233;&#233;n kleurtje? Waar staat dit kleurtje voor
 			denk je?</p>
-			<p class="question"><span>1c)</span> Stel Alpha eens in op verschillende waarden: 0.1, 0.5 en 1.0. Wat valt je op?
-
-			&#233;&#233;&#233;&#233;
+			<p class="question"><span>1c)</span> Stel Alpha eens in op verschillende waarden: 0.1, 0.5 en 1.0. Wat valt je op?</p>
+			<p class="question"><span>1d)</span> Zet Epsilon eens op 0. Hoe gedraagt de agent zich nu anders? Hoe komt dit?</p>
+			
+			<p class="question"><span>2a)</span> Wat gebeurt er al je gamma op 1 zet? Hoe komt dit?</p>
+			<p class="question"><span>2b)</span> In dit probleem krijgt de agent een reward op het moment
+				dat hij het einddoel bereikt en een negatieve reward STEP_REWARD op het moment dat 
+				hij het einddoel niet heeft bereikt. Wat gebeurt er als je deze STEP_REWARD op 0 zet? Hoe komt dit?</p>
+				
+				
+			<a href="lesson04.html">Ga naar les 4</a>
         </div>
 
 <script id="projector-script">
@@ -141,7 +155,13 @@
 var setup = function(my){
 	my.panels = projector.createPanels([1,2]);
 	my.buttons = projector.createButtons(["Next", "Play"])
-	my.task = new gridworld.GridWorld(gridworld.TESTWORLD)
+	
+	var task_world = [
+	"_ _ _ _ _ _ _ _ _ _ _ w _ _ _ _",
+	"_ s _ w _ _ _ w _ w _ w _ _ x _",
+	"_ _ _ _ _ o _ w _ o _ _ _ o _ _"
+	]
+	my.task = new gridworld.GridWorld(task_world)
 	my.task.setpanel(my.panels[1])
 	my.task.STEP_REWARD = -1;
 	my.autoplay = false
@@ -152,14 +172,17 @@ var first = function(my){
 	var ALPHA
 	var GAMMA
 	var EPSILON
+	var STEP_REWARD
 
 	//:edit {"title":"Variables"}
 	ALPHA = 0.05
 	GAMMA = 0.9
 	EPSILON = 0.1
+	STEP_REWARD = 1
 	//:end edit
 
 	var EPISODES = 250;
+	my.STEP_REWARD = STEP_REWARD
 	my.ALPHA = ALPHA
 	my.GAMMA = GAMMA
 	my.EPISODES = EPISODES
@@ -194,8 +217,12 @@ var first = function(my){
 	}
 
 	my.update = function(s, a, r, s_){
+		var difference
+		var new_Q
 		//:edit {"title":"Update"}
-		Q.set(s, a, (1 - ALPHA) * Q.get(s, a) + ALPHA * (r + GAMMA * valmax(Q.get(s_))))
+		difference = r + GAMMA * valmax(Q.get(s_))
+		new_Q = (1- ALPHA) * Q.get(s, a) + ALPHA * difference
+		Q.set(s, a, new_Q)
 		//:end
 	}
 
@@ -241,7 +268,7 @@ var run = function(my, run_num){
 
 	N = 100
 
-	if(my.episode % N == 5 && false)
+	if(my.episode % N == 5)
 	{
 
 		if (my.buttons['Next'].attr('data-justclicked') == 'true') {

@@ -1,0 +1,207 @@
+<html>
+    <head>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/flot/0.8/jquery.flot.min.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/flot/0.8/jquery.flot.errorbars.min.js"></script>
+        <script type="text/javascript" src="../../js/lib/klass.min.js"></script>
+
+        <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <script type="text/javascript" src="../../js/lib/codemirror.min.js"></script>
+        <link type="text/css" href="../../js/lib/codemirror.css" media="all" rel="stylesheet">
+
+        <script type="text/javascript" src="../../js/utils.js"></script>
+        <script type="text/javascript" src="../../js/learning.js"></script>
+        <script type="text/javascript" src="../../js/gridworld.js"></script>
+        <link href="../../js/gridworld.css" media="all" rel="stylesheet" type="text/css">
+
+        <script type="text/javascript" src="../../js/projector.js"></script>
+        
+        <link href="../../style.css" media="all" rel="stylesheet" type="text/css">
+
+        <title>Cognitie Les 3</title>
+
+    </head>
+    <body>
+        <h1><a href='.'>Practicum Cognitie</a></h1>
+        <div id='projector-description'>
+			<h2>Q learning en GAMMA</h2>
+
+			<a href="lesson04.html">Ga naar les 5</a>
+        </div>
+
+<script id="projector-script">
+/**
+ * This will run immediately upon load.
+ * Put any variables you want to save into 'my'.
+ */
+
+var setup = function(my){
+	my.panels = projector.createPanels([1,2]);
+	my.buttons = projector.createButtons(["Next", "Play"])
+	
+	var task_world = [
+	"x _ _ _ _ _ _",
+	"_ _ _ _ _ _ _",
+	"_ _ _ _ _ _ z",
+	"_ _ _ _ s _ _",	
+	]
+	my.task = new gridworld.GridWorld(task_world)
+	my.task.setpanel(my.panels[1])
+	my.task.STEP_REWARD = -1;
+	my.autoplay = false
+	my.task.render();
+}
+
+var first = function(my){
+	var ALPHA
+	var GAMMA
+	var EPSILON
+	var STEP_REWARD
+	var PROB_WORLD_END
+	var EPISODES
+
+	//:edit {"title":"Variables"}
+	ALPHA = 0.5
+	GAMMA = 0.9
+	EPSILON = 0.25
+	PROB_WORLD_END = 0.2
+	EPISODES = 1000
+	//:end edit
+
+
+	my.ALPHA = ALPHA
+	my.GAMMA = GAMMA
+	my.EPISODES = EPISODES
+	my.PROB_WORLD_END = PROB_WORLD_END
+
+	my.Q = new StateActionValueTable()
+	var Q = my.Q
+	var task = my.task
+
+	//:edit {"title":"Initialization"}
+	Q.fill(task.states(), task.actions(), 5.0)
+	//:end edit
+
+	// Other persistent variables
+	my.steps = []
+	my.rewards = []
+	my.episode = 0
+	my.step = 0;
+
+	// Define functions
+
+	my.action_select = function(s){
+		var a
+		var As = Q.get(s)
+
+		//:edit {"title":"Action Selection"}
+		if (chance(EPSILON))
+			a = randompick(As);
+		else
+			a = argmax(As);
+		//:end edit
+		return a
+
+	}
+
+	my.update = function(s, a, r, s_){
+		var difference
+		var new_Q
+		//:edit {"title":"Update"}
+		difference = r + GAMMA * valmax(Q.get(s_))
+		new_Q = (1- ALPHA) * Q.get(s, a) + ALPHA * difference
+		Q.set(s, a, new_Q)
+		//:end
+	}
+
+	my.start_episode = function(){
+		task.reset();
+		my.step = 0;
+		my.total_reward = 0;
+	}
+
+	my.run_episode = function(){
+		my.start_episode();
+		while(!task.ended()){
+			my.do_step();
+		}
+		my.start_episode()
+	}
+
+	my.do_step = function(){
+		var s = task.getState();
+
+		var a = my.action_select(s)
+
+		var r = task.act(a);
+		
+		my.total_reward += r
+		
+		var s_ = task.getState();
+		
+		
+		my.update(s, a, r, s_);
+		my.step ++;
+		
+		if(Math.random() < my.PROB_WORLD_END)
+		{
+			my.task.finished = true;
+			console.log("APOCALYPSE");
+
+
+		}
+
+		if (task.ended()){
+			console.log("Episode finished in " + my.step + " steps.");
+
+			my.steps.push([my.episode, my.step]);
+			my.rewards.push([my.episode, my.total_reward])
+			my.episode ++;
+
+			$.plot(my.panels[0], [my.rewards]);
+		}
+	}
+}
+
+
+
+var run = function(my, run_num){
+
+	N = 100
+
+	if(my.episode % N == 5 && false)
+	{
+
+		if (my.buttons['Next'].attr('data-justclicked') == 'true') {
+			my.do_step();
+			my.task.render(my.Q);
+		}
+
+		if (my.buttons['Play'].attr('data-justclicked') == 'true') {
+			my.autoplay = true;			
+		}
+
+		if (my.autoplay && run_num % 5 == 0) {
+			my.do_step();
+			my.task.render(my.Q);
+		}
+
+	} else {
+		my.autoplay = false;
+		my.run_episode();
+		my.task.render(my.Q);
+	}
+
+	if (my.episode > my.EPISODES){
+		return true;
+	}
+}
+</script>
+
+<script>
+    prj = new projector.Projector($('body'));
+</script>
+
+</body>
+</html>
