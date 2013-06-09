@@ -255,6 +255,7 @@ var run = function(my, frame) {
 
     if (my.buttons['Play'].attr('data-justclicked') == 'true') {
         my.play = true;
+        my.buttons['Play'].addClass('disabled');
     }
 
     if (my.buttons['Next'].attr('data-justclicked') == 'true' || my.play) {
