@@ -71,6 +71,7 @@
 			<h3>De Mars Rover</h3>
 			<p>
 				In deze les is ons probleem een simulatie van een van NASA's <a href="http://en.wikipedia.org/wiki/Mars_rover">Mars rovers</a>, die onderzoek doet op Mars. De robot kan vier verschillende kanten op rijden, en zijn state (\(s_t\)) wordt gegeven door de huidige positie. Afhankelijk van de actie die de robot kiest komt hij in een nieuwe state \(s_{t+1}\). Door in elke state \(s\) de goede actie \(a\) te kiezen moet de robot een weg vinden naar een <em>research site</em>, waar misschien wel water of leven is!
+				De robot krijgt elke tijdsstap een <em>negatieve reward</em> van \(-1\), dus hoe sneller hij het einde bereikt, hoe hoger de totale <em>return</em> is.
 			</p>
 
 
@@ -105,45 +106,36 @@
 			</p>
  -->
 
-			<p>Hoe berekenen we deze functie nu? Als de robot aan het probleem begint
-			weet deze nog helemaal niks. We gebruiken <a href="http://en.wikipedia.org/wiki/Temporal_difference_learning">temporal difference learning</a>: elke keer dat we een actie doen, kijken we hoeveel reward
-			we daadwerkelijk krijgen en in welke state we terechtkomen en 
-			hoe groot de term \(\max_{a} Q(s_{t+1}, a)\) van die state is.
-			Dit is een schatting van de waarde \(Q(s,a)\).
-			Deze schatting vergelijken we met de huidige waarde van \(Q(s,a)\).
-			Hieruit kunnen we het <em>verschil</em> met de verkregen reward + verwachtte
-			reward en de waarde die we eerder voorspeld hadden met \(Q(s, a)\) berekenen:
+			<p>
+				Hoe berekenen we deze functie nu? Als de robot aan het probleem begint weet deze nog helemaal niks. We gebruiken <a href="http://en.wikipedia.org/wiki/Temporal_difference_learning">temporal difference learning</a>: elke keer dat we een actie doen, kijken we hoeveel reward we daadwerkelijk krijgen (\(r_t\)) en wat de beste verwachte reward in de volgende state is. Deze tellen we bij elkaar op voor een schatting van de waarde \(Q(s,a)\).
+			
+				$$r_{t} + \max_a Q(s_{t+1}, a)$$
 
-			$$r_{t+1} + \gamma \max_a Q(s_{t+1}, a) - Q(s, a)$$
+				Het verschil tussen deze geschatte waarde en de huidige waarde is de <em>temporal difference error</em> \(\delta\).
 
-			Aan de hand van dit verschil passen we onze huidige
-			Q-waarde aan met de proportie van \(\alpha\).
-			\(\alpha\) is de <em>learning rate</em>. Hoe hoger we \(\alpha\)
-			instellen, hoe sneller de agent z'n gedrag aanpast.
+				$$\delta = r_{t} + \max_a Q(s_{t+1}, a) - Q(s,a) $$
 
-			$$Q(s, a) =
-			\\ (1 - \alpha) \; Q(s, a)
-			\\ +
-			\\ \alpha [r_{t+1} + \gamma \max_a Q(s_{t+1}, a) - Q(s, a)] $$
+				Aan de hand van dit verschil passen we de waarde van \(Q(s, a)\) aan. Omdat het mogelijk is dat we niet altijd dezelfde reward krijgen voor een actie, passen we \(Q(s,a)\) langzaam aan richting de schatting, met behulp van de <em>learning rate</em> \(\alpha\). Hoe hoger we \(\alpha\) instellen, hoe sneller de agent zijn gedrag aanpast.
 
-			Vergelijk deze formule even met de `update' functie rechts.
-			Omdat Q(a) Q(s,a) is geworden, is de code iets ingewikkelder,
-			om Q(s,a) op \(x\) te zeggen, doe je nu:<br />
-			Q.set(s, a, x)
-			</br>
+				$$Q(s, a) = Q(s, a) + \alpha \cdot \delta $$
+
+				Vergelijk deze formule even met de `update' functie rechts.
 
 
-			<p class="question"><span>1a)</span> Druk een keer op `run'. Wat zie je gebeuren? Wat betekenen de witte pijltjes?</p>
+			<p class="question"> Druk een keer op `run'. Wat zie je gebeuren? Wat betekenen de witte pijltjes?</p>
 			<p class="question"><span>1b)</span> Voor elke state heb je vier state-action waarden (&#233;&#233;n voor elke mogelijke actie). 
 			Waarom krijgt elke state dan maar &#233;&#233;n kleurtje? Waar staat dit kleurtje voor
 			denk je?</p>
 			<p class="question"><span>1c)</span> Stel Alpha eens in op verschillende waarden: 0.1, 0.5 en 1.0. Wat valt je op?</p>
 			<p class="question"><span>1d)</span> Zet Epsilon eens op 0. Hoe gedraagt de agent zich nu anders? Hoe komt dit?</p>
 			
-			<p class="question"><span>2a)</span> Wat gebeurt er al je gamma op 1 zet? Hoe komt dit?</p>
+			<!-- <p class="question"><span>2a)</span> Wat gebeurt er al je gamma op 1 zet? Hoe komt dit?</p> -->
+			
 			<p class="question"><span>2b)</span> In dit probleem krijgt de agent een reward op het moment
 				dat hij het einddoel bereikt en een negatieve reward STEP_REWARD op het moment dat 
 				hij het einddoel niet heeft bereikt. Wat gebeurt er als je deze STEP_REWARD op 0 zet? Hoe komt dit?</p>
+
+			<p class="question">Iets over optimistic initialization</p>
 				
 				
 			<a href="lesson04.html">Ga naar les 4</a>
@@ -156,7 +148,7 @@
  */
 
 var setup = function(my){
-	my.panels = projector.createPanels([1,2]);
+	my.panels = projector.createPanels([1,1,1]);
 	my.buttons = projector.createButtons(["Next", "Play"])
 	
 	var task_world = [
@@ -169,23 +161,26 @@ var setup = function(my){
 	my.task.STEP_REWARD = -1;
 	my.autoplay = false
 	my.task.render();
+
+	my.task.panel.find('.tile.overlay').on('click', function(el){
+		var state = $(el.currentTarget).attr('data-coord');
+      	plotActions(my.panels[2], my.Q.get(state));
+      	console.log(state);
+    });
 }
 
 var first = function(my){
 	var ALPHA
 	var GAMMA
 	var EPSILON
-	var STEP_REWARD
 
 	//:edit {"title":"Variables"}
 	ALPHA = 0.05
 	GAMMA = 0.9
 	EPSILON = 0.1
-	STEP_REWARD = 1
 	//:end edit
 
 	var EPISODES = 250;
-	my.STEP_REWARD = STEP_REWARD
 	my.ALPHA = ALPHA
 	my.GAMMA = GAMMA
 	my.EPISODES = EPISODES
@@ -195,7 +190,7 @@ var first = function(my){
 	var task = my.task
 
 	//:edit {"title":"Initialization"}
-	Q.fill(task.states(), task.actions(), 5.0)
+	Q.fill(task.states(), task.actions(), 0.0)
 	//:end edit
 
 	// Other persistent variables
@@ -223,9 +218,9 @@ var first = function(my){
 		var difference
 		var new_Q
 		//:edit {"title":"Update"}
-		difference = r + GAMMA * valmax(Q.get(s_))
-		new_Q = (1- ALPHA) * Q.get(s, a) + ALPHA * difference
-		Q.set(s, a, new_Q)
+		delta     = r + valmax(Q.get(s_)) - Q.get(s, a)
+		new_value = Q.get(s, a) + ALPHA * delta
+		Q.set(s, a, new_value)
 		//:end
 	}
 

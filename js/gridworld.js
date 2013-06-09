@@ -193,9 +193,11 @@ my.GridWorld = klass({
     inner.css('width', this.width * RENDER_TILE_SIZE)
     inner.css('height', this.height * RENDER_TILE_SIZE)
     this.panel.append(inner)
+    me = this;
 
     for (var y = 0; y < this.height; y ++){
       for (var x = 0; x < this.width; x++){
+        var state =  x + '_' + y;
         var position = {
           width: RENDER_TILE_SIZE + 'px',
           height: RENDER_TILE_SIZE +'px',
@@ -208,7 +210,7 @@ my.GridWorld = klass({
         }
         inner.append(tile);
 
-        var overlay = $('<div></div>').css(position).addClass('tile ovl ' + x + '_' + y);
+        var overlay = $('<div></div>').css(position).addClass('tile overlay ' + state).attr('data-coord', state);
         inner.append(overlay);
       }
     }
@@ -223,7 +225,7 @@ my.GridWorld = klass({
     if (typeof qtable != 'undefined'){
       var range = qtable.extrema()
       for (state in qtable.values){
-        var tile = this.panel.find('.ovl.' + state);
+        var tile = this.panel.find('.overlay.' + state);
         var a = argmax(qtable.get(state));
         var best = valmax(qtable.get(state))
         if (best > 0){
@@ -236,12 +238,12 @@ my.GridWorld = klass({
       }
     }
 	
-	// Robot positioneren
-	var robot = this.panel.find('.robot')
-	robot.css({'left':this.pos[1] * RENDER_TILE_SIZE, 'top':this.pos[0] * RENDER_TILE_SIZE})	
-  robot.removeClass("N S E W")
-  robot.addClass(this.lastAction);
-  }
+  	// Robot positioneren
+  	var robot = this.panel.find('.robot')
+  	robot.css({'left':this.pos[1] * RENDER_TILE_SIZE, 'top':this.pos[0] * RENDER_TILE_SIZE})	
+    robot.removeClass("N S E W")
+    robot.addClass(this.lastAction);
+  },
 
 })
 

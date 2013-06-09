@@ -26,11 +26,11 @@
 .gridworld .tile.medium{ background-position: -224px 0; }
 .gridworld .tile.small { background-position: -256px 0; }
 
-.gridworld .tile.ovl  { background-position: 32px 32px; }
-.gridworld .tile.ovl.N{ background-position: -00px -32px; }
-.gridworld .tile.ovl.E{ background-position: -32px -32px; }
-.gridworld .tile.ovl.S{ background-position: -64px -32px; }
-.gridworld .tile.ovl.W{ background-position: -96px -32px; }
+.gridworld .tile.overlay  { background-position: 32px 32px; }
+.gridworld .tile.overlay.N{ background-position: -00px -32px; }
+.gridworld .tile.overlay.E{ background-position: -32px -32px; }
+.gridworld .tile.overlay.S{ background-position: -64px -32px; }
+.gridworld .tile.overlay.W{ background-position: -96px -32px; }
 
 .gridworld .robot.N{ background-position: -00px -64px; }
 .gridworld .robot.E{ background-position: -32px -64px; }

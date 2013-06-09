@@ -212,7 +212,8 @@ var first = function(my) {
         $.plot(my.panels[0], [my.perf])
         
         // Do plotting
-        intervalPlot(my.panels[2], k, total_reward, SE)
+        //intervalPlot(my.panels[2], k, total_reward, SE);
+        plotActions(my.panels[2], Q, {k: k, errors:SE});
         
         my.task.reset()
         

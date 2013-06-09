@@ -198,7 +198,8 @@ var first = function(my) {
     //:end edit
 
     $.plot(my.panels[0], [my.perf])
-    intervalPlot(my.panels[2], k, total_reward)
+    // intervalPlot(my.panels[2], k, total_reward)
+    plotActions(my.panels[2], Q, {k:k});
     
 
     // Define functions
@@ -242,7 +243,9 @@ var first = function(my) {
         $.plot(my.panels[0], [my.perf])
         
         // Do plotting
-        intervalPlot(my.panels[2], k, total_reward)
+        //intervalPlot(my.panels[2], k, total_reward)
+        plotActions(my.panels[2], Q, {k:k});
+
         my.task.reset();
     }
         
