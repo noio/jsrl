@@ -23,7 +23,7 @@
 
     </head>
     <body>
-        <h1><a href='.'>Practicum Cognitie</a></h1>
+        <h1>Practicum Cognitie</h1>
         <div id='projector-description'>
 			<h2>Q learning en GAMMA</h2>
 
@@ -69,11 +69,11 @@ var first = function(my){
 	EPISODES = 1000
 	//:end edit
 
-
 	my.ALPHA = ALPHA
 	my.GAMMA = GAMMA
 	my.EPISODES = EPISODES
-	my.PROB_WORLD_END = PROB_WORLD_END
+	
+	my.task.END_PROBABILITY = PROB_WORLD_END;
 
 	my.Q = new StateActionValueTable()
 	var Q = my.Q
@@ -143,14 +143,6 @@ var first = function(my){
 		
 		my.update(s, a, r, s_);
 		my.step ++;
-		
-		if(Math.random() < my.PROB_WORLD_END)
-		{
-			my.task.finished = true;
-			console.log("APOCALYPSE");
-
-
-		}
 
 		if (task.ended()){
 			console.log("Episode finished in " + my.step + " steps.");

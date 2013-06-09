@@ -43,7 +43,8 @@ my.GridWorld = klass({
   STEP_REWARD: 0,
   WALL_REWARD: -1,
 
-  SAND_CHANCE: 0.5,
+  SAND_PROBABILITY: 0.5,
+  END_PROBABILITY: 0.0,
 
   MAX_STEPS: 2000,
 
@@ -158,11 +159,16 @@ my.GridWorld = klass({
       }
 
       if (type == 'sand'){
-        if (Math.random() < this.SAND_CHANCE){
+        if (Math.random() < this.SAND_PROBABILITY){
           reward = this.SAND_REWARD;
           this.finished = true;
         }
       }
+    }
+
+    if (Math.random() < this.END_PROBABILITY){
+      reward = 0;
+      this.finished = true;
     }
 
     if (this.steps > this.MAX_STEPS){
