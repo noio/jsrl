@@ -1,3 +1,6 @@
+/** IMPORT ***/
+@import url(http://fonts.googleapis.com/css?family=Quantico:700);
+
 /*** RESET ***/
 html, body, div, form, fieldset, legend, label { margin: 0;
         padding: 0; }
@@ -16,9 +19,20 @@ body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
        background: #ddd;
        height: 100%; }
 
-h1 { width: 100%; height: 60px; }
+h1, h2, h3, h4, h5, h6 {
+	font-family: 'Quantico', sans-serif;
+	font-weight: 700;
+	color: #666;
+	text-shadow: 1px 1px #fff;
+}
+
+h1 { width: 100%; height: 60px; 
+	 text-align: center;
+	 font-size: 2.5em;
+     letter-spacing: -0.1em;
+}
+
 h1 a { display: block;
-       padding: 0 20px;
        color: #444;
        text-decoration: none; }
 
@@ -49,10 +63,10 @@ p.question { font-style: italic;
               width: 300px;
               height: 20px;
               padding: 10px;
-              text-decoration: none;
-              color: #444; }
+              }
 
-a:hover { background: #aaa }
+a { text-decoration: none; font-weight: bold;  transition: color 0.1s; color: #444;}
+a:hover { color: #44f ; }
 
 .main    { position: absolute;
            width: 560px;
@@ -68,7 +82,7 @@ a:hover { background: #aaa }
           padding: 0 10px 60px 0;
           overflow: auto; }
 
-    .editor h3 { padding-left: 32px }
+    .editor h3 { padding-left: 32px; color: #ccc; text-shadow: -1px -1px #222; }
 
 .block { width: 100%;
          height: 100%;

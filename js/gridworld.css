@@ -12,7 +12,7 @@
     width: 32px;
     height: 32px;
     position: absolute;
-    background: url('gridworld.png') no-repeat;
+    background: url('gridworld.png') no-repeat 0px -64px;
 }
 
 .gridworld .tile.wall  { background-position: -32px 0; }
@@ -25,7 +25,7 @@
 .gridworld .tile.medium{ background-position: -224px 0; }
 .gridworld .tile.small { background-position: -256px 0; }
 
-.gridworld .tile.ovl  { background-position: 32px; }
+.gridworld .tile.ovl  { background-position: 32px 32px; }
 .gridworld .tile.ovl.N{ background-position: -00px -32px; }
 .gridworld .tile.ovl.E{ background-position: -32px -32px; }
 .gridworld .tile.ovl.S{ background-position: -64px -32px; }
