@@ -27,25 +27,23 @@
         <div id='projector-description'>
 			<h2>Q learning</h2>
 			<p>Je hebt de afgelopen 2 lessen gekeken naar het n-armed bandits problem.
-			Dit is een probleem waarbij de agent probeert z'n' <em>acties</em> zo te optimaliseren,
+			Dit is een probleem waarbij de agent probeert zijn <em>acties</em> zo te kiezen,
 			dat deze binnen een beperkt aantal stappen maximale reward binnensleept.
-			De enige variabele die daarbij een rol speelt is de actie: ``neem ik
-			de bandit in het Noorden, Oosten, Zuiden of Westen.''
+			De enige variabele die daarbij een rol speelt is de actie: "neem ik
+			de bandit in het noorden, oosten, zuiden of westen."
 			Dit is een probleem met een <em>action-space</em>, met slechts vier opties.</p>
 
-			<p>Om complexere problemen op te lossen, zoals bijvoorbeeld <a href="http://www.youtube.com/watch?v=CLIPLiQDIk0">als
-			robot efficient een kamer schoon te zuigen</a> (zie ook <a href="http://www.youtube.com/watch?v=r4l4zLrQx-I">hier</a>), 
-			of <a href="http://www.youtube.com/watch?v=3mvE_CeH9q0">een helikopter te besturen</a>, hangt de
-			actie die je wilt nemen af van de omgeving: als je met een helikopter vliegt, kun je moeilijk
+			<p>Om complexere problemen op te lossen, zoals bijvoorbeeld <a href="http://www.youtube.com/watch?v=CLIPLiQDIk0">efficient een kamer schoon zuigen</a> of <a href="http://www.youtube.com/watch?v=3mvE_CeH9q0">een helikopter te besturen</a>, hangt de
+			actie die je wilt nemen af van de omgeving (zie ook <a href="http://www.youtube.com/watch?v=r4l4zLrQx-I">hier</a>). Als je met een helikopter vliegt, kun je moeilijk
 			volhouden dat naar rechts vliegen altijd wat meer reward oplevert dan naar links, zoals met de bandits.</p>
 
 			<p>Wat je nodig hebt is een <em>state space</em>: een representatie van de huidige staat
 			van de agent en de wereld, die zich in verschillende toestanden kunnen bevinden en daarmee om verschillende 
-			acties vragen. Je Reinforcement Learning-algoritme zal niet slechts moeten moeten leren om de juiste
-			actie te kiezen in <em>action-space</em>, hij zal moeten leren de juiste actie te nemen, gegeven
+			acties vragen. Je Reinforcement Learning algoritme zal niet slechts moeten moeten leren om de juiste
+			actie te kiezen in <em>action-space</em>, het zal moeten leren de juiste actie te nemen, gegeven
 			een bepaalde state van de wereld. Hij moet leren in een <em>state-action</em>-space.</p>
-
-			<p> Waar de <em>action-space</em> er in de vorige 2 lessen nog zo uit zag:</p>
+			
+			<!--<p> Waar de <em>action-space</em> er in de vorige 2 lessen nog zo uit zag:</p>
 
 			<table style='color: black; font-size: 14'>
 			<tr><td></td><td>Noord</td><td>Oost</td><td>Zuid</td><td>West</td></tr>
@@ -58,29 +56,35 @@
 			<tr><td></td><td>Noord</td><td>Oost</td><td>Zuid</td><td>West</td><td>Ga naar ander casino</td></tr>
 			<tr><td>Casino1</td><td>0.2</td><td>0.4</td><td>0.6</td><td>0.5</td><td>0.45</td></tr>
 			<tr><td>Casino2</td><td>0.1</td><td>0.3</td><td>0.2</td><td>0.1</td><td>0.7</td></tr>
-			</table>
+			</table>-->
 
-
-			<p>\(Q\) is nu dus ook geen functie meer van alleen \(a\):
+<!-- 			<p>\(Q\) is nu dus ook geen functie meer van alleen \(a\):
 			$$Q(a)$$
 			 maar van \(s\) &#233;n \(a\):</p>
 
 			$$Q(s, a)$$
 
 			Belangrijk hierbij is dat als je een bepaalde actie in een bepaalde state uitvoert,
-			je terecht komt in <em>een volgende state</em> \(s_{t+1}\). Vaak zijn bepaalde states daarbij
-			waardevoller dan andere states, bijvoorbeeld omdat ze je dichter bij een reward
-			brengen. In het probleem van les 3 is deze verbinding heel duidelijk:
-			je moet de uitgang van een doolhofje vinden. <em>States</em> zij hier posities
-			in het doolhof, <em>actions</em> de kant die je oploopt. Voor veel acties
-			is de volgende state waarin je dan terecht komt deterministisch bepaald:
-			als je de actie naar het noorden neemt, wordt de volgende state de
-			state ten noorden van je huidige state (tenzij je tegen een muur oploopt, dan blijf
-			je in de huidige state).
+			je terecht komt in <em>een volgende state</em> \(s_{t+1}\).</p> 
+		-->
 
-			De update-functie wordt dus een stukje ingewikelder dan in de vorige lessen:
-			je wilt voor elke actie \(a\) gegeven een state \(Q\) de gemiddelde
-			reward die je als gevolg van de actie verwacht:
+			<h3>De Mars Rover</h3>
+			<p>
+				In deze les is ons probleem een simulatie van een van NASA's <a href="http://en.wikipedia.org/wiki/Mars_rover">Mars rovers</a>, die onderzoek doet op Mars. De robot kan vier verschillende kanten op rijden, en zijn state (\(s_t\)) wordt gegeven door de huidige positie. Afhankelijk van de actie die de robot kiest komt hij in een nieuwe state \(s_{t+1}\). Door in elke state \(s\) de goede actie \(a\) te kiezen moet de robot een weg vinden naar een <em>research site</em>, waar misschien wel water of leven is!
+			</p>
+
+
+			<p>
+				We moeten nu dus een schatting bijhouden van de verwachte waarden van onze acties in <em>elke</em> state, dus \(Q(a)\) wordt \(Q(s,a)\). Maar omdat we soms acties willen uitvoeren die leiden tot meer reward in de toekomst, bevat \(Q(s,a)\) niet alleen de verwachting van de reward in state \(s\), maar ook een schatting van de <em>toekomstige</em> reward:
+
+				$$Q(s, a) = E[r_{s,a}] + \max_a Q(s_{t+1}, a)$$
+
+
+			</p>
+			
+	<!-- 		De update-functie wordt dus een stukje ingewikelder dan in de vorige lessen:
+			je wilt voor elke actie \(a\) gegeven een state \(s\) de gemiddelde
+			reward die je als gevolg van de actie verwacht:</p>
 
 			$$E[r_{a}]$$
 
@@ -98,14 +102,13 @@
 
 			De gehele \(Q\)-functie ziet er nu dus zo uit:
 			$$Q(s, a) = E[r_{a}] +  \gamma \max_a Q(s_{t+1}, a)$$
+			</p>
+ -->
 
-			<p>Hoe berekenen we deze functie nu? Als de agent aan het probleem begint
-			weet deze nog helemaal niks. Er zit dan dus niks anders
-			op dan alle Q-waarden op een gegokte waarde te initialiseren (5.0 in
-			dit geval). Vervolgens kunnen we <em>Temporal Difference learning</em>
-			gebruiken: elke keer dat we een actie doen, kijken we hoeveel reward
+			<p>Hoe berekenen we deze functie nu? Als de robot aan het probleem begint
+			weet deze nog helemaal niks. We gebruiken <a href="http://en.wikipedia.org/wiki/Temporal_difference_learning">temporal difference learning</a>: elke keer dat we een actie doen, kijken we hoeveel reward
 			we daadwerkelijk krijgen en in welke state we terechtkomen en 
-			hoe groot de term \(\max_{a} \gamma Q(s_{t+1}, a)\) van die state is.
+			hoe groot de term \(\max_{a} Q(s_{t+1}, a)\) van die state is.
 			Dit is een schatting van de waarde \(Q(s,a)\).
 			Deze schatting vergelijken we met de huidige waarde van \(Q(s,a)\).
 			Hieruit kunnen we het <em>verschil</em> met de verkregen reward + verwachtte
