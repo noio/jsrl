@@ -81,12 +81,14 @@ my.GridWorld = klass({
     this.width = this.world[0].length
   },
 
-  reset: function(){
+  reset: function(resetBandits){
     this.pos = this.startpos
     this.finished = false;
     this.steps = 0;
-    for (var key in this.bandits) {
-      this.bandits[key] = Math.random();
+    if (resetBandits){
+      for (var key in this.bandits) {
+        this.bandits[key] = Math.random();
+      }  
     }
   },
 
@@ -155,6 +157,8 @@ my.GridWorld = klass({
 
       if (type == 'bandit'){
         reward = (Math.random() <= this.bandits[[y,x]]) * this.BANDIT_REWARD
+        console.log(this.bandits[[y,x]])
+        console.log(reward)
         this.finished = true
       }
 
