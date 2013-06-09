@@ -13,7 +13,7 @@ img { border: 0 }
 body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
        font-size: 14px;
        color: #333;
-       background: #eee;
+       background: #ddd;
        height: 100%; }
 
 h1 { width: 100%; height: 60px; }
@@ -23,9 +23,14 @@ h1 a { display: block;
        text-decoration: none; }
 
 .container { width: 1440px; height: 100%;
-             margin: auto; }
+			 position: absolute;
+			 background: #eee;
+			 left: 50%;
+             margin-left: -720px; }
 
 .sidebar { box-sizing: border-box;
+		   position: absolute;
+		   left: 0;
 		   width: 340px; height: 100%;
            padding: 10px; 
            overflow: auto;}
@@ -39,6 +44,7 @@ p.question { font-style: italic;
     p.question span:first-child { font-weight: bold;
                                   font-style: normal; }
 
+#links { list-style: none; padding: 0;}
 #links li a { display: block;
               width: 300px;
               height: 20px;
@@ -59,7 +65,7 @@ a:hover { background: #aaa }
           height: 100%; width: 100%;
           color: #fff;
           background: #3D3D3D;
-          padding: 0 10px 40px 0;
+          padding: 0 10px 60px 0;
           overflow: auto; }
 
     .editor h3 { padding-left: 32px }
@@ -84,19 +90,17 @@ button.run { position: absolute;
            left: 900px;
            top: 0px;
            width: 540px;
-           height: 100%;
-           background: #ccc; }
+           height: 100%; }
 
     .product .panels { height: 600px }
 
-    .product .buttons { height: 30px;
-                        background: #777; }
+    .product .buttons { height: 30px; padding: 5px;}
 
 
     .product .console { height: auto;
                         min-height: 100px;
                         position: absolute;
-                        top: 630px;
+                        top: 640px;
                         bottom: 0;
                         left: 0;
                         right: 0;
