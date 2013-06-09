@@ -7,7 +7,7 @@ var projector = (function () {
   <div class='sidebar'></div> \
   <div class='main'> \
     <div class='editor'></div> \
-    <button class='run'>Run</button> \
+    <button class='run btn btn-large'>Run</button> \
   </div> \
   <div class='product'> \
     <div class='panels'></div> \
@@ -35,7 +35,7 @@ var projector = (function () {
 
   buildHTML: function(into){
     // BUILD THE HTML
-    var html = $(BASE_HTML);
+    var html = this.container = $(BASE_HTML);
     this.title = $('h1').first();
     this.title.html($('<a>').attr('href','.').text(this.title.text()));
     this.descriptionarea = $('#projector-description');
@@ -125,7 +125,7 @@ var projector = (function () {
       this.toggleRun();
     }, this));
 
-    $('<div>').addClass('block').appendTo(this.editarea).hide();
+    $('<div class="block">').appendTo(this.editarea).hide();
 
     this.runInit();
 
@@ -136,11 +136,13 @@ var projector = (function () {
       this.running = true;
       this.button.addClass('running').html('Stop');
       this.editarea.find('.block').fadeIn();
+      this.productarea.find('button').removeClass('disabled');
       this.runScript();
     } else {
       this.running = false;
       this.button.removeClass('running').html('Run');
       this.editarea.find('.block').fadeOut();
+      this.productarea.find('button').addClass('disabled');
     }
   },
 
@@ -270,7 +272,7 @@ var projector = (function () {
     var buttons = this.productarea.find('.buttons');
     var o = {}
     for (var i = 0; i < spec.length; i++){
-      var button = $('<button>' + spec[i] + '</button>');
+      var button = $('<button class="btn btn-small disabled">' + spec[i] + '</button>');
       button.on('click', function(){
         $(this).attr('data-justclicked', true);
       })
