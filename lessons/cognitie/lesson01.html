@@ -97,7 +97,7 @@
 			we tot nu toe gebruikt hebben.
 			In het begin van je experiment is de schatting \({Q}(a)\) nog onnauwkeurig, dus wil je veel uitproberen.
 			Later echter is je schatting beter en wil je die informatie uitbuiten zonder te veel te verkennen.
-			Het ligt dus voor de hand om de parameter die de hoeveelheid exploratie controleert langzaam te laten afnemen.
+			Het ligt dus voor de hand om niet of minder te verkennen naarmate de tijd verstrijkt.
 
 			<!-- Een mogelijke oplossing om de hoeveelheid exploratie van het aantal
 			trials af te laten hangen is <em>optimistic initialization</em>,
@@ -109,24 +109,24 @@
 			alleen de optimale actie kiezen.
 			$$ \forall a [Q(a) = 5 ] $$ -->
 			
-			<p class="question"> Implementeer de <em>optimistic initialization</em>-strategie
+			<!-- <p class="question"> Implementeer de <em>optimistic initialization</em>-strategie
 			door in de <em>initialization</em>-functie de 'total_reward'-variabele op regel 3 
 			(<em>niet</em> de Q-tabel) optmistisch
 			te initaliseren met bijvoorbeeld \(\forall a [R_{total}(a) = 1 ] \) en
 			\(\forall a [R_{total} = 5] \). Wat valt je op aan de average reward-grafiek? 
 			Wat is een goede waarde om de tabel mee te initialiseren?
-			</p>
-
+			</p> -->
+			
 			<p>
-			Een andere oplossing is de <em>Epsilon-first</em> strategie,
-			waarin je de eerste \(n\) trials alleen maar random bandits
+			Een manier om dit te doen is de <em>Epsilon-first</em> strategie,
+			waarin je de eerste \(n\) trials <em>altijd</em> willekeurige acties
 			selecteert, en daarna altijd de bandit met de hoogste
 			gemiddelde opbrengst.</p>
 
 			<p class="question"> Implementeer de <em>Epsilon-first</em>,
 			doe dit door de eerste regel van de <em>Action Selection</em>-functie
 			aan te passen. Tip: het aantal steps dat je tot nu toe hebt
-			genomen zit in de variabele <em>my.t</em></p>
+			genomen zit in de variabele <em>t</em></p>
 
 			<p class="question"> Draai nu een paar experimenten met een verschillend
 			aantal stappen (\(n\)) voor epsilon-first. Wat valt je
@@ -134,15 +134,19 @@
 			\(n\)
 			om reward te optimaliseren?</p>
 
-
 			<p>Een andere strategie is die van <em>Epsilon-decreasing</em>:
 			dan laat je de kans dat je agent een random actie doet afhangen van het aantal
 			steps dat al hij heeft gedaan. Je kan dit bijvoorbeeld doen door bij je update-functie
 			epsilon met een discount-proportie \(d\) kleiner dan 1 tevermenigvuldigen:
-			$$\epsilon_{t} = d \times\ \epsilon_{t-1}$$
+			$$\epsilon_{t} = d \cdot \epsilon_{t-1}$$
 
-			Als je epsilon dan initialiseert op 1, is deze na 50 stappen
-			$$0.95^{50} = 0.07$$ en na 100 stappen $$0.95^{100} = 0.006$$.</p>
+			Als je epsilon dan initialiseert op 1, is deze na 50 stappen:
+			
+			$$0.95^{50} = 0.07$$ 
+
+			en na 100 stappen:
+
+			$$0.95^{100} = 0.006$$</p>
 
 			<p class="question"> Implementeer het <em>\(\epsilon\)-decreasing</em> algoritme.
 			Voeg aan de <em>Update</em>-functie een regel toe die
@@ -200,7 +204,7 @@ var first = function(my) {
     // Define functions
     my.action_select = function(s) {
         var a
-
+        var t = my.t
         //:edit {"title":"Action Selection"}
         if (chance(EPSILON)) 
             a = randompick(['N', 'S', 'W', 'E']);
