@@ -1,151 +1,133 @@
 /*Mini Reset*/
-html,body,div,form,fieldset,legend,label{margin:0;padding:0;}table{border-collapse:collapse;border-spacing:0;}th,td{text-align:left;vertical-align:top;}h1,h2,h3,h4,h5,h6,th,td,caption{font-weight:normal;}img{border:0;}
+html, body, div, form, fieldset, legend, label { margin: 0;
+        padding: 0; }
+table { border-collapse: collapse;
+        border-spacing: 0; }
+th, td { text-align: left;
+     vertical-align: top; }
+h1, h2, h3, h4, h5, h6, th, td, caption { font-weight: normal }
 
+img { border: 0 }
 
-body {
-	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-	font-size: 14px;
-	color: #333;
-	background: #eee; 
-	height: 100%;
-}
+body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+       font-size: 14px;
+       color: #333;
+       background: #eee;
+       height: 100%; }
 
-h1 a {
-	display: block;
-	width: 300px;
-	padding: 20px;
-	color: #444;
-	text-decoration: none;
-}
+h1 a { display: block;
+       width: 300px;
+       padding: 20px;
+       color: #444;
+       text-decoration: none; }
 
+.container { width: 1440px;
+             height: 100%;
+             margin: auto; }
 
-.description, #projector-description, #links{ 
-	position: absolute;
-	top: 50px; bottom: 10px; 
-	width: 320px;
-	padding: 10px;
-	overflow: auto;
-}
+.sidebar { width: 320px;
+           height: 100%;
+           padding: 10px; }
 
-p.question {
-	font-style: italic;
-	padding: 5px;
-	background: #fff;
-	border: 1px solid #888;
-	border-radius: 3px;
-}
-p.question span:first-child{
-	font-weight: bold;
-	font-style: normal;
-}
+    .sidebar > div { }
 
-#links li a {
-	display: block;
-	width: 300px; height: 20px;
-	padding: 10px;
-	text-decoration: none;
-	color: #444;
-}
-a:hover {
-	background: #aaa;
-}
+p.question { font-style: italic;
+             padding: 5px;
+             background: #fff;
+             border: 1px solid #888;
+             border-radius: 3px; }
 
-.main, #content {
-	position: absolute;
-	width: 560px; height: 100%;
-	left: 340px; top: 0px;
-}
+    p.question span:first-child { font-weight: bold;
+                                  font-style: normal; }
 
-#content { 
-	overflow: scroll;
-}
+#links li a { display: block;
+              width: 300px;
+              height: 20px;
+              padding: 10px;
+              text-decoration: none;
+              color: #444; }
 
-#content div{
-	padding: 20px 0;
-}
+a:hover { background: #aaa }
 
-.editor {
-	background: #3D3D3D; color: #fff;
-	position: absolute;
-	top: 0px; bottom: 60px;
-	width: 550px;
-	padding: 0 10px 0 0;
-	overflow: scroll;
-}
+.main, #content { position: absolute;
+           width: 560px;
+           height: 100%;
+           left: 340px;
+           top: 0px; }
 
-.editor h3{
-	padding-left: 32px;
-}
+#content { overflow: scroll }
 
-.block {
-	width: 100%; height: 100%;
-	position: absolute;
-	top: 0; left: 0;
-	background-color: rgba(0,0,0, 0.6);
-	z-index: 1000;
-	cursor: wait;
-}
+    #content div { padding: 20px 0 }
 
-button.run{
-	position: absolute;
-	bottom: 0px;
-	width: 540px; height: 40px;
-	margin: 10px;
-	background: #64AE68;
-	border:none;
-	border-radius: 5px;
-	font-size: 16px; 
-	font-weight: bold;
-}
-button.run.running{
-	background: #B23720;	
-}
+.editor { background: #3D3D3D;
+          color: #fff;
+          position: absolute;
+          top: 0px;
+          bottom: 60px;
+          width: 550px;
+          padding: 0 10px 0 0;
+          overflow: scroll; }
 
+    .editor h3 { padding-left: 32px }
 
-.product {
-	position: absolute;
-	left: 900px; top: 0px;
-	width: 540px; height: 100%;
-	background: #ccc;
-}
+.block { width: 100%;
+         height: 100%;
+         position: absolute;
+         top: 0;
+         left: 0;
+         background-color: rgba(0,0,0, 0.6);
+         z-index: 1000;
+         cursor: wait; }
 
-.product .panels{
-	height: 600px;
-}
+button.run { position: absolute;
+             bottom: 0px;
+             width: 540px;
+             height: 40px;
+             margin: 10px;
+             background: #64AE68;
+             border: none;
+             border-radius: 5px;
+             font-size: 16px;
+             font-weight: bold; }
 
-.product .buttons{
-	height: 30px;
-	background: #777;
-	text-align: center;
-}
+button.run.running { background: #B23720 }
 
-.product .buttons button{
-	background: #fff;
-	border: none;
-	border-radius: 2px;
-	height: 24px;
-	margin: 3px 4px;
-	font-size: 15px;
-}
+.product { position: absolute;
+           left: 900px;
+           top: 0px;
+           width: 540px;
+           height: 100%;
+           background: #ccc; }
 
-.product .buttons button:hover{
-	background: #ccc;
-	cursor: hand;
-}
+    .product .panels { height: 600px }
 
-.product .console{
-	height: auto;
-	min-height: 100px;
-	position: absolute;
-	top: 630px; bottom: 0; left: 0; right: 0;
-	color: #78CF8A;
-	background: black;
-	white-space: pre-wrap;
-	margin: 0; padding: 10px;
-	border: none;
-	font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;
-}
+    .product .buttons { height: 30px;
+                        background: #777;
+                        text-align: center; }
 
-code {
-	white-space: pre;
-}
+        .product .buttons button { background: #fff;
+                                   border: none;
+                                   border-radius: 2px;
+                                   height: 24px;
+                                   margin: 3px 4px;
+                                   font-size: 15px; }
+
+        .product .buttons button:hover { background: #ccc;
+                                         cursor: hand; }
+
+    .product .console { height: auto;
+                        min-height: 100px;
+                        position: absolute;
+                        top: 630px;
+                        bottom: 0;
+                        left: 0;
+                        right: 0;
+                        color: #78CF8A;
+                        background: black;
+                        white-space: pre-wrap;
+                        margin: 0;
+                        padding: 10px;
+                        border: none;
+                        font-family: Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace; }
+
+code { white-space: pre }
