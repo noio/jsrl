@@ -1,6 +1,7 @@
 .gridworld {
 	position: relative;
-	margin: auto;
+	margin: 10px auto;
+	border: 5px dashed #f44;
 }
 
 .gridworld .tile {

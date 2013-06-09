@@ -81,6 +81,8 @@ var projector = (function () {
       MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
     }
 
+    document.title = this.title.text() + ': ' + this.descriptionarea.find('h2').first().text()
+
     var blocks = [], current = null, match = null
     var lines = s.split('\n');
     
