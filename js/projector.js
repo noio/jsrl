@@ -3,26 +3,49 @@ var projector = (function () {
   var my = {}
 
   var TAG_RE = new RegExp('\/\/\:(\\w+) ?(.*)');
+  var BASE_HTML = "<div id='projector-container' class='container'> \
+  <div class='sidebar'></div> \
+  <div class='main'> \
+    <div class='editor'></div> \
+    <button class='run'>Run</button> \
+  </div> \
+  <div class='product'> \
+    <div class='panels'></div> \
+    <div class='buttons'></div> \
+    <textarea class='console'></textarea> \
+  </div> \
+  </div> \
+  "
 
   my.Projector = klass({
 
-  initialize: function(container){
-    this.descriptionarea = container.find('#projector-description');
-    var main = $('<div class="main">').appendTo(container);
-    this.editarea = $('<div class="editor">').appendTo(main);
-    this.button = $('<button class="run">Run</button>').appendTo(main);
-    this.productarea = $('<div class="product">').appendTo(container);
-    this.productarea.append('<div class="panels">');
-    this.productarea.append('<div class="buttons">');
-    this.productarea.append('<textarea class="console">');
+  initialize: function(into){
+    // VARIABLES
     this.scriptblocks = [];
-    this.editables = {};
     this.running = false;
 
-    var projectorscript = $('#projector-script');
+    this.buildHTML(into);
+
+    var projectorscript = $('script#projector-script');
     if (projectorscript){
       this.loads(projectorscript.html());
     }
+
+  },
+
+  buildHTML: function(into){
+    // BUILD THE HTML
+    var html = $(BASE_HTML);
+    this.title = $('h1').first();
+    this.title.html($('<a>').attr('href','.').text(this.title.text()));
+    this.descriptionarea = $('#projector-description');
+    html.find('.sidebar').append(this.title).append(this.descriptionarea);
+    this.editarea = html.find('.editor').first();
+    this.button = html.find('.run').first();
+    this.productarea = html.find('.product').first();
+
+    $('#projector-container').remove()
+    into.append(html);
   },
 
   /**
