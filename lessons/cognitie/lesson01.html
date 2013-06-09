@@ -54,10 +54,10 @@
 
 			$$ {Q}(a) = \frac{r_1 + r_2 + \cdots + r_{k_a}}{k_a} $$
 
-			<p class="question"><span>1a)</span> Welke regel code van de 'update'-functie voert
+			<p class="question"> Welke regel code van de 'update'-functie voert
 			deze formule uit?</p>
 
-			<p class="question"><span>1b)</span> Probeer dit algoritme een paar keer uit: druk op 'Run' en dan op 'play'
+			<p class="question"> Probeer dit algoritme een paar keer uit: druk op 'Run' en dan op 'play'
 			(eventueel kan je eerst een paar keer op step drukken, om rustig te zien wat er gebeurt).
 			Wat valt je op aan de gemiddelde uitgekeerde reward na 300 pogingen?</strong></p>
 
@@ -65,7 +65,7 @@
 			verwachtingsreward \(E[R(a)]\) van de bandits. De uitkomst van de experimenten
 			is dus niet iedere keer precies hetzelfde, ookal zijn de instellingen hetzelfde.</p>
 
-			<p class="question"><span>1c)</span> Run hetzelfde experiment vijf keer en gebruik de 'get data'-functie
+			<p class="question"> Run hetzelfde experiment vijf keer en gebruik de 'get data'-functie
 			om de gemiddelde reward voor elke tijdstap te exporteren naar een spreadsheet
 			in Google Docs. Gebruik Google Docs om een grafiek te maken van de vijf experimenten.
 			Maak ook een grafiek van het gemiddelde over alle experimenten. Daarbij een paar tips:<br />
@@ -85,10 +85,10 @@
 			$$\DeclareMathOperator*{\argmax}{\arg\!\max} \argmax_{a} {Q}(a) $$
 
 			</p>
-			<p class="question"><span>2a)</span> Wat denk je dat er gebeurt met de gemiddelde reward
+			<p class="question"> Wat denk je dat er gebeurt met de gemiddelde reward
 			als je epsilon groter of kleiner maakt? Hoe verhoudt epsilon zich
 			tot de <em>exploration</em>-<em>exploitation</em>-balans?</p>
-			<p class="question"><span>2b)</span> Pas epsilon aan naar 0.1 en 0.5 en maak een gemiddelde
+			<p class="question"> Pas epsilon aan naar 0.1 en 0.5 en maak een gemiddelde
 			grafiek over 5 experimenten, net zoals in opdracht 1c. Wat valt gebeurt
 			er met de gemiddele opbrengst? Wat valt je op aan de grafieken van
 			Q(a) en k(a) rechtsonderin?</p>
@@ -109,7 +109,7 @@
 			alleen de optimale actie kiezen.
 			$$ \forall a [Q(a) = 5 ] $$ -->
 			
-			<p class="question"><span>3)</span> Implementeer de <em>optimistic initialization</em>-strategie
+			<p class="question"> Implementeer de <em>optimistic initialization</em>-strategie
 			door in de <em>initialization</em>-functie de 'total_reward'-variabele op regel 3 
 			(<em>niet</em> de Q-tabel) optmistisch
 			te initaliseren met bijvoorbeeld \(\forall a [R_{total}(a) = 1 ] \) en
@@ -123,12 +123,12 @@
 			selecteert, en daarna altijd de bandit met de hoogste
 			gemiddelde opbrengst.</p>
 
-			<p class="question"><span>4a)</span> Implementeer de <em>Epsilon-first</em>,
+			<p class="question"> Implementeer de <em>Epsilon-first</em>,
 			doe dit door de eerste regel van de <em>Action Selection</em>-functie
 			aan te passen. Tip: het aantal steps dat je tot nu toe hebt
 			genomen zit in de variabele <em>my.t</em></p>
 
-			<p class="question"><span>4b)</span> Draai nu een paar experimenten met een verschillend
+			<p class="question"> Draai nu een paar experimenten met een verschillend
 			aantal stappen (\(n\)) voor epsilon-first. Wat valt je
 			op aan de gemiddelde-reward grafiek? Wat is een goede 
 			\(n\)
@@ -144,14 +144,14 @@
 			Als je epsilon dan initialiseert op 1, is deze na 50 stappen
 			$$0.95^{50} = 0.07$$ en na 100 stappen $$0.95^{100} = 0.006$$.</p>
 
-			<p class="question"><span>5a)</span> Implementeer het <em>\(\epsilon\)-decreasing</em> algoritme.
+			<p class="question"> Implementeer het <em>\(\epsilon\)-decreasing</em> algoritme.
 			Voeg aan de <em>Update</em>-functie een regel toe die
 			EPSILON instelt op 0.95 * EPSILON. Initialiseer EPSILON
 			op 1. Run een paar experimenten en vergelijk ze met de standaard
 			\(\epsilon\)-greedy strategie uit opdracht 1. Werk deze
 			strategie beter?</p>
 
-			<p>Dit was les 1 van het practicum ga door naar <a href="lesson02.html">les 2</a>.</p>
+			<p>Dit was les 1 van het practicum, ga door naar <a href="lesson02.html">les 2</a>.</p>
         </div>
 
 <script id="projector-script">

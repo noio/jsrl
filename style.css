@@ -52,16 +52,20 @@ h2 {
 		   left: 0;
 		   width: 340px; height: 100%;
            padding: 10px; 
-           overflow: auto;}
+           overflow: auto;
+           counter-reset:question;}
 
 p.question { font-style: italic;
              padding: 5px;
              background: #fff;
              border: 1px solid #888;
              border-radius: 3px; }
-
-    p.question span:first-child { font-weight: bold;
-                                  font-style: normal; }
+p.question:before {
+	font-weight: bold;
+	font-style: normal;
+	counter-increment: question; 
+    content: counter(question) ") ";
+}
 
 #links { list-style: none; padding: 0;}
 #links li a { display: block;
