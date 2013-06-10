@@ -22,9 +22,9 @@
 .gridworld .tile.start { background-position: -96px 0; }
 .gridworld .tile.bandit{ background-position: -128px 0; }
 .gridworld .tile.sand  { background-position: -160px 0; }
-.gridworld .tile.big   { background-position: -192px 0; }
+.gridworld .tile.small { background-position: -192px 0; }
 .gridworld .tile.medium{ background-position: -224px 0; }
-.gridworld .tile.small { background-position: -256px 0; }
+.gridworld .tile.big   { background-position: -256px 0; }
 
 .gridworld .tile.overlay  { background-position: 32px 32px; }
 .gridworld .tile.overlay.N{ background-position: -00px -32px; }
