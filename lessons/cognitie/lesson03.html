@@ -1,5 +1,6 @@
 <html>
     <head>
+    	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/flot/0.8/jquery.flot.min.js"></script>
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/flot/0.8/jquery.flot.errorbars.min.js"></script>
@@ -71,7 +72,7 @@
 			<h3>De Mars Rover</h3>
 			<p>
 				In deze les is ons probleem een simulatie van een van NASA's <a href="http://en.wikipedia.org/wiki/Mars_rover">Mars rovers</a>, die onderzoek doet op Mars. De robot kan vier verschillende kanten op rijden, en zijn state (\(s_t\)) wordt gegeven door de huidige positie. Afhankelijk van de actie die de robot kiest komt hij in een nieuwe state \(s_{t+1}\). Door in elke state \(s\) de goede actie \(a\) te kiezen moet de robot een weg vinden naar een <em>research site</em>, waar misschien wel water of leven is!
-				De agent krijgt pas een reward als hij de research site vindt, maar als hij tegen een obstakel aan rijdt krijgt hij een reward van \(-1\).
+				De robot krijgt pas een reward als hij de research site vindt, maar als hij tegen een obstakel aan rijdt krijgt hij een reward van -1. Als de robot de research site bereikt krijgt hij een reward gelijk aan \(100 - t\). De reward is dus hoger als de robot sneller het einde bereikt.
 			</p>
 
 
@@ -114,28 +115,31 @@
 
 				$$\delta = r_{t} + \max_a Q(s_{t+1}, a) - Q(s,a) $$
 
-				Aan de hand van dit verschil passen we de waarde van \(Q(s, a)\) aan. Omdat het mogelijk is dat we niet altijd dezelfde reward krijgen voor een actie, passen we \(Q(s,a)\) langzaam aan richting de schatting, met behulp van de <em>learning rate</em> \(\alpha\). Hoe hoger we \(\alpha\) instellen, hoe sneller de agent zijn gedrag aanpast.
+				Aan de hand van dit verschil passen we de waarde van \(Q(s, a)\) aan. Omdat het mogelijk is dat we niet altijd dezelfde reward krijgen voor een actie, passen we \(Q(s,a)\) langzaam aan richting de schatting, met behulp van de <em>learning rate</em> \(\alpha\). Hoe hoger we \(\alpha\) instellen, hoe sneller de robot zijn gedrag aanpast.
 
 				$$Q(s, a) = Q(s, a) + \alpha \cdot \delta $$
 
 				Vergelijk deze formule even met de `update' functie rechts.
 
 
-			<p class="question"> Druk een keer op `run'. Wat zie je gebeuren? Wat betekenen de witte pijltjes?</p>
-			<p class="question"><span>1b)</span> Voor elke state heb je vier state-action waarden (&#233;&#233;n voor elke mogelijke actie). 
+			<p class="question"> Druk een keer op `run'. Wat zie je gebeuren?</p>
+			<p class="question"> Klik op een vakje om te zien wat de waarden van \(Q(s,a)\) zijn voor een paar states. Wat betekenen de witte pijltjes?</p> 
+			<p class="question"> Voor elke state heb je vier state-action waarden (&#233;&#233;n voor elke mogelijke actie). 
 			Waarom krijgt elke state dan maar &#233;&#233;n kleurtje? Waar staat dit kleurtje voor
 			denk je?</p>
-			<p class="question"><span>1c)</span> Stel Alpha eens in op verschillende waarden: 0.1, 0.5 en 1.0. Wat valt je op?</p>
-			<p class="question"><span>1d)</span> Zet Epsilon eens op 0. Hoe gedraagt de agent zich nu anders? Hoe komt dit?</p>
+			<!-- <p class="question"><span>1c)</span> Stel Alpha eens in op verschillende waarden: 0.1, 0.5 en 1.0. Wat valt je op?</p> -->
 			
 			<!-- <p class="question"><span>2a)</span> Wat gebeurt er al je gamma op 1 zet? Hoe komt dit?</p> -->
 			
 			<!-- <p class="question"><span>2b)</span> In dit probleem krijgt de agent een reward op het moment
 				dat hij het einddoel bereikt en een negatieve reward STEP_REWARD op het moment dat 
 				hij het einddoel niet heeft bereikt. Wat gebeurt er als je deze STEP_REWARD op 0 zet? Hoe komt dit?</p> -->
+			De robot vertrouwt op het feit dat hij in elke staat wel eens een willekeurige actie kiest (exploration), om zo toevallig de research site te vinden. In plaats daarvan kunnen we een techniek gebruiken die <em>optimistic initialization</em> heet. In plaats van de Q-tabel te initializeren met waarde 0, kunnen we hier een hogere waarde in zetten. Elke keer als de robot een actie kiest, zal hij daarom "teleurgesteld" zijn met het resultaat. Immers, zijn huidige actie leverde waarschijnlijk niks op, maar de schatting in \(Q(s,a)\) bevatte wel een hogere waarde. De robot zal dus telkens acties kiezen die hij nog niet geprobeerd heeft, omdat hij de 'hoop' heeft dat die acties een reward opleveren: hij is optimistisch.
 
-			<p class="question">Iets over optimistic initialization</p>
+			<p class="question">Implementeer <em>optimistic initialization</em> door de Q-tabel te vullen met een hogere waarde, bijvoorbeeld 10.</p>
+			<p class="question">Zet Epsilon eens op 0. Hoe kan het dat de robot nog steeds de research site vindt?</p>
 				
+			<p class="question">Draai 5 simulaties mét en zónder <em>optimistic initialization</em> (met 'Play All') en vergelijk de gemiddelde return per tijdstap (stop de resultaten van 'Get Data' in een grafiek).</p>
 				
 			<a href="lesson04.html">Ga naar les 4</a>
         </div>
@@ -148,12 +152,12 @@
 
 var setup = function(my){
 	my.panels = projector.createPanels([1,1,1]);
-	my.buttons = projector.createButtons(["Next", "Play"])
+	my.buttons = projector.createButtons(["Play", "Play All", "Get Data"])
 	
 	var task_world = [
-	"_ _ _ _ _ _ _ _ _ w _ _ _ _ _",
+	"_ _ _ _ _ _ _ _ w w _ _ _ _ w",
 	"_ _ _ w _ _ _ _ _ w _ _ _ _ _",
-	"_ _ s _ _ _ w w _ _ _ _ _ _ _",
+	"_ _ s _ _ _ w w _ _ _ _ _ _ w",
 	"_ _ _ _ _ _ _ w _ w w _ z _ _",
 	"_ _ _ _ w _ _ _ _ _ w _ _ _ _",
 	"_ _ _ w _ _ _ _ _ _ _ _ _ _ _"
@@ -165,29 +169,30 @@ var setup = function(my){
 	my.task.MAX_STEPS = 100;
 	my.task.render();
 	
-	my.autoplay = false
-
 	my.task.panel.find('.tile.overlay').on('click', function(el){
 		var state = $(el.currentTarget).attr('data-coord');
-      	plotActions(my.panels[2], my.Q.get(state));
-      	console.log(state);
+		var statevals = my.Q.get(state)
+      	plotActions(my.panels[2], statevals);
+      	console.log(state + " Best action: " + argmax(statevals) + ": " + valmax(statevals));
+    });
+
+    my.buttons['Get Data'].on('click', function(){
+        showDataTable(my.R);
     });
 }
 
 var first = function(my){
-	var ALPHA
-	var GAMMA
-	var EPSILON
+	my.play = false;
+	my.playAll = false;
 
+	var ALPHA
+	var EPSILON
 	//:edit {"title":"Variables"}
 	ALPHA = 0.5
-	EPSILON = 0.4
+	EPSILON = 0.5
 	//:end edit
-
-	var EPISODES = 500;
 	my.ALPHA = ALPHA
-	my.GAMMA = GAMMA
-	my.EPISODES = EPISODES
+	my.EPISODES = 200
 
 	my.Q = new StateActionValueTable()
 	var Q = my.Q;
@@ -203,6 +208,7 @@ var first = function(my){
     my.steps = []
 
     $.plot(my.panels[0], [])
+    my.task.render(my.Q);
 
 	// Define functions
 
@@ -256,43 +262,41 @@ var first = function(my){
 	        
 	        my.R.push([my.episode, my.task.R]);
 	        my.steps.push([my.episode, my.task.step])
-	        $.plot(my.panels[0], [{data:my.R, label:'Return'},
-	        					  {data:my.steps, label:'Timesteps'}]);
-
+	        $.plot(my.panels[0], [{data:my.R, label:'Return', color:'#78CF8A'}]) // {data:my.steps, label:'Timesteps'}]);
 		}
 	}
 }
 
-
-
 var run = function(my, run_num){
 
-	var show_every = 10
+	var show_every = 20
 
-	if(my.episode % show_every == 0 && my.episode > 0)
+	if(my.episode % show_every == 0 && my.episode > 0 && !my.playAll)
 	{
-
-		if (my.buttons['Next'].attr('data-justclicked') == 'true') {
-			my.do_step();
-			my.task.render(my.Q);
-		}
-
 		if (my.buttons['Play'].attr('data-justclicked') == 'true') {
-			my.autoplay = true;			
+			my.play = true;
+			my.buttons['Play'].addClass('disabled');
 		}
 
-		if (my.autoplay && run_num % 2 == 0) {
+		if (my.buttons['Play All'].attr('data-justclicked') == 'true') {
+			my.playAll = my.play = true;			
+			my.buttons['Play'].addClass('disabled');
+			my.buttons['Play All'].addClass('disabled');
+		}
+
+		if (my.play && run_num % 5 == 0) {
 			my.do_step();
 			my.task.render(my.Q);
 		}
 
 	} else {
-		my.autoplay = false;
+		my.buttons['Play'].removeClass('disabled');
+		my.play = my.playAll;
 		my.run_episode();
 		my.task.render(my.Q);
 	}
 
-	if (my.episode > my.EPISODES){
+	if (my.episode >= my.EPISODES){
 		return true;
 	}
 }

@@ -236,11 +236,13 @@ my.GridWorld = klass({
     // Render in een 
     if (typeof qtable != 'undefined'){
       var range = qtable.extrema()
+      range[0] = Math.min(-1, range[0])
+      range[1] = Math.max(1, range[1])
       for (state in qtable.values){
         var tile = this.panel.find('.overlay.' + state);
         var a = argmax(qtable.get(state));
         var best = valmax(qtable.get(state))
-        if (best > 0){
+        if (best >= 0){
           tile.css('background-color', 'rgba(0,255,0,' + 0.5 * best / range[1] + ')');
         } else if (best < 0){
           tile.css('background-color', 'rgba(255,0,0,' + 0.5 * best / range[0] + ')');

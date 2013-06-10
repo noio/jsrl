@@ -78,7 +78,7 @@
 
 var setup = function(my){
 	my.panels = projector.createPanels([1,2]);
-	my.buttons = projector.createButtons(["Next", "Play"])
+	my.buttons = projector.createButtons(["Play", "Play All", "Get Data"])
 	
 	var task_world
 	var task_world = [
@@ -90,11 +90,24 @@ var setup = function(my){
 	my.task = new gridworld.GridWorld(task_world)
 	my.task.setpanel(my.panels[1])
 	my.task.STEP_REWARD = -1;
-	my.autoplay = false
+	
 	my.task.render();
+
+	my.task.panel.find('.tile.overlay').on('click', function(el){
+		var state = $(el.currentTarget).attr('data-coord');
+		var statevals = my.Q.get(state)
+      	plotActions(my.panels[2], statevals);
+      	console.log(state + " Best action: " + argmax(statevals) + ": " + valmax(statevals));
+    });
+
+    my.buttons['Get Data'].on('click', function(){
+        showDataTable(my.R);
+    });
 }
 
 var first = function(my){
+	my.play = my.playAll = false
+
 	var ALPHA
 	var GAMMA
 	var EPSILON
@@ -168,8 +181,8 @@ var first = function(my){
 		var difference
 		var new_Q
 		//:edit {"title":"Update"}
-		difference = r + GAMMA * valmax(Q.get(s_))
-		new_Q = (1- ALPHA) * Q.get(s, a) + ALPHA * difference
+		delta = r + GAMMA * valmax(Q.get(s_)) - Q.get(s, a)
+		new_Q = Q.get(s, a) + ALPHA * delta
 		Q.set(s, a, new_Q)
 		EPSILON = 0.999 * EPSILON
 		//:end
@@ -230,32 +243,34 @@ var first = function(my){
 
 var run = function(my, run_num){
 
-	N = 100
+	var show_every = 20
 
-	if(my.episode % N == 5 && false)
+	if(my.episode % show_every == 0 && my.episode > 0 && !my.playAll)
 	{
-
-		if (my.buttons['Next'].attr('data-justclicked') == 'true') {
-			my.do_step();
-			my.task.render(my.Q);
-		}
-
 		if (my.buttons['Play'].attr('data-justclicked') == 'true') {
-			my.autoplay = true;			
+			my.play = true;
+			my.buttons['Play'].addClass('disabled');
 		}
 
-		if (my.autoplay && run_num % 5 == 0) {
+		if (my.buttons['Play All'].attr('data-justclicked') == 'true') {
+			my.playAll = my.play = true;			
+			my.buttons['Play'].addClass('disabled');
+			my.buttons['Play All'].addClass('disabled');
+		}
+
+		if (my.play && run_num % 5 == 0) {
 			my.do_step();
 			my.task.render(my.Q);
 		}
 
 	} else {
-		my.autoplay = false;
+		my.buttons['Play'].removeClass('disabled');
+		my.play = my.playAll;
 		my.run_episode();
 		my.task.render(my.Q);
 	}
 
-	if (my.episode > my.EPISODES){
+	if (my.episode >= my.EPISODES){
 		return true;
 	}
 }
