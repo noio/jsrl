@@ -200,7 +200,7 @@ var first = function(my){
 	// Other persistent variables
 	my.episode = 0
     my.R = []  // Array with performance data (average return)
-    my.Ravg = []
+    my.steps = []
 
     $.plot(my.panels[0], [])
 
@@ -255,7 +255,9 @@ var first = function(my){
 			my.episode ++;
 	        
 	        my.R.push([my.episode, my.task.R]);
-	        $.plot(my.panels[0], [{data:my.R, label:'Return'}]);
+	        my.steps.push([my.episode, my.task.step])
+	        $.plot(my.panels[0], [{data:my.R, label:'Return'},
+	        					  {data:my.steps, label:'Timesteps'}]);
 
 		}
 	}
