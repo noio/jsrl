@@ -229,9 +229,9 @@ my.GridWorld = klass({
         var a = argmax(qtable.get(state));
         var best = valmax(qtable.get(state))
         if (best > 0){
-          tile.css('background-color', 'rgba(0,255,0,' + 0.7 * best / range[1] + ')');
+          tile.css('background-color', 'rgba(0,255,0,' + 0.5 * best / range[1] + ')');
         } else if (best < 0){
-          tile.css('background-color', 'rgba(255,0,0,' + 0.7 * best / range[0] + ')');
+          tile.css('background-color', 'rgba(255,0,0,' + 0.5 * best / range[0] + ')');
         }
         tile.removeClass("N S E W")
         tile.addClass(a);

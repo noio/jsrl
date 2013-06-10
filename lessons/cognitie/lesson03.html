@@ -152,10 +152,13 @@ var setup = function(my){
 	my.buttons = projector.createButtons(["Next", "Play"])
 	
 	var task_world = [
-	"_ _ _ _ _ _ _ a _ _ _ w _ _ _ _",
-	"_ s _ w _ _ _ w _ w _ w y _ x _",
-	"_ _ _ _ _ o _ w _ _ z _ _ o _ _",
-	"_ _ _ _ _ o _ w _ o _ _ _ o _ _"
+	"_ _ _ _ _ _ _ _ _ _ w _ _ _",
+	"_ s _ w _ _ _ _ _ w w _ _ _",
+	"_ _ _ _ _ _ w w _ _ _ _ o _",
+	"_ _ w _ w _ _ w _ _ _ _ _ _",
+	"_ _ _ _ _ _ o w _ w w w _ _",
+	"_ _ _ _ w _ _ o _ _ w _ z _",
+	"_ _ _ w _ _ _ _ _ _ _ _ _ _"
 	]
 	my.task = new gridworld.GridWorld(task_world)
 	my.task.setpanel(my.panels[1])
@@ -176,7 +179,7 @@ var first = function(my){
 	var EPSILON
 
 	//:edit {"title":"Variables"}
-	ALPHA = 0.05
+	ALPHA = 0.5
 	GAMMA = 0.9
 	EPSILON = 0.1
 	//:end edit
