@@ -34,19 +34,22 @@ var RENDER_TILE_SIZE = 32
 
 my.GridWorld = klass({
 
-  PIT_REWARD: -15,
+  PIT_REWARD: -100,
   SAND_REWARD: -10,
   REWARD_SMALL: 10,
   REWARD_MEDIUM: 20,
-  REWARD_BIG: 30,
+  REWARD_BIG: 50,
   BANDIT_REWARD: 1,
   STEP_REWARD: 0,
   WALL_REWARD: -1,
+  EDGE_REWARD: -1,
 
-  SAND_PROBABILITY: 0.5,
+  REWARD_TIMESTEPS: false,
+
+  SAND_PROBABILITY: 0.2,
   END_PROBABILITY: 0.0,
 
-  MAX_STEPS: 2000,
+  MAX_STEPS: 1000,
 
   initialize: function(world){
     this.pos = null;
@@ -84,7 +87,8 @@ my.GridWorld = klass({
   reset: function(resetBandits){
     this.pos = this.startpos
     this.finished = false;
-    this.steps = 0;
+    this.R = 0
+    this.step = 0;
     if (resetBandits){
       for (var key in this.bandits) {
         this.bandits[key] = Math.random();
@@ -113,7 +117,7 @@ my.GridWorld = klass({
   act: function(action){
     if (this.finished) throw "Episode finished."
     this.lastAction = action;
-    this.steps++
+    this.step++
     var dir
     var reward = this.STEP_REWARD;
     switch(action){
@@ -126,7 +130,9 @@ my.GridWorld = klass({
     var y = this.pos[0] + dir[0]
     var x = this.pos[1] + dir[1]
 
-    if (y >= 0 && y < this.height && x >= 0 && x < this.width){
+    if (y < 0 || y >= this.height || x < 0 || x >= this.width){
+      reward = this.EDGE_REWARD;
+    } else {
       var type = TILES[this.world[y][x]];
 
       if (type == 'wall' ){
@@ -175,9 +181,15 @@ my.GridWorld = klass({
       this.finished = true;
     }
 
-    if (this.steps > this.MAX_STEPS){
+    if (this.step >= this.MAX_STEPS){
       this.finished = true;
     }
+
+    if (this.finished && this.REWARD_TIMESTEPS){
+      reward += this.MAX_STEPS - this.step;
+    }
+
+    this.R += reward;
 
     return reward
   },

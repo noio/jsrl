@@ -71,7 +71,7 @@
 			<h3>De Mars Rover</h3>
 			<p>
 				In deze les is ons probleem een simulatie van een van NASA's <a href="http://en.wikipedia.org/wiki/Mars_rover">Mars rovers</a>, die onderzoek doet op Mars. De robot kan vier verschillende kanten op rijden, en zijn state (\(s_t\)) wordt gegeven door de huidige positie. Afhankelijk van de actie die de robot kiest komt hij in een nieuwe state \(s_{t+1}\). Door in elke state \(s\) de goede actie \(a\) te kiezen moet de robot een weg vinden naar een <em>research site</em>, waar misschien wel water of leven is!
-				De robot krijgt elke tijdsstap een <em>negatieve reward</em> van \(-1\), dus hoe sneller hij het einde bereikt, hoe hoger de totale <em>return</em> is.
+				De agent krijgt pas een reward als hij de research site vindt, maar als hij tegen een obstakel aan rijdt krijgt hij een reward van \(-1\).
 			</p>
 
 
@@ -79,7 +79,6 @@
 				We moeten nu dus een schatting bijhouden van de verwachte waarden van onze acties in <em>elke</em> state, dus \(Q(a)\) wordt \(Q(s,a)\). Maar omdat we soms acties willen uitvoeren die leiden tot meer reward in de toekomst, bevat \(Q(s,a)\) niet alleen de verwachting van de reward in state \(s\), maar ook een schatting van de <em>toekomstige</em> reward:
 
 				$$Q(s, a) = E[r_{s,a}] + \max_a Q(s_{t+1}, a)$$
-
 
 			</p>
 			
@@ -111,7 +110,7 @@
 			
 				$$r_{t} + \max_a Q(s_{t+1}, a)$$
 
-				Het verschil tussen deze geschatte waarde en de huidige waarde is de <em>temporal difference error</em> \(\delta\).
+				Het verschil tussen deze geschatte waarde en de huidige waarde is de <em>temporal difference error</em> \(\delta\) (delta).
 
 				$$\delta = r_{t} + \max_a Q(s_{t+1}, a) - Q(s,a) $$
 
@@ -131,9 +130,9 @@
 			
 			<!-- <p class="question"><span>2a)</span> Wat gebeurt er al je gamma op 1 zet? Hoe komt dit?</p> -->
 			
-			<p class="question"><span>2b)</span> In dit probleem krijgt de agent een reward op het moment
+			<!-- <p class="question"><span>2b)</span> In dit probleem krijgt de agent een reward op het moment
 				dat hij het einddoel bereikt en een negatieve reward STEP_REWARD op het moment dat 
-				hij het einddoel niet heeft bereikt. Wat gebeurt er als je deze STEP_REWARD op 0 zet? Hoe komt dit?</p>
+				hij het einddoel niet heeft bereikt. Wat gebeurt er als je deze STEP_REWARD op 0 zet? Hoe komt dit?</p> -->
 
 			<p class="question">Iets over optimistic initialization</p>
 				
@@ -152,18 +151,21 @@ var setup = function(my){
 	my.buttons = projector.createButtons(["Next", "Play"])
 	
 	var task_world = [
-	"_ _ _ _ _ _ _ _ _ _ w _ _ _ _",
-	"_ s _ w _ _ _ _ _ w w _ _ _ _",
-	"_ _ _ _ _ _ w w _ _ _ _ _ o _",
-	"_ _ _ _ _ _ o w _ w w w _ _ _",
-	"_ _ _ _ w _ _ o _ _ w _ _ z _",
+	"_ _ _ _ _ _ _ _ _ w _ _ _ _ _",
+	"_ _ _ w _ _ _ _ _ w _ _ _ _ _",
+	"_ _ s _ _ _ w w _ _ _ _ _ _ _",
+	"_ _ _ _ _ _ _ w _ w w _ z _ _",
+	"_ _ _ _ w _ _ _ _ _ w _ _ _ _",
 	"_ _ _ w _ _ _ _ _ _ _ _ _ _ _"
 	]
 	my.task = new gridworld.GridWorld(task_world)
 	my.task.setpanel(my.panels[1])
-	my.task.STEP_REWARD = -1;
-	my.autoplay = false
+	my.task.STEP_REWARD = 0;
+	my.task.REWARD_TIMESTEPS = true;
+	my.task.MAX_STEPS = 100;
 	my.task.render();
+	
+	my.autoplay = false
 
 	my.task.panel.find('.tile.overlay').on('click', function(el){
 		var state = $(el.currentTarget).attr('data-coord');
@@ -179,34 +181,34 @@ var first = function(my){
 
 	//:edit {"title":"Variables"}
 	ALPHA = 0.5
-	GAMMA = 0.9
-	EPSILON = 0.1
+	EPSILON = 0.4
 	//:end edit
 
-	var EPISODES = 250;
+	var EPISODES = 500;
 	my.ALPHA = ALPHA
 	my.GAMMA = GAMMA
 	my.EPISODES = EPISODES
 
 	my.Q = new StateActionValueTable()
-	var Q = my.Q
-	var task = my.task
+	var Q = my.Q;
+	var task = my.task;
 
 	//:edit {"title":"Initialization"}
 	Q.fill(task.states(), task.actions(), 0.0)
 	//:end edit
 
 	// Other persistent variables
-	my.steps = []
 	my.episode = 0
-	my.step = 0;
+    my.R = []  // Array with performance data (average return)
+    my.Ravg = []
+
+    $.plot(my.panels[0], [])
 
 	// Define functions
 
 	my.action_select = function(s){
 		var a
 		var As = Q.get(s)
-
 		//:edit {"title":"Action Selection"}
 		if (chance(EPSILON))
 			a = randompick(As);
@@ -221,15 +223,14 @@ var first = function(my){
 		var difference
 		var new_Q
 		//:edit {"title":"Update"}
-		delta     = r + valmax(Q.get(s_)) - Q.get(s, a)
+		delta     = r + 0.9 * valmax(Q.get(s_)) - Q.get(s, a)
 		new_value = Q.get(s, a) + ALPHA * delta
 		Q.set(s, a, new_value)
 		//:end
 	}
 
 	my.start_episode = function(){
-		task.reset();
-		my.step = 0;
+		my.task.reset();
 	}
 
 	my.run_episode = function(){
@@ -242,23 +243,20 @@ var first = function(my){
 
 	my.do_step = function(){
 		var s = task.getState();
-
 		var a = my.action_select(s)
-
 		var r = task.act(a);
 		var s_ = task.getState();
 
 		my.update(s, a, r, s_);
 
-		my.step ++;
-
 		if (task.ended()){
-			console.log("Episode finished in " + my.step + " steps.");
+			console.log("Episode finished in " + my.task.step + " steps, return: " + my.task.R + ".");
 
-			my.steps.push([my.episode, my.step]);
 			my.episode ++;
+	        
+	        my.R.push([my.episode, my.task.R]);
+	        $.plot(my.panels[0], [{data:my.R, label:'Return'}]);
 
-			$.plot(my.panels[0], [my.steps]);
 		}
 	}
 }
@@ -267,9 +265,9 @@ var first = function(my){
 
 var run = function(my, run_num){
 
-	N = 100
+	var show_every = 10
 
-	if(my.episode % N == 5)
+	if(my.episode % show_every == 0 && my.episode > 0)
 	{
 
 		if (my.buttons['Next'].attr('data-justclicked') == 'true') {
@@ -281,7 +279,7 @@ var run = function(my, run_num){
 			my.autoplay = true;			
 		}
 
-		if (my.autoplay && run_num % 5 == 0) {
+		if (my.autoplay && run_num % 2 == 0) {
 			my.do_step();
 			my.task.render(my.Q);
 		}
