@@ -209,11 +209,11 @@ var first = function(my) {
 
         my.t ++;
         my.perf.push([my.t, my.R / my.t]);
-        $.plot(my.panels[0], [{data:my.perf, label:'Mean Reward per Episode'}]);
+        $.plot(my.panels[0], [{data:my.perf, label:'Average Reward per Episode'}]);
         
         // Do plotting
         //intervalPlot(my.panels[2], k, total_reward, SE);
-        plotActions(my.panels[2], Q, {k: k, errors:SE, , range:{min:0,max:1}});
+        plotActions(my.panels[2], Q, {k: k, errors:SE, range:{min:0,max:1}});
         
         my.task.reset()
         
