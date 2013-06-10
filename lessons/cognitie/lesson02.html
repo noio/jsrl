@@ -213,7 +213,7 @@ var first = function(my) {
         
         // Do plotting
         //intervalPlot(my.panels[2], k, total_reward, SE);
-        plotActions(my.panels[2], Q, {k: k, errors:SE});
+        plotActions(my.panels[2], Q, {k: k, errors:SE, , range:{min:0,max:1}});
         
         my.task.reset()
         

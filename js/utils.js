@@ -52,6 +52,11 @@ function plotActions(canvas, Q, extra) {
     else
         errors = $.map(actions, function(e){return 0});
 
+    if ('range' in extra)
+        yrange = extra.range
+    else
+        yrange = {}
+
     // Create xticks
     var x_ticks = $.map(actions, function(e, idx){return [[idx, e]]});
     
@@ -62,7 +67,7 @@ function plotActions(canvas, Q, extra) {
             max: actions.length-0.5,
             ticks: x_ticks
         },
-        // yaxes: [ {min:0, max:1}, {min:0, max:200} ],
+        yaxes: [ yrange, {} ],
         legend: {position: "se"},
     };
 
