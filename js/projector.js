@@ -3,26 +3,49 @@ var projector = (function () {
   var my = {}
 
   var TAG_RE = new RegExp('\/\/\:(\\w+) ?(.*)');
+  var BASE_HTML = "<div id='projector-container' class='container'> \
+  <div class='sidebar'></div> \
+  <div class='main'> \
+    <div class='editor'></div> \
+    <button class='run btn btn-large'>Run</button> \
+  </div> \
+  <div class='product'> \
+    <div class='panels'></div> \
+    <div class='buttons'></div> \
+    <textarea class='console'></textarea> \
+  </div> \
+  </div> \
+  "
 
   my.Projector = klass({
 
-  initialize: function(container){
-    this.descriptionarea = container.find('#projector-description');
-    var main = $('<div class="main">').appendTo(container);
-    this.editarea = $('<div class="editor">').appendTo(main);
-    this.button = $('<button class="run">Run</button>').appendTo(main);
-    this.productarea = $('<div class="product">').appendTo(container);
-    this.productarea.append('<div class="panels">');
-    this.productarea.append('<div class="buttons">');
-    this.productarea.append('<textarea class="console">');
+  initialize: function(into){
+    // VARIABLES
     this.scriptblocks = [];
-    this.editables = {};
     this.running = false;
 
-    var projectorscript = $('#projector-script');
+    this.buildHTML(into);
+
+    var projectorscript = $('script#projector-script');
     if (projectorscript){
       this.loads(projectorscript.html());
     }
+
+  },
+
+  buildHTML: function(into){
+    // BUILD THE HTML
+    var html = this.container = $(BASE_HTML);
+    this.title = $('h1').first();
+    this.title.html($('<a>').attr('href','.').text(this.title.text()));
+    this.descriptionarea = $('#projector-description');
+    html.find('.sidebar').append(this.title).append(this.descriptionarea);
+    this.editarea = html.find('.editor').first();
+    this.button = html.find('.run').first();
+    this.productarea = html.find('.product').first();
+
+    $('#projector-container').remove()
+    into.append(html);
   },
 
   /**
@@ -57,6 +80,8 @@ var projector = (function () {
       this.descriptionarea.append(s.substring(dscrstart + 2, dscrend));
       MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
     }
+
+    document.title = this.title.text() + ': ' + this.descriptionarea.find('h2').first().text()
 
     var blocks = [], current = null, match = null
     var lines = s.split('\n');
@@ -102,7 +127,7 @@ var projector = (function () {
       this.toggleRun();
     }, this));
 
-    $('<div>').addClass('block').appendTo(this.editarea).hide();
+    $('<div class="block">').appendTo(this.editarea).hide();
 
     this.runInit();
 
@@ -113,11 +138,13 @@ var projector = (function () {
       this.running = true;
       this.button.addClass('running').html('Stop');
       this.editarea.find('.block').fadeIn();
+      this.productarea.find('button').removeClass('disabled');
       this.runScript();
     } else {
       this.running = false;
       this.button.removeClass('running').html('Run');
       this.editarea.find('.block').fadeOut();
+      this.productarea.find('button').addClass('disabled');
     }
   },
 
@@ -247,7 +274,7 @@ var projector = (function () {
     var buttons = this.productarea.find('.buttons');
     var o = {}
     for (var i = 0; i < spec.length; i++){
-      var button = $('<button>' + spec[i] + '</button>');
+      var button = $('<button class="btn btn-small disabled">' + spec[i] + '</button>');
       button.on('click', function(){
         $(this).attr('data-justclicked', true);
       })

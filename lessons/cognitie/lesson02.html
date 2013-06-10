@@ -23,9 +23,9 @@
 
     </head>
     <body>
-        <h1><a href='.'>Practicum Cognitie</a></h1>
+        <h1>Practicum Cognitie</h1>
         <div id='projector-description'>
-			<h2>One Armed Bandits, part 2</h2>
+			<h2>One Armed Bandits pt. 2</h2>
 
 			<p>In de vorige les hebben we naar het n-armed bandit problem
 			gekeken en het bijbehorende <em>exploration</em>-vs-<em>exploitation</em>-dilemma.
@@ -33,41 +33,34 @@
 			bandits/acties uit willen laten proberen om erachter te komen welke hendel(s) het beste zijn,
 			maar later moet de agent zich focussen op de hendel(s) die het beste zijn,
 			om z'n reward te maximaliseren. Hier zijn verschillende algoritmen voor,
-			zoals <em>optimistic initialization</em>, <em>\(\epsilon\)-first</em> en <em>\(\epsilon\)-decreasing</em> </p>
+			zoals <em>\(\epsilon\)-first</em> en <em>\(\epsilon\)-decreasing</em> </p>
 
 			<p>Een geavanceerdere manier om acties te selecteren, is om niet alleen
 			het aantal tijdstippen mee te nemen, maar de <em>onzekerheid</em>.</p>
 
-			<p>Als je een gemiddelde neemt over een serie random variabelen, hoort daar ook
-			een <em>variantie</em> bij: de som van de kwadraten van het verschil
-			van elk element t.o.v. het gemiddelde, gedeeld door het aantal
-			elementen:
-			$$\sigma_y^2 = \frac 1n \sum_{i=1}^n \left(y_i - \overline{y} \right)^2 $$
+			<p>Als je een gemiddelde neemt over een serie stochastische variabelen, hoort daar ook
+			een <a href="http://en.wikipedia.org/wiki/Standard_deviation">standaarddeviatie (SD)</a> bij: de <em>verwachte</em> afwijking t.o.v. het gemiddelde:
 
-			een <a href="http://en.wikipedia.org/wiki/Standard_deviation">standaard deviatie (SD)</a> is de <em>verwachtte</em> afwijking t.o.v.
-			het gemiddelde:
-			$$ \sigma_y = \sqrt{\operatorname E[(X - \mu)^2]}\\
-			= \sqrt{\sigma_y^2}$$
+			$$ \sigma = \sqrt{\operatorname E[(X - \mu)^2]}\\$$
 
-
-			De <a href="http://en.wikipedia.org/wiki/Standard_error_(statistics)">Standard Error</a></em> is de standaard deviatie van de <em>sampling distributie</em>.
-			In andere woorden de verwachtte afwijking van je schatting (het gemeten gemiddelde) t.o.v. het <em>echte</em>
+			De <a href="http://en.wikipedia.org/wiki/Standard_error_(statistics)">standard error (SE)</a></em> is de verwachte afwijking van deze schatting (het gemeten gemiddelde) t.o.v. het <em>echte</em>
 			gemiddelde. Deze is gelijk aan.
-			$$SE_\bar{x}\ = \frac{s}{\sqrt{n}}$$
+
+			$$SE_\bar{x}\ = \frac{\sigma}{\sqrt{n}}$$
 
 			Waar \(n\) het aantal metingen is.</p>
 
-			<p>We weten dat de bandits voor een bepaalde proportie van de tijd een reward geven en
-			de rest niet. Ze gedragen zich dus naar een <a href="http://en.wikipedia.org/wiki/Bernoulli_distribution">Bernoulli-distributie</a>, waarvan bekend
-			is dat de variantie gelijk is aan de proportie dat deze 1 geeft maal de proportie dat deze
-			geen 1 geeft:</p>
+			<p>We weten dat de bandits met een bepaalde kans (\(p\)) een reward geven en anders niet:
+            Ze gedragen zich dus naar een <a href="http://en.wikipedia.org/wiki/Bernoulli_distribution">Bernoulli-verdeling</a>, 
+            waarvan de gemiddelde waarde gelijk is aan:
 
-			$$VAR_{Bernoulli} = p(1- p)$$
+            $$E(X) = p$$
 
-			<p>Dit betekent dat de SD gelijk is aan</p>
+            en waarvan de standaarddeviatie als volgt uit te rekenen is:</p>
+
 			$$SD_{Bernoulli} = \sqrt{p(1- p)}$$
 
-			<p>en de Standard Error gelijk aan:</p>
+			<p>Dus is de Standard Error gelijk aan:</p>
 			$$SE_{Bernoulli} = \frac{\sqrt{\hat{p}(1- \hat{p})}}{\sqrt{n}}$$
 			<p>waar \(p\) de gemiddelde uitkering is en \(n\) het aantal
 			metingen.</p>
@@ -77,33 +70,37 @@
 			ervan uit kunnen gaan dat de <em>echte</em> gemiddelde reward van een bandit met 95% zekerheid binnen het
 			<em>confidence interval</em> ligt van</p>
 
-			$$\hat{p} \pm 1.96 \times SE_\hat{p}$$
+			$$\hat{p} \pm 1.96 \cdot SE_\hat{p}$$
 
 			En dus met 95% zekerheid dat
 
-			$$p < \hat{p} + 1.96 \times SE_{\hat{p}}$$
+			$$p < CI = \hat{p} + 1.96 \cdot SE_{\hat{p}}$$
 
-			Bij <em>Interval learning</em> neemt een agent de onzekerheid in z'n
+			Bij <em>Interval Learning</em> neemt een agent de onzekerheid in z'n
 			metingen mee in de actie-selectie: hij neemt telkens de actie waarbij de waarde
 			waarvan hij voor 95% zeker weet dat de werkelijke payoff lager is, het hoogst is.</p>
 
-			$$\DeclareMathOperator*{\argmax}{\arg\!\max} \argmax_{n}{}(3)$$
+			$$\DeclareMathOperator*{\argmax}{\arg\!\max} \argmax_{a}{}(CI_a)$$
 
 			<p>Het gevolg hiervan is dat de agent vooral acties kiest die (1) nog onzeker
 			zijn en (2) misschien wel een hoge payoff hebben.</p>
 
-			<p class="question"><span>1a)</span> Implementeer <em>Interval Learning</em>.
+			<p class="question"> Implementeer <em>Interval Learning</em>.
 			Het enige wat je daarvoor nog aan hoeft te passen is regel 4 in de <em>Update</em>-functie
 			en regel 4 in <em>Action Selection</em>-functie. (hint: \(Q[a] = \hat{p}_a\))</p>
-			<p class="question"><span>1b)</span> Draai nu een paar experimenten en plot een grafiek in je spreadsheet.
+			<p class="question"> Draai nu een paar experimenten en plot een grafiek in je spreadsheet.
 			Doet deze methode het daadwerkelijk beter dan \(\epsilon\)-greedy?</p>
-			<p class="question"><span>1c)</span> \(k(a)\) staat nu geinitialiseerd op 1, zodat bij de eerste update \(k(a) = 2\) hebt. 
+			
+            <!-- <p class="question"><span>1c)</span> \(k(a)\) staat nu geinitialiseerd op 1, zodat bij de eerste update \(k(a) = 2\) hebt. 
 			Waarom is het problematisch als je een SD/SEM uit zou rekenen
 			met slechts 1 sample (hint: kijk naar de deler in de formule)?</p>
-			<p class="question"><span>1d)</span> \(\epsilon\) staat nog steeds geinitialiseerd op 0.2. Is dit een goed idee
+			 -->
+
+            <!-- <p class="question"><span>1d)</span> \(\epsilon\) staat nog steeds geinitialiseerd op 0.2. Is dit een goed idee
 			bij <em>interval learning</em>?
-			Wat gebeurt er als je \(\epsilon\) op 0.0 zet?</p>
-			<p class="question"><span>2)</span> Bij neurowetenschappelijk onderzoek wordt onder andere onderzoek
+			Wat gebeurt er als je \(\epsilon\) op 0.0 zet?</p> -->
+
+			<p> Bij neurowetenschappelijk onderzoek wordt onder andere onderzoek
 			gedaan met muizen, waarbij bepaalde onderdelen van het brein worden uitgeschakeld
 			door laesies, neurofarmacologische interventies of optogenetica.
 			Zo blijkt je het gedrag van muizen in taakjes zoals de n-armed
@@ -112,13 +109,14 @@
 			Probeer voor elk van de volgende interventies te bedenken hoe je het gedrag van de
 			muis zou kunnen 'simuleren' door parameters of functies in het RL-model
 			(Epsilon, Action-selection-functie, Update-functie...) aan te passen:</p>
-			<p class="question"><span>2a)</span> Het korte-termijn geheugen van de muis wordt middels een laesie uigeschakeld.</p>
-			<p class="question"><span>2b)</span> Een dopamine-antagonist wordt toegediend, waardoor de muis nauwelijks nog direct genot
+
+			<p class="question"> Het korte-termijn geheugen van de muis wordt middels een laesie uigeschakeld.</p>
+			<p class="question"> Een dopamine-antagonist wordt toegediend, waardoor de muis nauwelijks nog direct genot
 			kan voelen.</p>
-			<p class="question"><span>2c)</span> De muis krijgt adrenaline toegediend, waardoor deze veel avontuurlijker wordt.</p>
-			<p class="question"><span>2d)</span> De muis wordt door een farmacologisch model van PTSD erg angstig gemaakt.</p>
-			</strong></p>
-			<p>Dit was les 2 van het practicum ga door naar 
+			<p class="question"> De muis krijgt adrenaline toegediend, waardoor deze veel avontuurlijker wordt.</p>
+			<p class="question"> De muis wordt door een farmacologisch model van PTSD erg angstig gemaakt.</p>
+			
+            <p>Dit was les 2 van het practicum, ga door naar 
 			<a href="lesson03.html">les 3</a>.</p>
 
         </div>
@@ -128,6 +126,7 @@
  * This will run immediately upon load.
  * Put any variables you want to save into 'my'.
  */
+
 
 var setup = function(my) {
 
@@ -148,32 +147,33 @@ var setup = function(my) {
 
 var first = function(my) {      
 
-    my.task.reset()
+    my.task.reset(true);
     my.play = false;
     
     my.t = 0      // Number of plays
     my.R = 0      // Total Return (Sum(r_t))
     my.perf = []  // Array with performance data (average return)
     
-    //:edit {"title":"Initialize"}
     EPSILON = 0.2   
-    k =               {'N':1, 'S':1, 'W':1, 'E':1}
-    total_reward =    {'N':0.5, 'S':0.5, 'W':0.5, 'E':0.5}
-    Q =               {'N':0.5, 'S':0.5, 'W':0.5, 'E':0.5}
-    standard_errors = {'N':0.5, 'S':0.5, 'W':0.5, 'E':0.5}  
-    Q_plus_CI = {'N':1, 'S':1, 'W':1, 'E':1}    
+    //:edit {"title":"Initialize"}
+    k =            {'N':0,   'S':0,   'W':0,   'E':0}
+    total_reward = {'N':0.5, 'S':0.5, 'W':0.5, 'E':0.5}
+    Q =            {'N':0.5, 'S':0.5, 'W':0.5, 'E':0.5}
+    SE =           {'N':0, 'S':0, 'W':0, 'E':0}  
+    CI =           {'N':1,   'S':1,   'W':1,   'E':1}    
     //:end edit
     
 
     // Define functions
     my.action_select = function(s) {
         var a
+        var sqrt = Math.sqrt
 
+        // if (chance(EPSILON)) 
+        //     a = randompick(['N', 'S', 'W', 'E']);
+        // else 
         //:edit {"title":"Action Selection"}
-        if (chance(EPSILON)) 
-            a = randompick(['N', 'S', 'W', 'E']);
-        else 
-            a = argmax(Q);
+        a = argmax(Q);
         //:end edit
         // a = argmax(Q_plus_CI);
         console.log("Picked action " + a)
@@ -183,12 +183,13 @@ var first = function(my) {
 
     my.update = function(s, a, r, s_) {
         var t = my.t;
+        var sqrt = Math.sqrt
         //:edit {"title":"Update"}
         k[a] += 1
         total_reward[a] += r
         Q[a] = total_reward[a] / k[a]
-        standard_errors[a] = 0.5
-        Q_plus_CI[a] = Q[a] + 1.96 * standard_errors[a]
+        SE[a] = 0.0
+        CI[a] = Q[a] + 1.96 * SE[a]
         //:end
         // standard_errors[a] = (Math.sqrt(Q[a] * (1- Q[a])) / Math.sqrt(k[a]))
     }
@@ -211,9 +212,9 @@ var first = function(my) {
         $.plot(my.panels[0], [my.perf])
         
         // Do plotting
-        intervalPlot(my.panels[2], k, total_reward, standard_errors)
+        //intervalPlot(my.panels[2], k, total_reward, SE);
+        plotActions(my.panels[2], Q, {k: k, errors:SE});
         
-
         my.task.reset()
         
     }

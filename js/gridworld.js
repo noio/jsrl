@@ -43,7 +43,8 @@ my.GridWorld = klass({
   STEP_REWARD: 0,
   WALL_REWARD: -1,
 
-  SAND_CHANCE: 0.5,
+  SAND_PROBABILITY: 0.5,
+  END_PROBABILITY: 0.0,
 
   MAX_STEPS: 2000,
 
@@ -80,12 +81,14 @@ my.GridWorld = klass({
     this.width = this.world[0].length
   },
 
-  reset: function(){
+  reset: function(resetBandits){
     this.pos = this.startpos
     this.finished = false;
     this.steps = 0;
-    for (var key in this.bandits) {
-      this.bandits[key] = Math.random();
+    if (resetBandits){
+      for (var key in this.bandits) {
+        this.bandits[key] = Math.random();
+      }  
     }
   },
 
@@ -154,15 +157,22 @@ my.GridWorld = klass({
 
       if (type == 'bandit'){
         reward = (Math.random() <= this.bandits[[y,x]]) * this.BANDIT_REWARD
+        console.log(this.bandits[[y,x]])
+        console.log(reward)
         this.finished = true
       }
 
       if (type == 'sand'){
-        if (Math.random() < this.SAND_CHANCE){
+        if (Math.random() < this.SAND_PROBABILITY){
           reward = this.SAND_REWARD;
           this.finished = true;
         }
       }
+    }
+
+    if (Math.random() < this.END_PROBABILITY){
+      reward = 0;
+      this.finished = true;
     }
 
     if (this.steps > this.MAX_STEPS){
@@ -183,9 +193,11 @@ my.GridWorld = klass({
     inner.css('width', this.width * RENDER_TILE_SIZE)
     inner.css('height', this.height * RENDER_TILE_SIZE)
     this.panel.append(inner)
+    me = this;
 
     for (var y = 0; y < this.height; y ++){
       for (var x = 0; x < this.width; x++){
+        var state =  x + '_' + y;
         var position = {
           width: RENDER_TILE_SIZE + 'px',
           height: RENDER_TILE_SIZE +'px',
@@ -198,7 +210,7 @@ my.GridWorld = klass({
         }
         inner.append(tile);
 
-        var overlay = $('<div></div>').css(position).addClass('tile ovl ' + x + '_' + y);
+        var overlay = $('<div></div>').css(position).addClass('tile overlay ' + state).attr('data-coord', state);
         inner.append(overlay);
       }
     }
@@ -213,7 +225,7 @@ my.GridWorld = klass({
     if (typeof qtable != 'undefined'){
       var range = qtable.extrema()
       for (state in qtable.values){
-        var tile = this.panel.find('.ovl.' + state);
+        var tile = this.panel.find('.overlay.' + state);
         var a = argmax(qtable.get(state));
         var best = valmax(qtable.get(state))
         if (best > 0){
@@ -226,12 +238,12 @@ my.GridWorld = klass({
       }
     }
 	
-	// Robot positioneren
-	var robot = this.panel.find('.robot')
-	robot.css({'left':this.pos[1] * RENDER_TILE_SIZE, 'top':this.pos[0] * RENDER_TILE_SIZE})	
-  robot.removeClass("N S E W")
-  robot.addClass(this.lastAction);
-  }
+  	// Robot positioneren
+  	var robot = this.panel.find('.robot')
+  	robot.css({'left':this.pos[1] * RENDER_TILE_SIZE, 'top':this.pos[0] * RENDER_TILE_SIZE})	
+    robot.removeClass("N S E W")
+    robot.addClass(this.lastAction);
+  },
 
 })
 
