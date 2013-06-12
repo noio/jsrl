@@ -162,6 +162,7 @@ var first = function(my) {
     SE =           {'N':0.5, 'S':0.5, 'W':0.5, 'E':0.5}  
     CI =           {'N':1,   'S':1,   'W':1,   'E':1}    
     //:end edit
+    UP = {'N':0.5, 'S':0.5, 'W':0.5, 'E':0.5}
     
 
     // Define functions
@@ -192,6 +193,7 @@ var first = function(my) {
         CI[a] = Q[a] + 1.96 * SE[a]
         //:end
         // standard_errors[a] = (Math.sqrt(Q[a] * (1- Q[a])) / Math.sqrt(k[a]))
+        UP[a] = 1.96 * SE[a]
     }
 
     my.do_step = function() {
@@ -213,7 +215,7 @@ var first = function(my) {
         
         // Do plotting
         //intervalPlot(my.panels[2], k, total_reward, SE);
-        plotActions(my.panels[2], Q, {k: k, errors:SE, range:{min:0,max:1}});
+        plotActions(my.panels[2], Q, {k: k, errors:UP, range:{min:0,max:1}});
         
         my.task.reset()
         
