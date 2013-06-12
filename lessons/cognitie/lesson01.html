@@ -36,9 +36,9 @@
 
 			Elke bandit deelt met een proportie tussen 0 en 1 een reward van precies
 			&#233;&#233;n uit aan de hand van de functie \(R(a)\).
-			De verwachte reward voor elke bandit is dus gelijk aan deze proportie
+			De verwachte reward voor bandit \(n\) is gelijk aan deze proportie
 			en wordt gegeven door:
-			$$E[R(a)]$$
+			$$E[R(a_n)]$$
 
 			<p>Het doel van de agent binnen het n-armed bandit probleem is,
 			zoals in elk Reinforcement Learning probleem, om zoveel mogelijk reward binnen te krijgen
@@ -48,14 +48,28 @@
 			om een optimnale keuze te maken, maar tegelijkertijd zoveel mogelijk reward 
 			binnenhalen en dus geen tijd verdoen met 'slechte' automaten.</p>
 
-			<p>\({Q}(a)\) is een schatting van de verwachte reward \(E[R(a)]\),
+			<p>\({Q}(a_n)\) is een schatting van de verwachte reward \(E[R(a_n)]\),
 			namelijk de gemiddelde uitkering tot nu toe: de totale uitgekeerde reward
-			gedeeld door het aantal keren dat je de automaat hebt uitgeprobeerd  (\(k_a\)):
+			gedeeld door het aantal keren dat de automaat is uitgeprobeerd  (\(k_a\)):
 
 			$$ {Q}(a) = \frac{r_1 + r_2 + \cdots + r_{k_a}}{k_a} $$
-
+			
 			<p class="question"> Welke regel code van de 'update'-functie voert
 			deze formule uit?</p>
+			
+			<p>Het <em>exploration</em>-<em>exploration</em>-dilemma gaat over hoe
+				de agent de \(Q\)-functie gebruikt om een actie te kiezen. De <em>greedy</em>
+				strategie, is het kiezen van de actie die tot nu toe de 
+				hoogste gemiddelde reward heeft</p>
+				
+				$$\DeclareMathOperator*{\argmax}{\arg\!\max} a = \argmax_{a} {Q}(a) $$
+			
+			<p class="question">Waarom is het suboptimaal om altijd de <em>greedy</em>-strategie
+				te volgen?</p>
+
+			Het algoritme wat hier geimplementeerd is, is de \(epsilon\)-greedy-strategie:
+			met een kans van \(0 \leq \epsilon \leq 1 \) doet de agent een <em>random</em>
+			actie. Met een kans van 1-\(\epsilon\) doet de agent de greedy actie.
 
 			<p class="question"> Probeer dit algoritme een paar keer uit: druk op 'Run' en dan op 'play'
 			(eventueel kan je eerst een paar keer op step drukken, om rustig te zien wat er gebeurt).
@@ -137,7 +151,7 @@
 			<p>Een andere strategie is die van <em>Epsilon-decreasing</em>:
 			dan laat je de kans dat je agent een random actie doet afhangen van het aantal
 			steps dat al hij heeft gedaan. Je kan dit bijvoorbeeld doen door bij je update-functie
-			epsilon met een discount-proportie \(d\) kleiner dan 1 tevermenigvuldigen:
+			epsilon met een discount-proportie \(0 < d < 1\) te vermenigvuldigen:
 			$$\epsilon_{t} = d \cdot \epsilon_{t-1}$$
 
 			Als je epsilon dan initialiseert op 1, is deze na 50 stappen:

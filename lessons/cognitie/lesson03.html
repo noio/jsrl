@@ -34,8 +34,8 @@
 			de bandit in het noorden, oosten, zuiden of westen."
 			Dit is een probleem met een <em>action-space</em>, met slechts vier opties.</p>
 
-			<p>Om complexere problemen op te lossen, zoals bijvoorbeeld <a href="http://www.youtube.com/watch?v=CLIPLiQDIk0">efficient een kamer schoon zuigen</a> of <a href="http://www.youtube.com/watch?v=3mvE_CeH9q0">een helikopter te besturen</a>, hangt de
-			actie die je wilt nemen af van de omgeving (zie ook <a href="http://www.youtube.com/watch?v=r4l4zLrQx-I">hier</a>). Als je met een helikopter vliegt, kun je moeilijk
+			<p>Om complexere problemen op te lossen, zoals bijvoorbeeld <a href="http://www.youtube.com/watch?v=CLIPLiQDIk0" target="_blank">efficient een kamer schoon zuigen</a> of <a href="http://www.youtube.com/watch?v=3mvE_CeH9q0" target="_blank">een helikopter te besturen</a> (zie ook <a href="http://www.youtube.com/watch?v=r4l4zLrQx-I" target="_blank">hier</a>), hangt de
+			actie die je wilt nemen af van de omgeving. Als je met een helikopter vliegt, kun je moeilijk
 			volhouden dat naar rechts vliegen altijd wat meer reward oplevert dan naar links, zoals met de bandits.</p>
 
 			<p>Wat je nodig hebt is een <em>state space</em>: een representatie van de huidige staat
@@ -79,7 +79,7 @@
 			<p>
 				We moeten nu dus een schatting bijhouden van de verwachte waarden van onze acties in <em>elke</em> state, dus \(Q(a)\) wordt \(Q(s,a)\). Maar omdat we soms acties willen uitvoeren die leiden tot meer reward in de toekomst, bevat \(Q(s,a)\) niet alleen de verwachting van de reward in state \(s\), maar ook een schatting van de <em>toekomstige</em> reward:
 
-				$$Q(s, a) = E[r_{s,a}] + \max_a Q(s_{t+1}, a)$$
+				$$Q(s, a) = E[r_{s_t,a_t}] + \max_{a_{t+1}} Q(s_{t+1}, a_{t+1})$$
 
 			</p>
 			
@@ -137,9 +137,12 @@
 			De robot vertrouwt op het feit dat hij in elke staat wel eens een willekeurige actie kiest (exploration), om zo toevallig de research site te vinden. In plaats daarvan kunnen we een techniek gebruiken die <em>optimistic initialization</em> heet. In plaats van de Q-tabel te initializeren met waarde 0, kunnen we hier een hogere waarde in zetten. Elke keer als de robot een actie kiest, zal hij daarom "teleurgesteld" zijn met het resultaat. Immers, zijn huidige actie leverde waarschijnlijk niks op, maar de schatting in \(Q(s,a)\) bevatte wel een hogere waarde. De robot zal dus telkens acties kiezen die hij nog niet geprobeerd heeft, omdat hij de 'hoop' heeft dat die acties een reward opleveren: hij is optimistisch.
 
 			<p class="question">Implementeer <em>optimistic initialization</em> door de Q-tabel te vullen met een hogere waarde, bijvoorbeeld 10.</p>
-			<p class="question">Zet Epsilon eens op 0. Hoe kan het dat de robot nog steeds de research site vindt?</p>
+			<p class="question">Zet Epsilon eens op 0 en initialiseer de Q-tabel zowel met 10 als met 0. 
+				Wanneer vindt de robot de research site? Hoe kan dit?</p>
 				
-			<p class="question">Draai 5 simulaties mét en zónder <em>optimistic initialization</em> (met 'Play All') en vergelijk de gemiddelde return per tijdstap (stop de resultaten van 'Get Data' in een grafiek).</p>
+			<p class="question">Draai 5 simulaties mét en zónder <em>optimistic initialization</em> en \(\epsilon\) op 0.5 
+				(hint: met 'Play All' bespaar je tijd). 
+				Vergelijk de gemiddelde return per tijdstap (stop de resultaten van 'Get Data' in een grafiek).</p>
 				
 			<a href="lesson04.html">Ga naar les 4</a>
         </div>
