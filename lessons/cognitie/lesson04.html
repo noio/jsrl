@@ -129,28 +129,26 @@ var first = function(my){
 	my.autoplay = false
 	my.task.render();
 
+	my.Q = new StateActionValueTable()
+	var Q = my.Q
+	var task = my.task
 	EPISODES = 1000
 	//:edit {"title":"Variables"}
 	ALPHA = 0.4
 	GAMMA = 0.99
 	EPSILON = 0.0
 	PROB_WORLD_END = 0.2
+	Q.fill(task.states(), task.actions(), 100.0)
 	//:end edit
-
+	Q.fill([task.TERMINAL_STATE], task.actions(), 0.0);
+	
 	my.ALPHA = ALPHA
 	my.GAMMA = GAMMA
 	my.EPISODES = EPISODES
 	
 	my.task.END_PROBABILITY = PROB_WORLD_END;
 
-	my.Q = new StateActionValueTable()
-	var Q = my.Q
-	var task = my.task
-
-	//:edit {"title":"Initialization"}
-	Q.fill(task.states(), task.actions(), 100.0)
-	//:end edit
-	Q.fill([task.TERMINAL_STATE], task.actions(), 0.0);
+	
 
 	// Other persistent variables
 	my.steps = []
