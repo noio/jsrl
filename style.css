@@ -124,6 +124,7 @@ button.run { position: absolute;
 
     .product .console { height: auto;
                         min-height: 100px;
+                        width: 540px;
                         position: absolute;
                         top: 640px;
                         bottom: 0;

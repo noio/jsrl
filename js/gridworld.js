@@ -51,16 +51,19 @@ my.GridWorld = klass({
 
   MAX_STEPS: 1000,
 
+  TERMINAL_STATE: "terminal",
+
   initialize: function(world){
     this.pos = null;
     this.finished = false;
     this.lastAction = null;
-
+    this.onTileClick = [];
     this.parseWorld(world)
     this.reset()
   },
 
   parseWorld: function(worldstrings){
+    console.log("parsing world" + worldstrings)
     this.world = []
     this.bandits = {}
     this.startpos = null
@@ -82,6 +85,9 @@ my.GridWorld = klass({
     }
     this.height = this.world.length
     this.width = this.world[0].length
+    if (this.panel){
+      this.setpanel(this.panel);
+    }
   },
 
   reset: function(resetBandits){
@@ -97,7 +103,7 @@ my.GridWorld = klass({
   },
 
   states: function(){
-    var s = []
+    var s = [this.TERMINAL_STATE]
     for (var y = 0; y < this.height; y ++){
       for (var x = 0; x < this.width; x++){
         s.push(x + '_' + y);
@@ -107,6 +113,9 @@ my.GridWorld = klass({
   },
 
   getState: function(){
+    if (this.finished){
+      return this.TERMINAL_STATE
+    }
     return this.pos[1] + '_' + this.pos[0]
   },
 
@@ -205,7 +214,7 @@ my.GridWorld = klass({
     inner.css('width', this.width * RENDER_TILE_SIZE)
     inner.css('height', this.height * RENDER_TILE_SIZE)
     this.panel.append(inner)
-    me = this;
+    var me = this;
 
     for (var y = 0; y < this.height; y ++){
       for (var x = 0; x < this.width; x++){
@@ -222,14 +231,20 @@ my.GridWorld = klass({
         }
         inner.append(tile);
 
+        // Add a listener for "click tile" events
         var overlay = $('<div></div>').css(position).addClass('tile overlay ' + state).attr('data-coord', state);
+        overlay.on('click', function(ev){
+          var state = $(ev.currentTarget).attr('data-coord');
+          for (var i = 0; i < me.onTileClick.length; i ++){
+            me.onTileClick[i](state);
+          }
+        });
+
         inner.append(overlay);
       }
     }
-	
-	var robot = $('<div>').addClass('robot')
-	inner.append(robot)	
-
+	  var robot = $('<div>').addClass('robot')
+	  inner.append(robot)	
   },
 
   render: function(qtable){

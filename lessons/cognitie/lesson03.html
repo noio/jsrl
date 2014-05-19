@@ -172,12 +172,11 @@ var setup = function(my){
 	my.task.MAX_STEPS = 100;
 	my.task.render();
 	
-	my.task.panel.find('.tile.overlay').on('click', function(el){
-		var state = $(el.currentTarget).attr('data-coord');
+	my.task.onTileClick.push(function(state){
 		var statevals = my.Q.get(state)
       	plotActions(my.panels[2], statevals);
-      	console.log(state + " Best action: " + argmax(statevals) + ": " + valmax(statevals));
-    });
+      	console.log("State: " + state + " Best action: " + argmax(statevals) + ": " + valmax(statevals));
+	});
 
     my.buttons['Get Data'].on('click', function(){
         showDataTable(my.R);
@@ -265,7 +264,7 @@ var first = function(my){
 	        
 	        my.R.push([my.episode, my.task.R]);
 	        my.steps.push([my.episode, my.task.step])
-	        $.plot(my.panels[0], [{data:my.R, label:'Return', color:'#78CF8A'}]) // {data:my.steps, label:'Timesteps'}]);
+	        $.plot(my.panels[0], [{data:my.R, label:'Return', color:'#4BB04D'}]) // {data:my.steps, label:'Timesteps'}]);
 		}
 	}
 }

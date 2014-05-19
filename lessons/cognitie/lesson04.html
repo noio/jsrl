@@ -86,10 +86,9 @@ var setup = function(my){
 	
 	var task_world
 	var task_world = [
-	"z _ _ _ _ _",
-	"_ _ _ _ _ _",
-	"_ _ _ _ _ x",
-	"_ _ _ s _ _",	
+	  "w w w w w w w w w w w w w w",
+	  "_ z _ _ _ _ _ _ _ s _ _ x _",
+	  "w w w w w w w w w w w w w w",
 	]
 	my.task = new gridworld.GridWorld(task_world)
 	my.task.setpanel(my.panels[1])
@@ -97,13 +96,11 @@ var setup = function(my){
 	
 	my.task.render();
 
-	my.task.panel.find('.tile.overlay').on('click', function(el){
-		console.log('yo')
-		var state = $(el.currentTarget).attr('data-coord');
+	my.task.onTileClick.push(function(state){
 		var statevals = my.Q.get(state)
       	plotActions(my.panels[2], statevals);
-      	console.log(state + " Best action: " + argmax(statevals) + ": " + valmax(statevals));
-    });
+      	console.log("State: " + state + " Best action: " + argmax(statevals) + ": " + valmax(statevals));
+	});
 
     my.buttons['Get Data'].on('click', function(){
         showDataTable(my.rewards);
@@ -123,27 +120,22 @@ var first = function(my){
 	
 	//:edit {"title": "World"}
 	task_world = [
-	"z _ _ _ _ _",
-	"_ _ _ _ _ _",
-	"_ _ _ _ _ x",
-	"_ _ _ s _ _",	
+	  "w w w w w w w w w w w w w w",
+	  "_ z _ _ _ _ _ _ _ s _ _ x _",
+	  "w w w w w w w w w w w w w w",
 	]
 	//:end edit
-	my.task = new gridworld.GridWorld(task_world)
-	my.task.setpanel(my.panels[1])
-	my.task.STEP_REWARD = 0;
+	my.task.parseWorld(task_world);
 	my.autoplay = false
 	my.task.render();
 
-	//:edit {"title":"Variables"}
-	ALPHA = 0.49
-	GAMMA = 0.99
-	EPSILON = 1.0
-	PROB_WORLD_END = 0.25
 	EPISODES = 1000
-	STEP_REWARD = 0
+	//:edit {"title":"Variables"}
+	ALPHA = 0.4
+	GAMMA = 0.99
+	EPSILON = 0.0
+	PROB_WORLD_END = 0.2
 	//:end edit
-	my.task.STEP_REWARD = STEP_REWARD
 
 	my.ALPHA = ALPHA
 	my.GAMMA = GAMMA
@@ -156,8 +148,9 @@ var first = function(my){
 	var task = my.task
 
 	//:edit {"title":"Initialization"}
-	Q.fill(task.states(), task.actions(), 10.0)
+	Q.fill(task.states(), task.actions(), 100.0)
 	//:end edit
+	Q.fill([task.TERMINAL_STATE], task.actions(), 0.0);
 
 	// Other persistent variables
 	my.steps = []
@@ -191,7 +184,7 @@ var first = function(my){
 		delta = r + GAMMA * valmax(Q.get(s_)) - Q.get(s, a)
 		new_Q = Q.get(s, a) + ALPHA * delta
 		Q.set(s, a, new_Q)
-		EPSILON = 0.9999 * EPSILON
+		EPSILON = 0.99 * EPSILON
 		//:end
 	}
 
@@ -214,43 +207,31 @@ var first = function(my){
 
 		var a = my.action_select(s)
 		
-		if(Math.random() < my.PROB_WORLD_END)
-		{
-			my.task.finished = true;
-			console.log("APOCALYPSE");
-		}
-
 		var r = task.act(a);
 		
 		my.episode_reward += r
 		
 		var s_ = task.getState();
 		
-		
 		my.update(s, a, r, s_);
 		my.step ++;
-		
 
-
-
-		if (task.ended()){
+		if (task.ended() || Math.random() < my.PROB_WORLD_END){
 			console.log("Episode finished in " + my.step + " steps with " + my.episode_reward +" reward .");
 
 			my.steps.push([my.episode, my.step]);
 				
 			my.total_reward += my.episode_reward;
-			
+
 			my.episode ++;
 			my.mean_rewards.push([my.episode, my.total_reward / my.episode])
 			my.rewards.push([my.episode, my.episode_reward]);
 
-			$.plot(my.panels[0], [{'data':my.rewards,'label':'Return', color:'red'},
-								  {'data':my.mean_rewards,'label':'Mean return', color:'orange'}]);
+			$.plot(my.panels[0], [{'data':my.rewards,'label':'Return', color:'#69bd6c', points: {show: true, radius: 2}},
+								  {'data':my.mean_rewards,'label':'Mean return', color:'#256227', }]);
 		}
 	}
 }
-
-
 
 var run = function(my, run_num){
 

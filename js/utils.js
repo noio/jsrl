@@ -106,7 +106,5 @@ function plotActions(canvas, Q, extra) {
         }
     });
 
-    console.log(data)
-    console.log(options)
     $.plot(canvas, data, options);
 }
