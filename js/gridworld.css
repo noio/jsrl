@@ -16,6 +16,8 @@
     background: url('gridworld.png') no-repeat 0px -64px;
 }
 
+.gridworld .tile.bandit span{ color: white; position: absolute; bottom: 0; left: 2;}
+
 .gridworld .tile.wall  { background-position: -32px 0; }
 .gridworld .tile.small { background-position: -32px 0; }
 .gridworld .tile.pit   { background-position: -64px 0; }

@@ -108,7 +108,8 @@ var setup = function(my){
 }
 
 var first = function(my){
-	my.play = my.playAll = false
+	my.play = true;
+	my.playAll = false;
 
 	var ALPHA
 	var GAMMA
@@ -141,7 +142,7 @@ var first = function(my){
 	Q.fill(task.states(), task.actions(), 100.0)
 	//:end edit
 	Q.fill([task.TERMINAL_STATE], task.actions(), 0.0);
-	
+
 	my.ALPHA = ALPHA
 	my.GAMMA = GAMMA
 	my.EPISODES = EPISODES

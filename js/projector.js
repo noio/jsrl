@@ -219,7 +219,7 @@ var projector = (function () {
         runs ++;
         me.productarea.find('.buttons button').attr('data-justclicked', false);
         if ((!stop) && me.running) {
-          me.loopTimeout = setTimeout(loop, 10);
+          me.loopTimeout = setTimeout(loop, 0);
         } else {
           if (me.running){
             me.toggleRun();

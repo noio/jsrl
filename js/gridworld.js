@@ -76,7 +76,7 @@ my.GridWorld = klass({
       }
       for (var j = 0; j < this.world[i].length; j++){
         if (this.world[i][j] == TILE_BANDIT){
-          this.bandits[[i,j]] = Math.random();
+          this.bandits[[i,j]] = Math.random() * 0.9;
         }
       }
     }
@@ -99,6 +99,9 @@ my.GridWorld = klass({
       for (var key in this.bandits) {
         this.bandits[key] = Math.random();
       }  
+    }
+    if (this.panel){
+      this.setpanel(this.panel);
     }
   },
 
@@ -226,8 +229,12 @@ my.GridWorld = klass({
           top: RENDER_TILE_SIZE*y + 'px'
         }
         var tile = $('<div></div>').addClass('tile base').css(position);
-        if (this.world[y][x] != '_'){
-          tile.addClass(TILES[this.world[y][x]]);
+        var tileClass = this.world[y][x];
+        if (tileClass != '_'){
+          tile.addClass(TILES[tileClass]);
+          if (tileClass == TILE_BANDIT){
+            tile.append($('<span>'+ this.bandits[[y,x]].toFixed(2) + '</span>'));
+          }
         }
         inner.append(tile);
 

@@ -170,11 +170,8 @@ var first = function(my) {
         var a
         var sqrt = Math.sqrt
 
-        // if (chance(EPSILON)) 
-        //     a = randompick(['N', 'S', 'W', 'E']);
-        // else 
         //:edit {"title":"Action Selection"}
-        a = argmax(Q);
+        a = argmax(Q) // Vervang Q hier 
         //:end edit
         // a = argmax(Q_plus_CI);
         console.log("Picked action " + a)
@@ -189,8 +186,8 @@ var first = function(my) {
         k[a] += 1
         total_reward[a] += r
         Q[a] = total_reward[a] / k[a]
-        SE[a] = 0.0
-        CI[a] = Q[a] + 1.96 * SE[a]
+        SE[a] = 0// Vul in
+        CI[a] = 0// Vul in
         //:end
         // standard_errors[a] = (Math.sqrt(Q[a] * (1- Q[a])) / Math.sqrt(k[a]))
         UP[a] = 1.96 * SE[a]
@@ -211,7 +208,11 @@ var first = function(my) {
 
         my.t ++;
         my.perf.push([my.t, my.R / my.t]);
-        $.plot(my.panels[0], [{data:my.perf, label:'Average Reward per Episode'}]);
+        $.plot(my.panels[0], [{data:my.perf, label:'Average Reward per Episode', color:"#4BB04D"}],
+            {yaxis:{
+                min:0,
+                max:1
+            }});
         
         // Do plotting
         //intervalPlot(my.panels[2], k, total_reward, SE);

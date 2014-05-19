@@ -184,17 +184,26 @@ var setup = function(my){
 }
 
 var first = function(my){
-	my.play = false;
+	my.play = true;
 	my.playAll = false;
 
 	var ALPHA
 	var EPSILON
 	//:edit {"title":"Variables"}
+	var task_world = [
+	"_ _ _ _ _ _ _ _ w w _ _ _ _ w",
+	"_ _ _ w _ _ _ _ _ w _ _ _ _ _",
+	"_ _ s _ _ _ w w _ _ _ _ _ _ w",
+	"_ _ _ _ _ _ _ w _ w w _ z _ _",
+	"_ _ _ _ w _ _ _ _ _ w _ _ _ _",
+	"_ _ _ w _ _ _ _ _ _ _ _ _ _ _"
+	]
 	ALPHA = 0.5
 	EPSILON = 0.5
 	//:end edit
 	my.ALPHA = ALPHA
 	my.EPISODES = 200
+	my.task.parseWorld(task_world);
 
 	my.Q = new StateActionValueTable()
 	var Q = my.Q;
@@ -273,7 +282,7 @@ var run = function(my, run_num){
 
 	var show_every = 20
 
-	if(my.episode % show_every == 0 && my.episode > 0 && !my.playAll)
+	if(my.episode % show_every == 0 && !my.playAll)
 	{
 		if (my.buttons['Play'].attr('data-justclicked') == 'true') {
 			my.play = true;

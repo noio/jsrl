@@ -39,7 +39,7 @@
   padding: 0 3px 0 5px;
   min-width: 20px;
   text-align: right;
-  color: #999;
+  color: #555;
 }
 
 /* CURSOR */
@@ -310,7 +310,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
 
 .cm-s-ambiance .CodeMirror-linenumber {
   text-shadow: 0px 1px 1px #4d4d4d;
-  color: #222;
+  color: #111;
   padding: 0 5px;
 }
 

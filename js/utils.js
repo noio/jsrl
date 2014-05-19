@@ -12,8 +12,9 @@ function showDataTable(data, title){
     var table = $('<table>');
     // var row = $('<tr>').appendTo(table);
     for (var i = 0; i < data.length; i++){
-        table.append($('<tr>').append('<td>').html(data[i][1].toFixed(2)));
+        table.append($('<tr>').append($('<td>').html(data[i][1].toFixed(2))));
     }
+    console.log(table);
     $(myWindow.document.body).append(table);
 }
 
@@ -77,7 +78,7 @@ function plotActions(canvas, Q, extra) {
         data.push({
             data: enumerate(k),
             label: 'k[a]',
-            color: "red",
+            color: "#7BBCF6",
             yaxis: 2,
             bars: {
                 show: true,

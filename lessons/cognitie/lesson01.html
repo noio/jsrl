@@ -200,16 +200,18 @@ var first = function(my) {
     my.task.reset(true);
     my.play = false;
     
-    my.t = 0      // Number of plays
+    
     my.R = 0      // Total Return (Sum(r_t))
     my.perf = []  // Array with performance data (average return)
     
     //:edit {"title":"Initialize"}
+    t = 0
     EPSILON = 0.2   
-    k =               {'N':0, 'S':0, 'W':0, 'E':0}
-    total_reward =    {'N':0, 'S':0, 'W':0, 'E':0}
-    Q =               {'N':0, 'S':0, 'W':0, 'E':0}      
+    k =            {'N':0, 'S':0, 'W':0, 'E':0}
+    total_reward = {'N':0, 'S':0, 'W':0, 'E':0}
+    Q =            {'N':0, 'S':0, 'W':0, 'E':0}
     //:end edit
+    my.t = t      // Number of plays
 
     $.plot(my.panels[0], [my.perf])
     // intervalPlot(my.panels[2], k, total_reward)
@@ -237,7 +239,9 @@ var first = function(my) {
         k[a] += 1
         total_reward[a] += r
         Q[a] = total_reward[a] / k[a]
+        t = t + 1
         //:end
+        my.t = t;
     }
 
     my.do_step = function() {
@@ -252,9 +256,12 @@ var first = function(my) {
 
         my.update(s, a, r, s_);
 
-        my.t ++;
         my.perf.push([my.t, my.R / my.t]);
-        $.plot(my.panels[0], [{data:my.perf, label:'Average Reward per Episode'}]);
+        $.plot(my.panels[0], [{data:my.perf, label:'Average Reward per Episode', color:"#4BB04D"}], 
+     		{yaxis:{
+        		min:0,
+        		max:1
+        	}});
         
         // Do plotting
         //intervalPlot(my.panels[2], k, total_reward)
