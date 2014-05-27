@@ -12,7 +12,7 @@ function showDataTable(data, title){
     var table = $('<table>');
     // var row = $('<tr>').appendTo(table);
     for (var i = 0; i < data.length; i++){
-        table.append($('<tr>').append($('<td>').html(data[i][1].toFixed(2))));
+        table.append($('<tr>').append($('<td>').html(data[i][1].toFixed(2).replace(".", ","))));
     }
     console.log(table);
     $(myWindow.document.body).append(table);
