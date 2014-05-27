@@ -27,13 +27,17 @@
         <div id='projector-description'>
 			<h2>One Armed Bandits pt. 2</h2>
 
-			<p>In de vorige les hebben we naar het n-armed bandit problem
-			gekeken en het bijbehorende <em>exploration</em>-vs-<em>exploitation</em>-dilemma.
-			We hebben gezien dat we de agent in het begin van het probleem verschillende
-			bandits/acties uit willen laten proberen om erachter te komen welke hendel(s) het beste zijn,
-			maar later moet de agent zich focussen op de hendel(s) die het beste zijn,
-			om z'n reward te maximaliseren. Hier zijn verschillende algoritmen voor,
-			zoals <em>\(\epsilon\)-first</em> en <em>\(\epsilon\)-decreasing</em> </p>
+            <p>In de vorige les hebben we naar het n-armed bandit problem
+            gekeken en het bijbehorende
+            <em>exploration</em>-vs-<em>exploitation</em>-dilemma.  We
+            hebben gezien dat we de agent in het begin van het probleem
+            verschillende bandits/acties uit willen laten proberen om
+            erachter te komen welke hendel(s) het beste zijn, maar later
+            moet de agent vooral de hendel(s) gebruiken die waarschijnlijk
+            het best uitbetalen, om zo z'n reward te maximaliseren. Hier
+            zijn verschillende algoritmen voor, zoals
+            <em>\(\epsilon\)-first</em> en <em>\(\epsilon\)-decreasing</em>
+            </p>
 
 			<p>Een geavanceerdere manier om acties te selecteren, is om niet alleen
 			het aantal tijdstippen mee te nemen, maar de <em>onzekerheid</em>.</p>
@@ -74,7 +78,9 @@
 
 			En dus met 95% zekerheid dat
 
-			$$p < CI = \hat{p} + 1.96 \cdot SE_{\hat{p}}$$
+			$$p < CI $$
+            waar 
+            $$CI = \hat{p} + 1.96 \cdot SE_{\hat{p}}$$
 
 			Bij <em>Interval Learning</em> neemt een agent de onzekerheid in z'n
 			metingen mee in de actie-selectie: hij neemt telkens de actie waarbij de waarde
@@ -85,11 +91,14 @@
 			<p>Het gevolg hiervan is dat de agent vooral acties kiest die (1) nog onzeker
 			zijn en (2) misschien wel een hoge payoff hebben.</p>
 
-			<p class="question"> Implementeer <em>Interval Learning</em>.
-			Het enige wat je daarvoor nog aan hoeft te passen is regel 4 in de <em>Update</em>-functie
-			en de <em>Action Selection</em>-functie. (hint: <code>Q[a]</code> = \(\hat{p}_a\) en <code>k[a]</code> = \(n\))</p>
-			<p class="question"> Draai nu een paar experimenten en plot een grafiek in je spreadsheet.
-			Doet deze methode het daadwerkelijk beter dan \(\epsilon\)-greedy?</p>
+            <p class="question"> Implementeer <em>Interval Learning</em>.
+            Het enige wat je daarvoor nog aan hoeft te passen is regel 4 en
+            5 in de <em>Update</em>-functie en de <em>Action
+            Selection</em>-functie. (hint: <code>Q[a]</code> =
+        \(\hat{p}_a\) en <code>k[a]</code> = \(n\))</p> <p
+        class="question"> Draai nu een paar experimenten en plot een
+        grafiek in je spreadsheet.  Doet deze methode het daadwerkelijk
+        beter dan \(\epsilon\)-greedy?</p>
 			
             <!-- <p class="question"><span>1c)</span> \(k(a)\) staat nu geinitialiseerd op 1, zodat bij de eerste update \(k(a) = 2\) hebt. 
 			Waarom is het problematisch als je een SD/SEM uit zou rekenen
@@ -105,7 +114,7 @@
 			door laesies, neurofarmacologische interventies of optogenetica.
 			Zo blijkt je het gedrag van muizen in taakjes zoals de n-armed
 			bandit aan te kunnen passen. Stel dat je de hersenen een muis probeert te modelleren
-			aan de hand van Reinforcement Learning-modellen, zoals die waarme je in de afgelopen 2 lessen hebt gezien.
+			aan de hand van reinforcement learning-modellen, zoals die waarme je in de afgelopen 2 lessen hebt gezien.
 			Probeer voor elk van de volgende interventies te bedenken hoe je het gedrag van de
 			muis zou kunnen 'simuleren' door parameters of functies in het RL-model
 			(Epsilon, Action-selection-functie, Update-functie...) aan te passen:</p>
@@ -171,7 +180,7 @@ var first = function(my) {
         var sqrt = Math.sqrt
 
         //:edit {"title":"Action Selection"}
-        a = argmax(Q) // Vervang Q hier 
+        a = argmax(CI) 
         //:end edit
         // a = argmax(Q_plus_CI);
         console.log("Picked action " + a)

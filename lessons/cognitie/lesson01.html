@@ -71,9 +71,10 @@
 			met een kans van \(0 \leq \epsilon \leq 1 \) doet de agent een <em>random</em>
 			actie. Met een kans van 1-\(\epsilon\) doet de agent de greedy actie.
 
-			<p class="question"> Probeer dit algoritme een paar keer uit: druk op 'Run' en dan op 'play'
-			(eventueel kan je eerst een paar keer op step drukken, om rustig te zien wat er gebeurt).
-			Wat valt je op aan de gemiddelde uitgekeerde reward na 300 pogingen?</strong></p>
+			<p class="question"> Probeer dit algoritme een paar keer uit:
+            druk op 'Run' en dan op 'play'.
+            Is de hoeveelheid totale reward na 200 steps elke keer
+            hetzelfde?</strong></p>
 
 			<p>Iedere keer dat je het experiment opnieuw opstart, verandert de echte
 			verwachtingsreward \(E[R(a)]\) van de bandits. De uitkomst van de experimenten
@@ -82,7 +83,8 @@
 			<p class="question"> Run hetzelfde experiment vijf keer en gebruik de 'get data'-functie
 			om de gemiddelde reward voor elke tijdstap te exporteren naar een spreadsheet
 			in Google Docs. Gebruik Google Docs om een grafiek te maken van de vijf experimenten.
-			Maak ook een grafiek van het gemiddelde over alle experimenten. Daarbij een paar tips:<br />
+			Maak ook een grafiek van het gemiddelde over alle experimenten.
+            Dit doe je als volgt:<br />
 			Druk op get_data om een nieuw venster met de data te openen,
 			druk op ctrl+a om alles te selecteren, gebruik ctrl+c om alles te kopieren, ga naar je
 			spreadsheet en gebruik ctrl+v om de data te plakken. Tik in een cel '=AVERAGE(A1:E1)' 
@@ -104,8 +106,7 @@
 			tot de <em>exploration</em>-<em>exploitation</em>-balans?</p>
 			<p class="question"> Pas epsilon aan naar 0.1 en 0.5 en maak een gemiddelde
 			grafiek over 5 experimenten, net zoals in opdracht 1c. Wat valt gebeurt
-			er met de gemiddele opbrengst? Wat valt je op aan de grafieken van
-			Q(a) en k(a) rechtsonderin?</p>
+			er met de gemiddele opbrengst?</p>
 
 			<p>Er is een probleem met de <em>\(\epsilon\)-greedy</em> strategie die
 			we tot nu toe gebruikt hebben.
@@ -165,8 +166,11 @@
 			<p class="question"> Implementeer het <em>\(\epsilon\)-decreasing</em> algoritme.
 			Voeg aan de <em>Update</em>-functie een regel toe die
 			EPSILON instelt op 0.95 * EPSILON. Initialiseer EPSILON
-			op 1. Run een paar experimenten en vergelijk ze met de standaard
-			\(\epsilon\)-greedy strategie uit opdracht 1. Werk deze
+			op 1. Zorg dat regel 1 van de Action selection er weer zo uit
+            ziet: <br />
+            <code>if (chance(EPSILON))</code> <br />
+            Run een paar experimenten en vergelijk ze met de standaard
+			\(\epsilon\)-greedy strategie uit opdracht 4. Werk deze
 			strategie beter?</p>
 
 			<p>Dit was les 1 van het practicum, ga door naar <a href="lesson02.html">les 2</a>.</p>
