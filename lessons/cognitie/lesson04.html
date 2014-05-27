@@ -19,7 +19,7 @@
         
         <link href="../../style.css" media="all" rel="stylesheet" type="text/css">
 
-        <title>Cognitie Les 3</title>
+        <title>Cognitie Les 4</title>
 
     </head>
     <body>
@@ -31,22 +31,20 @@
 				telt dan onmiddelijke reward. In dit practicum gaan we zien waarom deze parameter
 				handig is en in welke situaties.</p>
 				
-			<p>Rechts zie je een aantal nieuwe functionaliteiten, ten eerste kun je nu
-				zien hoe de kaart wordt opgebouwd in `World'. De <em>a</em>-tjes staan voor
-				`moerassen': hier kan de robot doorheen rijden, maar hij heeft een kans van 1 op
-				2 dat hij het niet overleeft en dat de episode ten einde komt en hij een negatieve
-				reward van -15 krijgt.</p>
-				<p>Verder heb je drie soorten reward-tegels:</p>
-				<ul>
-					<li><strong>x</strong>: een kleine reward van 10.
-					<li><strong>y</strong>: een medium reward van 20.
-					<li><strong>z</strong>: een grote reward van 30.
-				</ul>
-			<p>Ook zie je een nieuwe constante PROB_WORLD_END. Deze constante geeft de kans aan
-				dat in een willekeurige stap de wereld vergaat. Als je je reward wilt maximaliseren
-				moet je hier rekening mee houden: als je in 10 stappen een hele grote reward kan krijgen,
-				maar de kans is groot dat voor die tijd de wereld vergaat, dan wil je misschien
-				liever een reward pakken die kleiner is, maar dichterbij ligt,</p>
+            <p>Rechts zie je een aantal nieuwe functionaliteiten, ten
+            eerste kun je nu zien hoe de kaart wordt opgebouwd in `World'.
+                <p>Daar heb je drie soorten reward-tegels:</p> <ul>
+                    <li><strong>x</strong>: een kleine reward van 10.
+                    <li><strong>y</strong>: een medium reward van 20.
+                <li><strong>z</strong>: een grote reward van 30.  </ul>
+            <p>Ook zie je een nieuwe constante PROB_WORLD_END. Na 100
+            episodes geeft deze constante kans dat in een willekeurige stap
+            van een episode de wereld vergaat. Daarvoor vergaat de wereld nooit, zodat de
+            robot eerst goed kan leren. Als je je reward wilt maximaliseren
+            moet je hier rekening mee houden: als je in 10 stappen een hele
+            grote reward kan krijgen, maar de kans is groot dat voor die
+            tijd de wereld vergaat, dan wil je misschien liever een reward
+            pakken die kleiner is, maar dichterbij ligt,</p>
 
 			<p class="question">Op hoeveel stappen ligt de grote reward en op hoeveel stappen ligt
 				de kleine reward?</p>
@@ -65,13 +63,6 @@
 			<p class="question">Is dit de optimale keuze?</p>				
 			<p class="question">Welke parameter kun je aanpassen 
 				om de robot wel de optimale keuze te laten maken? Probeer dit uit.</p>				
-		<p class="question">Laat de parameters hetzeflde, maar zet nu STEP_REWARD op -10. 
-			Wat betekent dit?</p>
-			<p class="question">Hoe verandert het gedrag van de robot nu?</p>
-			<p class="question">Wat is het fundamentele verschil tussen het aanpassen
-				van de STEP_REWARD en de GAMMA-parameter?</p>
-			
-
         </div>
 
 <script id="projector-script">
@@ -87,7 +78,7 @@ var setup = function(my){
 	var task_world
 	var task_world = [
 	  "w w w w w w w w w w w w w w",
-	  "_ z _ _ _ _ _ _ _ s _ _ x _",
+	  "_ y _ _ _ _ _ _ _ s _ _ x _",
 	  "w w w w w w w w w w w w w w",
 	]
 	my.task = new gridworld.GridWorld(task_world)
@@ -122,7 +113,7 @@ var first = function(my){
 	//:edit {"title": "World"}
 	task_world = [
 	  "w w w w w w w w w w w w w w",
-	  "_ z _ _ _ _ _ _ _ s _ _ x _",
+	  "_ y _ _ _ _ _ _ _ s _ _ x _",
 	  "w w w w w w w w w w w w w w",
 	]
 	//:end edit
@@ -131,15 +122,18 @@ var first = function(my){
 	my.task.render();
 
 	my.Q = new StateActionValueTable()
+    my.t = 0
+    var t = my.t
 	var Q = my.Q
 	var task = my.task
 	EPISODES = 1000
 	//:edit {"title":"Variables"}
-	ALPHA = 0.4
-	GAMMA = 0.99
-	EPSILON = 0.0
-	PROB_WORLD_END = 0.2
-	Q.fill(task.states(), task.actions(), 100.0)
+    ALPHA = 0.2
+    GAMMA = 0.99
+    EPSILON = 1.0
+    PROB_WORLD_END = 0.0
+    Q.fill(task.states(), ['W', 'E'], 0.0)
+    t = 0
 	//:end edit
 	Q.fill([task.TERMINAL_STATE], task.actions(), 0.0);
 
@@ -164,13 +158,23 @@ var first = function(my){
 	my.action_select = function(s){
 		var a
 		var As = Q.get(s)
+        var PROB_WORLD_END = 0.0;
 
 		//:edit {"title":"Action Selection"}
-		if (chance(EPSILON))
-			a = randompick(As);
-		else
-			a = argmax(As);
+        if (t < 100) {
+            if (chance(EPSILON))
+              a = randompick(As);
+            else
+              a = argmax(As);
+          
+          PROB_WORLD_END = 0.0
+        } else {
+          a = argmax(As);
+          PROB_WORLD_END = 0.2
+        }
 		//:end edit
+        my.task.END_PROBABILITY = PROB_WORLD_END;
+
 		return a
 
 	}
@@ -185,20 +189,22 @@ var first = function(my){
 		Q.set(s, a, new_Q)
 		EPSILON = 0.99 * EPSILON
 		//:end
+        t = my.t
 	}
 
 	my.start_episode = function(){
 		task.reset();
 		my.step = 0;
 		my.episode_reward = 0;
+        my.t++;
 	}
 
 	my.run_episode = function(){
-		my.start_episode();
+		//my.start_episode();
 		while(!task.ended()){
 			my.do_step();
 		}
-		my.start_episode()
+        my.start_episode();
 	}
 
 	my.do_step = function(){
