@@ -217,7 +217,9 @@ var first = function(my){
 		
 		var s_ = task.getState();
 		
-		my.update(s, a, r, s_);
+		if (!(task.ended() && r == 0)){
+			my.update(s, a, r, s_);
+		}
 		my.step ++;
 
 		if (task.ended()){
