@@ -146,7 +146,13 @@ my.GridWorld = klass({
       reward = this.EDGE_REWARD;
     } else {
       var type = TILES[this.world[y][x]];
+	
 
+     if (Math.random() < this.END_PROBABILITY){
+       reward = 0;
+       this.finished = true;
+     }	
+	
       if (type == 'wall' ){
         reward = this.WALL_REWARD;
       } else {
@@ -186,11 +192,6 @@ my.GridWorld = klass({
           this.finished = true;
         }
       }
-    }
-
-    if (Math.random() < this.END_PROBABILITY){
-      reward = 0;
-      this.finished = true;
     }
 
     if (this.step >= this.MAX_STEPS){
