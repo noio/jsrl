@@ -187,7 +187,6 @@ var first = function(my){
 		delta = r + GAMMA * valmax(Q.get(s_)) - Q.get(s, a)
 		new_Q = Q.get(s, a) + ALPHA * delta
 		Q.set(s, a, new_Q)
-		EPSILON = 0.99 * EPSILON
 		//:end
         t = my.t
 	}
@@ -221,7 +220,7 @@ var first = function(my){
 		my.update(s, a, r, s_);
 		my.step ++;
 
-		if (task.ended() || Math.random() < my.PROB_WORLD_END){
+		if (task.ended()){
 			console.log("Episode finished in " + my.step + " steps with " + my.episode_reward +" reward .");
 
 			my.steps.push([my.episode, my.step]);
